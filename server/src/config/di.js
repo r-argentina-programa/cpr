@@ -9,6 +9,13 @@ const {
   ProductService,
 } = require('../module/product/module');
 
+const {
+  BrandController,
+  BrandModel,
+  BrandRepository,
+  BrandService,
+} = require('../module/brand/module');
+
 function configureSequelizeDatabase() {
   return new Sequelize({
     dialect: 'postgres',
@@ -43,6 +50,10 @@ function configureProductModel(container) {
   return ProductModel.setup(container.get('Sequelize'));
 }
 
+function configureBrandModel(container) {
+  return BrandModel.setup(container.get('Sequelize'));
+}
+
 function addProductModuleDefinitions(container) {
   container.addDefinitions({
     ProductController: object(ProductController).construct(get('ProductService'), get('Multer')),
@@ -52,9 +63,19 @@ function addProductModuleDefinitions(container) {
   });
 }
 
+function addBrandModuleDefinitions(container) {
+  container.addDefinitions({
+    BrandController: object(BrandController).construct(get('BrandService')),
+    BrandService: object(BrandService).construct(get('BrandRepository')),
+    BrandRepository: object(BrandRepository).construct(get('BrandModel')),
+    BrandModel: factory(configureBrandModel),
+  });
+}
+
 module.exports = function configureDI() {
   const container = new DIContainer();
   addCommonDefinitions(container);
   addProductModuleDefinitions(container);
+  addBrandModuleDefinitions(container)
   return container;
 };
