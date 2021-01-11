@@ -1,6 +1,7 @@
 const { default: DIContainer, object, get, factory } = require('rsdi');
 const { Sequelize } = require('sequelize');
 const multer = require('multer');
+const path = require('path');
 
 const {
   ProductController,
@@ -23,7 +24,7 @@ function configureSequelizeDatabase() {
 function configureMulter() {
   const storage = multer.diskStorage({
     destination(req, file, cb) {
-      cb(null, path.resolve(__dirname, '..', '..', 'tmp', 'uploads'));
+      cb(null, path.resolve(__dirname, '..', '..', 'public', 'uploads'));
     },
     filename(req, file, cb) {
       cb(null, Date.now() + path.extname(file.originalname));
