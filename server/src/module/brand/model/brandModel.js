@@ -19,9 +19,6 @@ module.exports = class BrandModel extends Model {
           type: DataTypes.STRING,
           allowNull: false,
         },
-        product_fk: {
-          type: DataTypes.STRING,
-        },
         updatedAt: {
           type: DataTypes.DATE,
           defaultValue: Sequelize.NOW,
@@ -34,6 +31,7 @@ module.exports = class BrandModel extends Model {
       {
         sequelize: sequelizeInstance,
         modelName: 'Brand',
+        tableName: 'brands',
         underscored: true,
         paranoid: true,
         timestamps: false,
