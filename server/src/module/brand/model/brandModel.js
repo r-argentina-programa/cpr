@@ -19,6 +19,10 @@ module.exports = class BrandModel extends Model {
           type: DataTypes.STRING,
           allowNull: false,
         },
+        logo: {
+          type: DataTypes.STRING,
+          allowNull: false,
+        },
         updatedAt: {
           type: DataTypes.DATE,
           defaultValue: Sequelize.NOW,
