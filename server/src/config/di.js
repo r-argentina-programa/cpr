@@ -18,6 +18,8 @@ const {
   BrandService,
 } = require('../module/brand/module');
 
+const { ManagementController } = require('../module/management/module');
+
 function configureSequelizeDatabase() {
   return new Sequelize(process.env.DATABASE_URL, {
     dialect: 'postgres',
@@ -70,10 +72,20 @@ function addBrandModuleDefinitions(container) {
   });
 }
 
+function addManagementModuleDefinitions(container) {
+  container.addDefinitions({
+    ManagementController: object(ManagementController).construct(
+      get('BrandService'),
+      get('ProductService')
+    ),
+  });
+}
+
 module.exports = function configureDI() {
   const container = new DIContainer();
   addCommonDefinitions(container);
   addProductModuleDefinitions(container);
   addBrandModuleDefinitions(container);
+  addManagementModuleDefinitions(container);
   return container;
 };
