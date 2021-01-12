@@ -19,12 +19,9 @@ const {
 } = require('../module/brand/module');
 
 function configureSequelizeDatabase() {
-  const sequelize = new Sequelize({
-    dialect: 'sqlite',
-    storage: './data/database.db',
-    logging: false,
+  return new Sequelize(process.env.DATABASE_URL, {
+    dialect: 'postgres',
   });
-  return sequelize;
 }
 
 function configureMulter() {
