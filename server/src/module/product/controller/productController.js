@@ -1,4 +1,5 @@
 const { fromDataToEntity } = require('../mapper/mapper');
+
 module.exports = class ProductController {
   /**
    * @param  {import("../service/productService")} ProductService
@@ -7,6 +8,7 @@ module.exports = class ProductController {
     this.ProductService = ProductService;
     this.UploadMiddleware = UploadMiddleware;
   }
+
   /**
    * @param  {import("express".Application)} app
    */
@@ -14,6 +16,7 @@ module.exports = class ProductController {
     const ROUTE = '/product';
     app.get(`${ROUTE}`, this.UploadMiddleware.single('file'), this.save.bind(this));
   }
+
   /**
    * @param  {import("express".Request)} req
    * @param  {import("express").Response} res
@@ -30,7 +33,7 @@ module.exports = class ProductController {
         description,
         imageSrc: productImageURL,
       });
-      let newProduct = await this.ProductService.save(productData);
+      const newProduct = await this.ProductService.save(productData);
     } catch (error) {
       console.log(error);
     }
