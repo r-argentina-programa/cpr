@@ -1,4 +1,5 @@
 const { fromModelToEntity } = require('../mapper/mapper');
+
 module.exports = class ProductRepository {
   /**
    * @param  {import("../model/productModel")} productModel
@@ -9,7 +10,6 @@ module.exports = class ProductRepository {
 
   async save(product) {
     const newProduct = await this.productModel.create(product);
-    console.log(newProduct);
     return fromModelToEntity(newProduct);
   }
 };
