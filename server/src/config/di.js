@@ -1,3 +1,4 @@
+require('dotenv').config();
 const { default: DIContainer, object, get, factory } = require('rsdi');
 const { Sequelize } = require('sequelize');
 const multer = require('multer');
@@ -18,13 +19,12 @@ const {
 } = require('../module/brand/module');
 
 function configureSequelizeDatabase() {
-  return new Sequelize({
-    dialect: 'postgres',
-    host: process.env.DB_HOST,
-    username: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE,
+  const sequelize = new Sequelize({
+    dialect: 'sqlite',
+    storage: './data/database.db',
+    logging: false,
   });
+  return sequelize;
 }
 
 function configureMulter() {
@@ -76,6 +76,6 @@ module.exports = function configureDI() {
   const container = new DIContainer();
   addCommonDefinitions(container);
   addProductModuleDefinitions(container);
-  addBrandModuleDefinitions(container)
+  addBrandModuleDefinitions(container);
   return container;
 };
