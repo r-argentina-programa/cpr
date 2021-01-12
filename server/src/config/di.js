@@ -21,6 +21,10 @@ const {
 function configureSequelizeDatabase() {
   return new Sequelize(process.env.DATABASE_URL, {
     dialect: 'postgres',
+<<<<<<< HEAD
+=======
+    logging: false,
+>>>>>>> 4b9b8a8ac124881ca6be5abe2de223e50431fb30
   });
 }
 
