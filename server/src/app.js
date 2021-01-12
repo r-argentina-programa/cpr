@@ -16,6 +16,8 @@ const container = configureDI();
 initProductModule(app, container);
 initBrandModule(app, container);
 
+const mainDb = container.get('Sequelize');
+mainDb.sync();
 app.listen(PORT, () => {
   console.log(`Listening on http://localhost:${PORT}`);
 });
