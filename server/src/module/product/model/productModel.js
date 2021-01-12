@@ -20,7 +20,7 @@ module.exports = class ProductModel extends Model {
           allowNull: false,
         },
         defaultPrice: {
-          type: DataTypes.NUMBER,
+          type: DataTypes.INTEGER,
           allowNull: false,
         },
         imageSrc: {
