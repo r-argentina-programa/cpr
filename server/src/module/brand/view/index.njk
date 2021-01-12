@@ -2,4 +2,24 @@
 
 {% block body %}
     <h1 class="title is-1">CARGA BRAND</h1>
+
+  <div class="panel-block">
+    <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+        <thead>
+            <tr>
+                <th>Id:</th>
+                <th>Brand:</th>
+               <th>Logo</>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td>{{brand.id}}</td>
+                <td>{{brand.name}}</td>
+                <td>{{brand.logo}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 {% endblock %}
