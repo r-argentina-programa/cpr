@@ -15,6 +15,7 @@ module.exports = class BrandController {
     app.get(`${ROUTE}/`, this.brand.bind(this));
     app.get(`${ROUTE}/create`, this.createBrand.bind(this));
     app.get(`${ROUTE}/edit/:id`, this.editBrand.bind(this));
+    app.get(`${ROUTE}/product/:id`, this.viewProducts.bind(this));
     app.get(`${ROUTE}/delete/:id`, this.deleteBrand.bind(this));
     app.post(`${ROUTE}/save`, this.uploadMiddleware.single('file'), this.saveBrand.bind(this));
   }
@@ -82,6 +83,18 @@ module.exports = class BrandController {
       const brand = await this.BrandService.getById(id);
       await this.BrandService.delete(brand);
       res.redirect('/admin/brand');
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async viewProducts(req, res) {
+    try {
+      const { id } = req.params;
+      const brand = await this.BrandService.getById(id);
+      const products = await this.BrandService.viewProducts(brand);
+      console.log(products);
+      res.render(`${this.BRAND_VIEW_DIR}/view.njk`);
     } catch (error) {
       console.log(error);
     }

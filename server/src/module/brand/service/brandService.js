@@ -44,4 +44,8 @@ module.exports = class BrandService {
     }
     return this.BrandRepository.getById(brandId);
   }
+
+  async viewProducts(brand) {
+    return this.BrandRepository.viewProducts(brand);
+  }
 };
