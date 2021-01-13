@@ -5,19 +5,21 @@
   <table class="table is-striped is-narrow is-hoverable is-fullwidth">
     <thead>
       <tr>
-        <th>Id:</th>
-        <th>Brand:</th>
+        <th>Id</th>
+        <th>Brand</th>
         <th>Logo</th>
       </tr>
     </thead>
 
     <tbody>
+    {% for brand in brands %}
       <tr>
         <td>{{ brand.id }}</td>
         <td>{{ brand.name }}</td>
         <td>{{ brand.logo }}</td>
         <td><a href="/admin/brand/delete" class="delete is-large"></a></td>
       </tr>
+    {% endfor %}
     </tbody>
   </table>
 </div>

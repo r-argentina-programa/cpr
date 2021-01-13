@@ -97,7 +97,8 @@ function addManagementModuleDefinitions(container) {
     ManagementController: object(ManagementController).construct(
       get('BrandService'),
       get('ProductService'),
-      get('CategoryService')
+      get('CategoryService'),
+      get('Multer')
     ),
   });
 }

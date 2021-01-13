@@ -1,4 +1,6 @@
 const BrandIdNotDefinedError = require('../error/BrandIdNotDefinedError');
+const BrandNotDefinedError = require('../error/BrandNotDefinedError');
+const Brand = require('../entity/Brand');
 
 module.exports = class BrandService {
   /**
