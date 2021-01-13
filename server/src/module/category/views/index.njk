@@ -3,13 +3,12 @@
 
 <nav class="level-right">
   <div class="level-item">
-    <a href="/admin/product/create" class="button is-primary is-large">
+    <a href="/admin/category/create" class="button is-primary is-large">
       <span class="icon"><i class="fas fa-plus"></i></span>
       <span>Add new Category</span>
     </a>
   </div>
 </nav>
-
 
 <div class="panel-block">
   <table class="table is-striped is-narrow is-hoverable is-fullwidth">
@@ -25,7 +24,16 @@
       <tr>
         <td>{{ category.id }}</td>
         <td>{{ category.name }}</td>
-        <td><a href="/admin/category/delete/{{ category.id }}" class="delete is-large"></a></td>
+        <td>
+          <a href="/admin/category/edit/{{ category.id }}" class="button is-info is-fullwidth"
+            >Edit</a
+          >
+        </td>
+        <td>
+          <a href="/admin/category/delete/{{ category.id }}" class="button is-danger is-fullwidth"
+            >Delete</a
+          >
+        </td>
       </tr>
       {% endfor %}
     </tbody>
