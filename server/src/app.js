@@ -13,6 +13,7 @@ nunjucks.configure('src/module', {
 const configureDI = require('./config/di');
 const { initProductModule } = require('./module/product/module');
 const { initBrandModule } = require('./module/brand/module');
+const { initCategoryModule } = require('./module/category/module');
 const { initManagementModule } = require('./module/management/module');
 
 const PORT = process.env.PORT || 8000;
@@ -22,6 +23,7 @@ app.use('/files', express.static(path.resolve(__dirname, '..', '..', 'public', '
 const container = configureDI();
 initProductModule(app, container);
 initBrandModule(app, container);
+initCategoryModule(app, container);
 initManagementModule(app, container);
 
 const mainDb = container.get('Sequelize');
