@@ -4,9 +4,10 @@ module.exports = class ProductController {
   /**
    * @param  {import("../service/productService")} ProductService
    */
-  constructor(ProductService, UploadMiddleware) {
+  constructor(ProductService, UploadMiddleware, BrandService) {
     this.ProductService = ProductService;
     this.UploadMiddleware = UploadMiddleware;
+    this.BrandService = BrandService;
     this.PRODUCT_VIEWS = 'product/view';
   }
 
@@ -87,6 +88,7 @@ module.exports = class ProductController {
   }
 
   async create(req, res) {
-    res.render(`${this.PRODUCT_VIEWS}/form.njk`);
+    const brands = await this.BrandService.getAll();
+    res.render(`${this.PRODUCT_VIEWS}/form.njk`, { brands });
   }
 };
