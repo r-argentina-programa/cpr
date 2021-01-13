@@ -19,6 +19,7 @@ module.exports = class ProductController {
     app.get(`${ROUTE}/delete/:id`, this.delete.bind(this));
     app.get(`${ROUTE}/edit/:id`, this.edit.bind(this));
     app.get(`${ROUTE}/`, this.index.bind(this));
+    app.get(`${ROUTE}/create`, this.create.bind(this));
   }
 
   /**
@@ -49,7 +50,7 @@ module.exports = class ProductController {
         imageSrc: productImageURL,
       });
       await this.ProductService.save(productData);
-      res.redirect(`${this.PRODUCT_VIEWS}/index.njk`);
+      res.redirect('/admin/product');
     } catch (error) {
       console.log(error);
     }
@@ -89,5 +90,9 @@ module.exports = class ProductController {
     } catch (error) {
       console.log(error);
     }
+  }
+
+  async create(req, res) {
+    res.render(`${this.PRODUCT_VIEWS}/form.njk`);
   }
 };
