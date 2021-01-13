@@ -1,7 +1,6 @@
 {% extends 'management/view/layout/base.njk' %}
 
 {% block body %}
-    {% set brand = data.brand %}
 
     <div class="level-left">
         <div class="level-item">
@@ -33,7 +32,7 @@
 
         <div class="field">
             {% if brand.logo %}
-                <img src="{{brand.logo}}" width="256" height="256"/>
+                <img src="/{{brand.logo}}" width="256" height="256"/>
             {% endif %}
             <label class="label">Logo</label>
             <div class="control has-icons-left">

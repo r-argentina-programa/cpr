@@ -1,4 +1,5 @@
 const { fromDataToEntity: fromBrandDataToEntity } = require('../../brand/mapper/brandMapper');
+const BrandIdNotDefinedError = require('../../brand/error/BrandIdNotDefinedError');
 
 module.exports = class ManagementController {
   constructor(brandService, productService, categoryService, uploadMiddleware) {
@@ -22,7 +23,13 @@ module.exports = class ManagementController {
     //app.get(`${ROUTE}/category`, this.category.bind(this));
     //app.get(`${ROUTE}/product`, this.product.bind(this));
     app.get(`${ROUTE}/brand/create`, this.createBrand.bind(this));
-    app.post(`${ROUTE}/brand/save`, this.uploadMiddleware.single('file'), this.saveBrand.bind(this));
+    app.get(`${ROUTE}/brand/edit/:id`, this.editBrand.bind(this));
+    app.post(
+      `${ROUTE}/brand/save`,
+      this.uploadMiddleware.single('file'),
+      this.saveBrand.bind(this)
+    );
+    app.get(`${ROUTE}/brand/delete/:id`, this.deleteBrand.bind(this));
     //app.get(`${ROUTE}/category/create`, this.createCategory.bind(this));
     //app.get(`${ROUTE}/product/create`, this.createProduct.bind(this));
   }
@@ -33,7 +40,6 @@ module.exports = class ManagementController {
    */
   async brand(req, res) {
     const brands = await this.BrandService.getAll();
-    console.log(brands)
     res.render(`${this.BRAND_VIEW_DIR}/index.njk`, { brands });
   }
 
@@ -49,6 +55,24 @@ module.exports = class ManagementController {
    * @param {import('express').Request} req
    * @param {import('express').Response} res
    */
+  async editBrand(req, res) {
+    const { id } = req.params;
+    if (!id) {
+      throw new BrandIdNotDefinedError();
+    }
+
+    try {
+      const brand = await this.BrandService.getById(id);
+      res.render(`${this.BRAND_VIEW_DIR}/form.njk`, { brand });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  /**
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   */
   async saveBrand(req, res) {
     try {
       const brand = fromBrandDataToEntity(req.body);
@@ -57,6 +81,21 @@ module.exports = class ManagementController {
         brand.logo = path;
       }
       await this.BrandService.save(brand);
+      res.redirect('/admin/brand');
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  /**
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   */
+  async deleteBrand(req, res) {
+    try {
+      const { id } = req.params;
+      const brand = await this.BrandService.getById(id);
+      await this.BrandService.delete(brand);
       res.redirect('/admin/brand');
     } catch (error) {
       console.log(error);

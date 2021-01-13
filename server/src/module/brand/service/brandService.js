@@ -11,13 +11,24 @@ module.exports = class BrandService {
   }
 
   /**
-   * @param {import('../entity/Brand')} brand
+   * @param {Brand} brand
    */
   async save(brand) {
     if (!(brand instanceof Brand)) {
       throw new BrandNotDefinedError();
     }
     return this.BrandRepository.save(brand);
+  }
+
+  /**
+   * @param {Brand} brand
+   */
+  async delete(brand) {
+    if (!(brand instanceof Brand)) {
+      throw new BrandNotDefinedError();
+    }
+
+    return this.BrandRepository.delete(brand);
   }
 
   async getAll() {
