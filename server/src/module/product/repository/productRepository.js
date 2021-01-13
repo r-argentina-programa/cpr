@@ -9,8 +9,13 @@ module.exports = class ProductRepository {
   }
 
   async save(product) {
-    const newProduct = await this.productModel.create(product);
-    return fromModelToEntity(newProduct);
+    let productModel;
+
+    const buildOptions = { isNewRecord: !product.id };
+    productModel = this.productModel.build(product, buildOptions);
+    productModel = await productModel.save();
+
+    return fromModelToEntity(productModel);
   }
 
   async getById(id) {

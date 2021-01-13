@@ -39,17 +39,10 @@ module.exports = class ProductController {
    */
   async save(req, res) {
     const { path } = req.file;
-    const { name, defaultPrice, description } = req.body;
-
-    const productImageURL = path;
     try {
-      const productData = fromDataToEntity({
-        name,
-        defaultPrice,
-        description,
-        imageSrc: productImageURL,
-      });
-      await this.ProductService.save(productData);
+      const product = fromDataToEntity(req.body);
+      product.imageSrc = path;
+      await this.ProductService.save(product);
       res.redirect('/admin/product');
     } catch (error) {
       console.log(error);
