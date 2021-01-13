@@ -80,18 +80,19 @@
   </div>
 
   <label class="label">Brand</label>
-  {% for brand in brands %}
   <div class="field">
     <div class="control">
       <div class="select is-medium is-rounded">
         <select name="brand_fk">
-          <option value="{{ brand.id }}">{{ brand.name }}</option>
+          {% for brand in brands %}
+            <option value="{{ brand.id }}">{{ brand.name }}</option>
+          {% endfor %}
         </select>
       </div>
     </div>
   </div>
-  {% endfor %}
   <input type="submit" class="button is-primary is-large" value="Save" />
+  {% endfor %}
 
   <hr />
 </form>
