@@ -50,17 +50,14 @@ module.exports = class ManagementController {
    * @param {import('express').Response} res
    */
   async saveBrand(req, res) {
-    const { filename } = req.file;
-    const { name } = req.body;
-
-    const brandImageURL = `${process.env.APP_URL}/files/${filename}`;
     try {
-      const brandData = fromBrandDataToEntity({
-        name,
-        logo: brandImageURL,
-      });
-      const newBrand = await this.BrandService.save(brandData);
-      res.send('SE CARGO LA MARCA');
+      const brand = fromBrandDataToEntity(req.body);
+      if (req.file) {
+        const { path } = req.file;
+        brand.logo = path;
+      }
+      await this.BrandService.save(brand);
+      res.redirect('/admin/brand');
     } catch (error) {
       console.log(error);
     }
