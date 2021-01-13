@@ -79,22 +79,18 @@
     </div>
   </div>
 
+  <label class="label">Brand</label>
+  {% for brand in brands %}
   <div class="field">
-    <label class="label">Brand</label>
-    <div class="control has-icons-left">
-      <input
-        class="input"
-        type="text"
-        name="brand"
-        placeholder="Coca-Cola"
-        value="{{ product.brand }}"
-        required
-      />
-      <span class="icon is-small is-left">
-        <i class="fas fa-user"></i>
-      </span>
+    <div class="control">
+      <div class="select is-medium is-rounded">
+        <select name="brand_fk">
+          <option value="{{ brand.id }}">{{ brand.name }}</option>
+        </select>
+      </div>
     </div>
   </div>
+  {% endfor %}
   <input type="submit" class="button is-primary is-large" value="Save" />
 
   <hr />
