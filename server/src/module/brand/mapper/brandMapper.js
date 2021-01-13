@@ -1,20 +1,18 @@
 const Brand = require('../entity/Brand');
 
-function fromDataToEntity({
+function fromDataToEntity({ id, name, logo }) {
+  return new Brand({
     id,
     name,
-}) {
-    return new Brand({
-        id,
-        name,
-    })
+    logo,
+  });
 }
 
 function fromModelToEntity(model) {
-    return new Brand(model.toJSON());
+  return new Brand(model.toJSON());
 }
 
 module.exports = {
-    fromDataToEntity,
-    fromModelToEntity,
-}
+  fromDataToEntity,
+  fromModelToEntity,
+};
