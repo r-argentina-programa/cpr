@@ -33,6 +33,10 @@ module.exports = class ProductModel extends Model {
         },
         brandFk: {
           type: DataTypes.STRING,
+          references: {
+            model: 'brands',
+            key: 'id',
+          },
         },
         // category_fk TODO
         updatedAt: {
