@@ -1,6 +1,15 @@
 {% extends 'management/view/layout/base.njk' %} {% block body %}
 <h1 class="title is-1">Product Managment</h1>
 
+<nav class="level-right">
+  <div class="level-item">
+    <a href="/admin/product/create" class="button is-primary is-large">
+      <span class="icon"><i class="fas fa-plus"></i></span>
+      <span>Add new Product</span>
+    </a>
+  </div>
+</nav>
+
 <div class="panel-block">
   <table class="table is-striped is-narrow is-hoverable is-fullwidth">
     <thead>
@@ -23,8 +32,16 @@
         <td><img src="{{ product.imageSrc }}" alt="Product Logo" /></td>
         <td>{{ product.description }}</td>
         <td>{{ product.brand }}</td>
-    <td><a href="/admin/product/edit/{{product.id}}" class="button is-info is-fullwidth">Edit</a></td>
-    <td><a href="/admin/product/delete/{{product.id}}" class="button is-danger is-fullwidth">Delete</a></td>
+        <td>
+          <a href="/admin/product/edit/{{ product.id }}" class="button is-info is-fullwidth"
+            >Edit</a
+          >
+        </td>
+        <td>
+          <a href="/admin/product/delete/{{ product.id }}" class="button is-danger is-fullwidth"
+            >Delete</a
+          >
+        </td>
       </tr>
       {% endfor %}
     </tbody>
