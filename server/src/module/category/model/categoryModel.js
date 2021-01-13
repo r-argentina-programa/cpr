@@ -1,12 +1,12 @@
 const { Sequelize, Model, DataTypes } = require('sequelize');
 
-module.exports = class ProductModel extends Model {
+module.exports = class CategoryModel extends Model {
   /**
    * @param {import('sequelize').Sequelize} sequelizeInstance
-   * @returns {typeof ProductModel}
+   * @returns {typeof CategoryModel}
    */
   static setup(sequelizeInstance) {
-    ProductModel.init(
+    CategoryModel.init(
       {
         id: {
           type: DataTypes.INTEGER,
@@ -19,26 +19,6 @@ module.exports = class ProductModel extends Model {
           type: DataTypes.STRING,
           allowNull: false,
         },
-        defaultPrice: {
-          type: DataTypes.INTEGER,
-          allowNull: false,
-        },
-        imageSrc: {
-          type: DataTypes.STRING,
-          allowNull: false,
-        },
-        description: {
-          type: DataTypes.STRING,
-          allowNull: false,
-        },
-        brandFk: {
-          type: DataTypes.STRING,
-          references: {
-            model: 'brands',
-            key: 'id',
-          },
-        },
-        // category_fk TODO
         updatedAt: {
           type: DataTypes.DATE,
           defaultValue: Sequelize.NOW,
@@ -50,17 +30,17 @@ module.exports = class ProductModel extends Model {
       },
       {
         sequelize: sequelizeInstance,
-        modelName: 'Product',
+        modelName: 'Category',
         underscored: true,
         paranoid: true,
         timestamps: false,
       }
     );
 
-    return ProductModel;
+    return CategoryModel;
   }
 
-  static setupAssociation(CategoryModel) {
-    ProductModel.belongsToMany(CategoryModel, { through: 'category_products' });
+  static setupAssociation(ProductModel) {
+    CategoryModel.belongsToMany(ProductModel, { through: 'category_products' });
   }
 };

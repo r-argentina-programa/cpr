@@ -3,6 +3,7 @@ const { default: DIContainer, object, get, factory } = require('rsdi');
 const { Sequelize } = require('sequelize');
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 
 const {
   ProductController,
@@ -18,6 +19,13 @@ const {
   BrandService,
 } = require('../module/brand/module');
 
+const {
+  CategoryController,
+  CategoryModel,
+  CategoryRepository,
+  CategoryService,
+} = require('../module/category/module');
+
 const { ManagementController } = require('../module/management/module');
 
 function configureSequelizeDatabase() {
@@ -30,12 +38,15 @@ function configureSequelizeDatabase() {
 function configureMulter() {
   const storage = multer.diskStorage({
     destination(req, file, cb) {
-      cb(null, path.resolve(__dirname, '..', '..', 'public', 'uploads'));
+      const imgPath = process.env.MULTER_UPLOADS_DIR;
+      fs.mkdirSync(imgPath, { recursive: true });
+      cb(null, imgPath);
     },
     filename(req, file, cb) {
       cb(null, Date.now() + path.extname(file.originalname));
     },
   });
+
   return multer({ storage });
 }
 
@@ -54,9 +65,17 @@ function configureBrandModel(container) {
   return BrandModel.setup(container.get('Sequelize'));
 }
 
+function configureCategoryModel(container) {
+  return CategoryModel.setup(container.get('Sequelize'));
+}
+
 function addProductModuleDefinitions(container) {
   container.addDefinitions({
-    ProductController: object(ProductController).construct(get('ProductService'), get('Multer')),
+    ProductController: object(ProductController).construct(
+      get('ProductService'),
+      get('Multer'),
+      get('BrandService')
+    ),
     ProductService: object(ProductService).construct(get('ProductRepository')),
     ProductRepository: object(ProductRepository).construct(get('ProductModel')),
     ProductModel: factory(configureProductModel),
@@ -65,20 +84,33 @@ function addProductModuleDefinitions(container) {
 
 function addBrandModuleDefinitions(container) {
   container.addDefinitions({
-    BrandController: object(BrandController).construct(get('BrandService')),
+    BrandController: object(BrandController).construct(get('BrandService'), get('Multer')),
     BrandService: object(BrandService).construct(get('BrandRepository')),
     BrandRepository: object(BrandRepository).construct(get('BrandModel')),
     BrandModel: factory(configureBrandModel),
   });
 }
 
+function addCategoryModuleDefinitions(container) {
+  container.addDefinitions({
+    CategoryController: object(CategoryController).construct(get('CategoryService')),
+    CategoryService: object(CategoryService).construct(get('CategoryRepository')),
+    CategoryRepository: object(CategoryRepository).construct(get('CategoryModel')),
+    CategoryModel: factory(configureCategoryModel),
+  });
+}
+
 function addManagementModuleDefinitions(container) {
   container.addDefinitions({
-    ManagementController: object(ManagementController).construct(
-      get('BrandService'),
-      get('ProductService')
-    ),
+    ManagementController: object(ManagementController).construct(get('BrandService')),
   });
+}
+
+function setupAssociations(container) {
+  const productModel = container.get('ProductModel');
+  const categoryModel = container.get('CategoryModel');
+  productModel.setupAssociation(categoryModel);
+  categoryModel.setupAssociation(productModel);
 }
 
 module.exports = function configureDI() {
@@ -86,6 +118,8 @@ module.exports = function configureDI() {
   addCommonDefinitions(container);
   addProductModuleDefinitions(container);
   addBrandModuleDefinitions(container);
+  addCategoryModuleDefinitions(container);
   addManagementModuleDefinitions(container);
+  setupAssociations(container);
   return container;
 };

@@ -3,7 +3,6 @@ const express = require('express');
 const nunjucks = require('nunjucks');
 
 const app = express();
-const path = require('path');
 
 nunjucks.configure('src/module', {
   autoescape: true,
@@ -13,15 +12,18 @@ nunjucks.configure('src/module', {
 const configureDI = require('./config/di');
 const { initProductModule } = require('./module/product/module');
 const { initBrandModule } = require('./module/brand/module');
+const { initCategoryModule } = require('./module/category/module');
 const { initManagementModule } = require('./module/management/module');
 
 const PORT = process.env.PORT || 8000;
 
-app.use(express.json());
-app.use('/files', express.static(path.resolve(__dirname, '..', '..', 'public', 'uploads')));
+// app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use('/public', express.static('public'));
 const container = configureDI();
 initProductModule(app, container);
 initBrandModule(app, container);
+initCategoryModule(app, container);
 initManagementModule(app, container);
 
 const mainDb = container.get('Sequelize');
