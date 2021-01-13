@@ -19,9 +19,9 @@ module.exports = class CategoryController {
     app.get(`${ROUTE}`, this.index.bind(this));
     app.get(`${ROUTE}/view/:categoryId`, this.view.bind(this));
     app.get(`${ROUTE}/edit/:categoryId`, this.edit.bind(this));
-    app.get(`${ROUTE}/add`, this.add.bind(this));
+    app.get(`${ROUTE}/create`, this.add.bind(this));
     app.post(`${ROUTE}/save`, this.save.bind(this));
-    app.post(`${ROUTE}/delete/:categoryId`, this.delete.bind(this));
+    app.get(`${ROUTE}/delete/:categoryId`, this.delete.bind(this));
   }
 
   /**
@@ -29,10 +29,10 @@ module.exports = class CategoryController {
    * @param {import('express').Response} res
    */
   async index(req, res) {
-    const categories = await this.categoryService.getAll();
+    const categoriesList = await this.categoryService.getAll();
     res.render(`${this.CATEGORY_VIEWS}/index.njk`, {
       title: 'Category List',
-      categories,
+      categoriesList,
     });
   }
 
@@ -79,7 +79,7 @@ module.exports = class CategoryController {
    * @param {import('express').Response} res
    */
   add(req, res) {
-    res.render(`${this.CATEGORY_VIEWS}/add.njk`, {
+    res.render(`${this.CATEGORY_VIEWS}/form.njk`, {
       title: 'Add New Category',
     });
   }
