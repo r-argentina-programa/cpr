@@ -1,0 +1,49 @@
+{% extends 'management/view/layout/base.njk' %} {% block body %}
+<h1 class="title is-1">Brand Managment</h1>
+
+<div class="panel-block">
+  <table class="table is-striped is-narrow is-hoverable is-fullwidth">
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Brand</th>
+        <th>Logo</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for brand in brands %}
+      <tr>
+        <td>{{ brand.id }}</td>
+        <td>{{ brand.name }}</td>
+        <td>
+          <figure class="image is-128x128">
+            <img src="/{{ brand.logo }}" width="128" height="128" />
+          </figure>
+        </td>
+        <td>
+          <a class="button is-link is-fullwidth" href="/admin/brand/edit/{{ brand.id }}">
+            <span>Edit</span>
+          </a>
+        </td>
+        <td>
+          <a class="button is-danger is-fullwidth" href="/admin/brand/delete/{{ brand.id }}">
+            <span>Delete</span>
+          </a>
+        </td>
+        <td>
+          <a href="/admin/product/create" class="button is-primary is-fullwidth"
+            >Create New Product</a
+          >
+        </td>
+        <td>
+          <a href="/admin/brand/products/{{ brand.id }}" class="button is-light is-fullwidth"
+            >View Products</a
+          >
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
