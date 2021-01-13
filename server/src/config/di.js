@@ -106,6 +106,13 @@ function addManagementModuleDefinitions(container) {
   });
 }
 
+function setupAssociations(container) {
+  const productModel = container.get('ProductModel');
+  const categoryModel = container.get('CategoryModel');
+  productModel.setupAssociation(categoryModel);
+  categoryModel.setupAssociation(productModel);
+}
+
 module.exports = function configureDI() {
   const container = new DIContainer();
   addCommonDefinitions(container);
@@ -113,5 +120,6 @@ module.exports = function configureDI() {
   addBrandModuleDefinitions(container);
   addCategoryModuleDefinitions(container);
   addManagementModuleDefinitions(container);
+  setupAssociations(container);
   return container;
 };

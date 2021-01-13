@@ -39,4 +39,8 @@ module.exports = class CategoryModel extends Model {
 
     return CategoryModel;
   }
+
+  static setupAssociation(ProductModel) {
+    CategoryModel.belongsToMany(ProductModel, { through: 'category_products' });
+  }
 };
