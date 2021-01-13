@@ -66,6 +66,9 @@ module.exports = class ProductController {
     }
     try {
       const product = await this.ProductService.getById(id);
+      res.render(`${this.PRODUCT_VIEWS}/form.njk`, {
+        product,
+      });
     } catch (error) {
       console.log(error);
     }
