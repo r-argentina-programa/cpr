@@ -1,4 +1,5 @@
 const { fromModelToEntity } = require('../mapper/mapper');
+const Product = require('../entity/entity');
 
 module.exports = class ProductRepository {
   /**
@@ -9,6 +10,9 @@ module.exports = class ProductRepository {
   }
 
   async save(product) {
+    if (!(product instanceof Product)) {
+      throw new Error('Product not Defined');
+    }
     let productModel;
 
     const buildOptions = { isNewRecord: !product.id };
@@ -30,6 +34,9 @@ module.exports = class ProductRepository {
   }
 
   async delete(product) {
+    if (!product) {
+      throw new Error('Product Not Found');
+    }
     return this.productModel.destroy({ where: { id: product.id } });
   }
 

@@ -7,14 +7,23 @@ module.exports = class ProductService {
   }
 
   async save(product) {
+    if (!product) {
+      throw new Error('Product Not Found');
+    }
     return this.ProductRepository.save(product);
   }
 
   async getById(product) {
+    if (!product) {
+      throw new Error('Product Not Found');
+    }
     return this.ProductRepository.getById(product);
   }
 
   async delete(product) {
+    if (!product) {
+      throw new Error('Product Not Found');
+    }
     return this.ProductRepository.delete(product);
   }
 
