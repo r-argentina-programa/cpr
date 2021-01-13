@@ -1,6 +1,16 @@
 {% extends 'management/view/layout/base.njk' %} {% block body %}
 <h1 class="title is-1">Brand Managment</h1>
 
+<nav class="level-right">
+  <div class="level-item">
+    <a href="/admin/product/create" class="button is-primary is-large">
+      <span class="icon"><i class="fas fa-plus"></i></span>
+      <span>Add new Brand</span>
+    </a>
+  </div>
+</nav>
+
+
 <div class="panel-block">
   <table class="table is-striped is-narrow is-hoverable is-fullwidth">
     <thead>
