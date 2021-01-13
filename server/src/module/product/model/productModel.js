@@ -31,10 +31,10 @@ module.exports = class ProductModel extends Model {
           type: DataTypes.STRING,
           allowNull: false,
         },
-        brand_fk: {
+        brandFk: {
           type: DataTypes.STRING,
         },
-        //category_fk TODO
+        // category_fk TODO
         updatedAt: {
           type: DataTypes.DATE,
           defaultValue: Sequelize.NOW,
