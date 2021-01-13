@@ -33,4 +33,15 @@ module.exports = class CategoryService {
     }
     return this.CategoryRepository.getById(categoryId);
   }
+
+  /**
+   * @param {import('../entity/Category')} category
+   */
+  async delete(category) {
+    if (!(category instanceof Category)) {
+      throw new CategoryNotDefinedError();
+    }
+
+    return this.CategoryRepository.delete(category);
+  }
 };

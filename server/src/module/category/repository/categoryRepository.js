@@ -39,13 +39,23 @@ module.exports = class CategoryRepository {
     if (!Number(categoryId)) {
       throw new CategoryIdNotDefinedError();
     }
-    const categoryInstance = await this.categoryModel.findByPk(categoryId, {
-      include: CategoryModel,
-    });
+    const categoryInstance = await this.categoryModel.findByPk(categoryId);
     if (!categoryInstance) {
       throw new CategoryNotFoundError(`There is no existing category with ID ${categoryId}`);
     }
 
     return fromModelToEntity(categoryInstance);
+  }
+
+  /**
+   * @param {import('../entity/Category')} category
+   * @returns {Promise<Boolean>} Returns true if a car was deleted, otherwise it returns false
+   */
+  async delete(category) {
+    if (!(category instanceof Category)) {
+      throw new CategoryNotDefinedError();
+    }
+
+    return Boolean(await this.categoryModel.destroy({ where: { id: category.id } }));
   }
 };
