@@ -7,7 +7,7 @@ function fromDataToEntity({ id, name, defaultPrice, imageSrc, description, brand
     defaultPrice,
     imageSrc,
     description,
-    brand_fk,
+    brandFk: brand_fk,
   });
 }
 
