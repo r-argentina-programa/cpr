@@ -1,87 +1,72 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Administration Panel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/css/main.css" />
+  </head>
 
-    <head>
-        <meta charset='utf-8'>
-        <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-        <title>Panel de administración</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css">
-        <link rel='stylesheet' type='text/css' media='screen' href='/css/main.css'>
-    </head>
+  <body>
+    <section>
+      <div class="container">
+        <nav class="navbar" role="navigation" aria-label="main navigation">
+          <div class="navbar-brand">
+            <a class="navbar-item" href="/">
+              <h2 class="title is-2">Admin Panel</h2>
+            </a>
 
-    <body>
-        <section>
-            <div class="container">
-                <nav class="navbar" role="navigation" aria-label="main navigation">
-                    <div class="navbar-brand">
-                        <a class="navbar-item" href="/">
-                            <h2 class="title is-2">Panel de administración</h2>
-                        </a>
+            <a
+              role="button"
+              class="navbar-burger burger"
+              aria-label="menu"
+              aria-expanded="false"
+              data-target="navbarBasicExample"
+            >
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+            </a>
+          </div>
 
-                        <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false"
-                        data-target="navbarBasicExample">
-                            <span aria-hidden="true"></span>
-                            <span aria-hidden="true"></span>
-                            <span aria-hidden="true"></span>
-                        </a>
-                    </div>
+          <div class="navbar-menu">
+            <div class="navbar-start">
+              <div class="navbar-item has-dropdown is-hoverable">
+                <a class="navbar-link" href="/product"> Products </a>
 
-                    <div class="navbar-menu">
-                        <div class="navbar-start">
-                            <div class="navbar-item has-dropdown is-hoverable">
-                                <a class="navbar-link" href="/product">
-                                    Productos
-                                </a>
+                <div class="navbar-dropdown">
+                  <a class="navbar-item" href="/product"> Index </a>
+                  <a class="navbar-item" href="/product/create"> Add </a>
+                </div>
+              </div>
 
-                                <div class="navbar-dropdown">
-                                    <a class="navbar-item" href="/product">
-                                        Índice
-                                    </a>
-                                    <a class="navbar-item" href="/product/create">
-                                        Agregar
-                                    </a>
-                                </div>
-                            </div>
+              <div class="navbar-item has-dropdown is-hoverable">
+                <a class="navbar-link" href="/brand"> Brand </a>
 
-                            <div class="navbar-item has-dropdown is-hoverable">
-                                <a class="navbar-link" href="/brand">
-                                    Marcas
-                                </a>
+                <div class="navbar-dropdown">
+                  <a class="navbar-item" href="/brand"> Index </a>
+                  <a class="navbar-item" href="/brand/create"> Add </a>
+                </div>
+              </div>
 
-                                <div class="navbar-dropdown">
-                                    <a class="navbar-item" href="/brand">
-                                        Índice
-                                    </a>
-                                    <a class="navbar-item" href="/brand/create">
-                                        Agregar
-                                    </a>
-                                </div>
-                            </div>
+              <div class="navbar-item has-dropdown is-hoverable">
+                <a class="navbar-link" href="/category"> Categories </a>
 
-                            <div class="navbar-item has-dropdown is-hoverable">
-                                <a class="navbar-link" href="/category">
-                                    Categorias
-                                </a>
-
-                                <div class="navbar-dropdown">
-                                    <a class="navbar-item" href="/category">
-                                        Índice
-                                    </a>
-                                    <a class="navbar-item" href="/category/create">
-                                        Agregar
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </nav>
-
-                {% block body %}{% endblock %}
+                <div class="navbar-dropdown">
+                  <a class="navbar-item" href="/category"> Index </a>
+                  <a class="navbar-item" href="/category/create"> Add </a>
+                </div>
+              </div>
             </div>
-        </section>
-        {% block footerScripts %}{% endblock %}
-    </body>
+          </div>
+        </nav>
 
+        {% block body %}{% endblock %}
+      </div>
+    </section>
+    {% block footerScripts %}{% endblock %}
+  </body>
 </html>
