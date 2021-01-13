@@ -87,6 +87,7 @@ module.exports = class ProductController {
     try {
       const product = await this.ProductService.getById(id);
       await this.ProductService.delete(product);
+      res.redirect('/admin/product');
     } catch (error) {
       console.log(error);
     }
