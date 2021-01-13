@@ -20,11 +20,13 @@ module.exports = class CategoryRepository {
       throw new CategoryNotDefinedError();
     }
 
-    const categoryInstance = this.categoryModel.build(category, {
-      isNewRecord: !category.id,
-    });
-    await categoryInstance.save();
-    return fromModelToEntity(categoryInstance);
+    let categoryModel;
+    console.log(category);
+    const buildOptions = { isNewRecord: !category.id };
+    categoryModel = this.categoryModel.build(category, buildOptions);
+    categoryModel = await categoryModel.save();
+
+    return fromModelToEntity(categoryModel);
   }
 
   async getAll() {

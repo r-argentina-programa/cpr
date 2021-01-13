@@ -31,7 +31,6 @@ module.exports = class CategoryController {
   async index(req, res) {
     const categoriesList = await this.categoryService.getAll();
     res.render(`${this.CATEGORY_VIEWS}/index.njk`, {
-      title: 'Category List',
       categoriesList,
     });
   }
@@ -49,7 +48,6 @@ module.exports = class CategoryController {
 
       const category = await this.categoryService.getById(categoryId);
       res.render(`${this.CATEGORY_VIEWS}/view.njk`, {
-        title: `Viewing ${category.name} `,
         category,
       });
     } catch (e) {
@@ -69,7 +67,6 @@ module.exports = class CategoryController {
 
     const category = await this.categoryService.getById(categoryId);
     res.render(`${this.CATEGORY_VIEWS}/form.njk`, {
-      title: `Editing ${category.name}`,
       category,
     });
   }
@@ -89,11 +86,8 @@ module.exports = class CategoryController {
    * @param  {import("express").Response} res
    */
   async save(req, res) {
-    const { name } = req.body;
     try {
-      const categoryData = fromDataToEntity({
-        name,
-      });
+      const categoryData = fromDataToEntity(req.body);
       await this.categoryService.save(categoryData);
       res.redirect(this.ROUTE_BASE);
     } catch (error) {
