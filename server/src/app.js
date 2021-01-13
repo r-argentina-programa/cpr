@@ -3,7 +3,6 @@ const express = require('express');
 const nunjucks = require('nunjucks');
 
 const app = express();
-const path = require('path');
 
 nunjucks.configure('src/module', {
   autoescape: true,
@@ -20,7 +19,7 @@ const PORT = process.env.PORT || 8000;
 
 // app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/files', express.static(path.resolve(__dirname, '..', '..', 'public', 'uploads')));
+app.use('/public', express.static('public'));
 const container = configureDI();
 initProductModule(app, container);
 initBrandModule(app, container);
@@ -30,6 +29,5 @@ initManagementModule(app, container);
 const mainDb = container.get('Sequelize');
 mainDb.sync();
 app.listen(PORT, () => {
-  // eslint-disable-next-line no-console
   console.log(`Listening on http://localhost:${PORT}`);
 });
