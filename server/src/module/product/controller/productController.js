@@ -7,6 +7,7 @@ module.exports = class ProductController {
   constructor(ProductService, UploadMiddleware) {
     this.ProductService = ProductService;
     this.UploadMiddleware = UploadMiddleware;
+    this.PRODUCT_VIEWS = 'product/view';
   }
 
   /**
@@ -15,8 +16,20 @@ module.exports = class ProductController {
   configureRoutes(app) {
     const ROUTE = '/admin/product';
     app.post(`${ROUTE}/save`, this.UploadMiddleware.single('file'), this.save.bind(this));
-    app.post(`${ROUTE}/delete/:id`, this.delete.bind(this));
+    app.get(`${ROUTE}/delete/:id`, this.delete.bind(this));
     app.get(`${ROUTE}/edit/:id`, this.edit.bind(this));
+    app.get(`${ROUTE}/`, this.index.bind(this));
+  }
+
+  /**
+   * @param  {import("express".Request)} req
+   * @param  {import("express").Response} res
+   */
+  async index(req, res) {
+    const productsList = await this.ProductService.getAll();
+    res.render(`${this.PRODUCT_VIEWS}/index.njk`, {
+      productsList,
+    });
   }
 
   /**
@@ -24,10 +37,10 @@ module.exports = class ProductController {
    * @param  {import("express").Response} res
    */
   async save(req, res) {
-    const { filename } = req.file;
+    const { path } = req.file;
     const { name, defaultPrice, description } = req.body;
 
-    const productImageURL = `${process.env.APP_URL}/files/${filename}`;
+    const productImageURL = path;
     try {
       const productData = fromDataToEntity({
         name,
@@ -36,7 +49,7 @@ module.exports = class ProductController {
         imageSrc: productImageURL,
       });
       await this.ProductService.save(productData);
-      res.redirect('product/view/index.njk');
+      res.redirect(`${this.PRODUCT_VIEWS}/index.njk`);
     } catch (error) {
       console.log(error);
     }
@@ -75,5 +88,3 @@ module.exports = class ProductController {
     }
   }
 };
-
-// getAll
