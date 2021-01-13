@@ -4,7 +4,7 @@
 
 <nav class="level-right">
   <div class="level-item">
-    <a href="/admin/product/create" class="button is-primary is-large">
+    <a href="/admin/brand/create" class="button is-primary is-large">
       <span class="icon"><i class="fas fa-plus"></i></span>
       <span>Add new Brand</span>
     </a>
@@ -33,11 +33,13 @@
               </figure>
             </td>
             <td>
-              <a class="button is-danger is-outlined" href="/admin/brand/delete/{{brand.id}}">
-                <span>Delete</span>
-              </a>
-              <a class="button is-link is-outlined" href="/admin/brand/edit/{{brand.id}}">
+              <a class="button is-link is-outlined is-fullwidth" href="/admin/brand/edit/{{brand.id}}">
                 <span>Edit</span>
+              </a>
+            </td>
+            <td>
+              <a class="button is-danger is-outlined is-fullwidth" href="/admin/brand/delete/{{brand.id}}">
+                <span>Delete</span>
               </a>
             </td>
           </tr>

@@ -84,7 +84,7 @@ function addProductModuleDefinitions(container) {
 
 function addBrandModuleDefinitions(container) {
   container.addDefinitions({
-    BrandController: object(BrandController).construct(get('BrandService')),
+    BrandController: object(BrandController).construct(get('BrandService'), get('Multer')),
     BrandService: object(BrandService).construct(get('BrandRepository')),
     BrandRepository: object(BrandRepository).construct(get('BrandModel')),
     BrandModel: factory(configureBrandModel),
@@ -102,12 +102,7 @@ function addCategoryModuleDefinitions(container) {
 
 function addManagementModuleDefinitions(container) {
   container.addDefinitions({
-    ManagementController: object(ManagementController).construct(
-      get('BrandService'),
-      get('ProductService'),
-      get('CategoryService'),
-      get('Multer')
-    ),
+    ManagementController: object(ManagementController).construct(get('BrandService')),
   });
 }
 
