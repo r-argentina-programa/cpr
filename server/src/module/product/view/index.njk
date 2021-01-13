@@ -8,18 +8,24 @@
         <th>Id:</th>
         <th>Name:</th>
         <th>Default Price</th>
-        <th>Image</th>
+        <th>Logo</th>
         <th>Description</th>
         <th>Brand</th>
       </tr>
     </thead>
 
     <tbody>
+      {% for product in productsList %}
       <tr>
-        <td>{{ brand.id }}</td>
-        <td>{{ brand.name }}</td>
-        <td><a href="/admin/product/delete" class="delete is-large"></a></td>
+        <td>{{ product.id }}</td>
+        <td>{{ product.name }}</td>
+        <td>{{ product.defaultPrice }}</td>
+        <td><img src="{{ product.imageSrc }}" alt="Product Logo" /></td>
+        <td>{{ product.description }}</td>
+        <td>{{ product.brand }}</td>
+        <td><a href="/admin/product/delete/{{ product.id }}" class="delete is-large"></a></td>
       </tr>
+      {% endfor %}
     </tbody>
   </table>
 </div>
