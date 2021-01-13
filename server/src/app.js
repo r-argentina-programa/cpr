@@ -18,7 +18,8 @@ const { initManagementModule } = require('./module/management/module');
 
 const PORT = process.env.PORT || 8000;
 
-app.use(express.json());
+// app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use('/files', express.static(path.resolve(__dirname, '..', '..', 'public', 'uploads')));
 const container = configureDI();
 initProductModule(app, container);
@@ -29,5 +30,6 @@ initManagementModule(app, container);
 const mainDb = container.get('Sequelize');
 mainDb.sync();
 app.listen(PORT, () => {
+  // eslint-disable-next-line no-console
   console.log(`Listening on http://localhost:${PORT}`);
 });
