@@ -18,6 +18,13 @@ const {
   BrandService,
 } = require('../module/brand/module');
 
+const {
+  CategoryController,
+  CategoryModel,
+  CategoryRepository,
+  CategoryService,
+} = require('../module/category/module');
+
 const { ManagementController } = require('../module/management/module');
 
 function configureSequelizeDatabase() {
@@ -54,6 +61,10 @@ function configureBrandModel(container) {
   return BrandModel.setup(container.get('Sequelize'));
 }
 
+function configureCategoryModel(container) {
+  return CategoryModel.setup(container.get('Sequelize'));
+}
+
 function addProductModuleDefinitions(container) {
   container.addDefinitions({
     ProductController: object(ProductController).construct(get('ProductService'), get('Multer')),
@@ -72,11 +83,21 @@ function addBrandModuleDefinitions(container) {
   });
 }
 
+function addCategoryModuleDefinitions(container) {
+  container.addDefinitions({
+    CategoryController: object(CategoryController).construct(get('CategoryService')),
+    CategoryService: object(CategoryService).construct(get('CategoryRepository')),
+    CategoryRepository: object(CategoryRepository).construct(get('CategoryModel')),
+    CategoryModel: factory(configureCategoryModel),
+  });
+}
+
 function addManagementModuleDefinitions(container) {
   container.addDefinitions({
     ManagementController: object(ManagementController).construct(
       get('BrandService'),
-      get('ProductService')
+      get('ProductService'),
+      get('CategoryService')
     ),
   });
 }
@@ -86,6 +107,7 @@ module.exports = function configureDI() {
   addCommonDefinitions(container);
   addProductModuleDefinitions(container);
   addBrandModuleDefinitions(container);
+  addCategoryModuleDefinitions(container);
   addManagementModuleDefinitions(container);
   return container;
 };
