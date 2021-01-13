@@ -89,12 +89,14 @@ module.exports = class CategoryController {
    * @param  {import("express").Response} res
    */
   async save(req, res) {
+    console.log('AAAAAAAA', req.body);
     const { name } = req.body;
     try {
       const categoryData = fromDataToEntity({
         name,
       });
-      const newCategory = await this.categoryService.save(categoryData);
+      await this.categoryService.save(categoryData);
+      res.redirect(this.ROUTE_BASE);
     } catch (error) {
       console.log(error);
     }
