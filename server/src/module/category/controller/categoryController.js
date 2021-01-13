@@ -8,7 +8,7 @@ module.exports = class CategoryController {
   constructor(categoryService) {
     this.categoryService = categoryService;
     this.CATEGORY_VIEWS = 'category/views';
-    this.ROUTE_BASE = '/category';
+    this.ROUTE_BASE = '/admin/category';
   }
 
   /**
@@ -89,7 +89,6 @@ module.exports = class CategoryController {
    * @param  {import("express").Response} res
    */
   async save(req, res) {
-    console.log('AAAAAAAA', req.body);
     const { name } = req.body;
     try {
       const categoryData = fromDataToEntity({
