@@ -23,7 +23,8 @@
         <td><img src="{{ product.imageSrc }}" alt="Product Logo" /></td>
         <td>{{ product.description }}</td>
         <td>{{ product.brand }}</td>
-        <td><a href="/admin/product/delete/{{ product.id }}" class="delete is-large"></a></td>
+    <td><a href="/admin/product/edit/{{product.id}}" class="button is-info is-fullwidth">Edit</a></td>
+    <td><a href="/admin/product/delete/{{product.id}}" class="button is-danger is-fullwidth">Delete</a></td>
       </tr>
       {% endfor %}
     </tbody>

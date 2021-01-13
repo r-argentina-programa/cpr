@@ -16,7 +16,11 @@
       <tr>
         <td>{{ brand.id }}</td>
         <td>{{ brand.name }}</td>
-        <td>{{ brand.logo }}</td>
+        <td>
+          <figure class="image is-128x128">
+            <img src="/{{brand.logo}}" width="128" height="128"/>
+          </figure>
+        </td>
         <td><a href="/admin/brand/delete" class="delete is-large"></a></td>
       </tr>
     {% endfor %}
