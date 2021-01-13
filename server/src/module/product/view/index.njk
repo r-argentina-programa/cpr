@@ -1,13 +1,16 @@
 {% extends 'management/view/layout/base.njk' %} {% block body %}
-<h1 class="title is-1">Brand Managment</h1>
+<h1 class="title is-1">Product Managment</h1>
 
 <div class="panel-block">
   <table class="table is-striped is-narrow is-hoverable is-fullwidth">
     <thead>
       <tr>
         <th>Id:</th>
-        <th>Brand:</th>
-        <th>Logo</th>
+        <th>Name:</th>
+        <th>Default Price</th>
+        <th>Image</th>
+        <th>Description</th>
+        <th>Brand</th>
       </tr>
     </thead>
 
@@ -15,8 +18,7 @@
       <tr>
         <td>{{ brand.id }}</td>
         <td>{{ brand.name }}</td>
-        <td>{{ brand.logo }}</td>
-        <td><a href="/admin/brand/delete" class="delete is-large"></a></td>
+        <td><a href="/admin/product/delete" class="delete is-large"></a></td>
       </tr>
     </tbody>
   </table>
