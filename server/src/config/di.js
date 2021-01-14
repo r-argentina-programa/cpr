@@ -37,18 +37,10 @@ function configureSequelizeDatabase() {
   });
 }
 
-function configureSessionSequelizeDatabase() {
-  const sequelize = new Sequelize({
-    dialect: 'sqlite',
-    storage: process.env.SESSION_DB_PATH,
-  });
-  return sequelize;
-}
-
 function configureSession(container) {
   const ONE_WEEK_IN_SECONDS = 604800000;
 
-  const sequelize = container.get('SessionSequelize');
+  const sequelize = container.get('Sequelize');
   const sessionOptions = {
     store: new SequelizeStore({ db: sequelize }),
     secret: process.env.SESSION_SECRET,
@@ -78,7 +70,6 @@ function addCommonDefinitions(container) {
   container.addDefinitions({
     Sequelize: factory(configureSequelizeDatabase),
     Multer: factory(configureMulter),
-    SessionSequelize: factory(configureSessionSequelizeDatabase),
     Session: factory(configureSession),
   });
 }
