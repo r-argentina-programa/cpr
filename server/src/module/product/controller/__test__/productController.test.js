@@ -4,7 +4,7 @@ const createTestProduct = require('./products.fixture');
 const createTestBrand = require('../../../brand/controller/__test__/brands.fixture');
 
 const serviceMock = {
-  save: jest.fn(),
+  save: jest.fn((product) => createTestProduct(product.id)),
   getAll: jest.fn(() => Array.from({ length: 3 }, (id) => createTestProduct(id + 1))),
   getById: jest.fn((id) => createTestProduct(id)),
   delete: jest.fn(),
@@ -20,6 +20,10 @@ const uploadMock = {
 
 const reqMock = {
   params: { id: 1 },
+  session: {
+    errors: [],
+    messages: [],
+  },
 };
 const resMock = {
   render: jest.fn(),
@@ -33,6 +37,8 @@ describe('ProductController methods', () => {
     Object.values(serviceMock).forEach((mockFn) => mockFn.mockClear());
     Object.values(brandServiceMock).forEach((mockFn) => mockFn.mockClear());
     Object.values(resMock).forEach((mockFn) => mockFn.mockClear());
+    reqMock.session.errors = [];
+    reqMock.session.messages = [];
   });
 
   test('configures routes', () => {
@@ -51,10 +57,13 @@ describe('ProductController methods', () => {
     const productsList = serviceMock.getAll();
     await mockController.index(reqMock, resMock);
 
+    const { errors, messages } = reqMock.session;
     expect(serviceMock.getAll).toHaveBeenCalledTimes(2);
     expect(resMock.render).toHaveBeenCalledTimes(1);
     expect(resMock.render).toHaveBeenCalledWith('product/view/index.njk', {
       productsList,
+      errors,
+      messages,
     });
   });
 
@@ -71,9 +80,10 @@ describe('ProductController methods', () => {
       product,
       brands,
     });
+    expect(reqMock.session.errors.length).toBe(0);
   });
 
-  test('edit throws an error on undefined carId as argument', async () => {
+  test('edit throws an error if id is not passed as parameter', async () => {
     const reqMockWithoutProductId = {
       params: {},
     };
@@ -81,6 +91,15 @@ describe('ProductController methods', () => {
     await expect(mockController.edit(reqMockWithoutProductId, resMock)).rejects.toThrowError(
       ProductIdNotDefinedError
     );
+  });
+
+  test('edit loads errors and redirect if service throws error', async () => {
+    serviceMock.getById.mockImplementationOnce(() => {
+      throw new Error();
+    });
+    await mockController.edit(reqMock, resMock);
+    expect(reqMock.session.errors.length).not.toBe(0);
+    expect(resMock.redirect).toHaveBeenCalledTimes(1);
   });
 
   test('create renders a form to add a new product', async () => {
@@ -104,18 +123,35 @@ describe('ProductController methods', () => {
         brand_fk: '3',
       },
       file: { path: '/public/uploads/test.jpg' },
+      session: {
+        errors: [],
+        messages: [],
+      },
     };
 
     await mockController.save(reqSaveMock, resMock);
     expect(serviceMock.save).toHaveBeenCalledTimes(1);
     expect(serviceMock.save).toHaveBeenCalledWith(createTestProduct(1));
     expect(resMock.redirect).toHaveBeenCalledTimes(1);
+    expect(reqSaveMock.session.errors.length).toBe(0);
   });
 
   test('deletes an existing Product', async () => {
     await mockController.delete(reqMock, resMock);
 
     expect(serviceMock.delete).toHaveBeenCalledTimes(1);
+    expect(reqMock.session.errors.length).toBe(0);
+    expect(reqMock.session.messages.length).not.toBe(0);
     expect(resMock.redirect).toHaveBeenCalledTimes(1);
+  });
+
+  test('deletes throws an error if id is not passed as parameter', async () => {
+    const reqMockWithoutProductId = {
+      params: {},
+    };
+
+    await expect(mockController.delete(reqMockWithoutProductId, resMock)).rejects.toThrowError(
+      ProductIdNotDefinedError
+    );
   });
 });
