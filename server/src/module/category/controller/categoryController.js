@@ -7,7 +7,7 @@ module.exports = class CategoryController {
    */
   constructor(categoryService) {
     this.categoryService = categoryService;
-    this.CATEGORY_VIEWS = 'category/views';
+    this.CATEGORY_VIEWS = 'category/view';
     this.ROUTE_BASE = '/admin/category';
   }
 
@@ -17,11 +17,11 @@ module.exports = class CategoryController {
   configureRoutes(app) {
     const ROUTE = this.ROUTE_BASE;
     app.get(`${ROUTE}`, this.index.bind(this));
-    app.get(`${ROUTE}/view/:categoryId`, this.view.bind(this));
-    app.get(`${ROUTE}/edit/:categoryId`, this.edit.bind(this));
-    app.get(`${ROUTE}/create`, this.add.bind(this));
+    app.get(`${ROUTE}/view/:id`, this.view.bind(this));
+    app.get(`${ROUTE}/edit/:id`, this.edit.bind(this));
+    app.get(`${ROUTE}/create`, this.create.bind(this));
     app.post(`${ROUTE}/save`, this.save.bind(this));
-    app.get(`${ROUTE}/delete/:categoryId`, this.delete.bind(this));
+    app.get(`${ROUTE}/delete/:id`, this.delete.bind(this));
   }
 
   /**
@@ -46,12 +46,12 @@ module.exports = class CategoryController {
    */
   async view(req, res, next) {
     try {
-      const { categoryId } = req.params;
-      if (!Number(categoryId)) {
+      const { id } = req.params;
+      if (!Number(id)) {
         throw new CategoryIdNotDefinedError();
       }
 
-      const category = await this.categoryService.getById(categoryId);
+      const category = await this.categoryService.getById(id);
       res.render(`${this.CATEGORY_VIEWS}/view.njk`, {
         category,
       });
@@ -65,13 +65,13 @@ module.exports = class CategoryController {
    * @param {import('express').Response} res
    */
   async edit(req, res) {
-    const { categoryId } = req.params;
-    if (!Number(categoryId)) {
+    const { id } = req.params;
+    if (!Number(id)) {
       throw new CategoryIdNotDefinedError();
     }
 
     try {
-      const category = await this.categoryService.getById(categoryId);
+      const category = await this.categoryService.getById(id);
       res.render(`${this.CATEGORY_VIEWS}/form.njk`, {
         category,
       });
@@ -85,10 +85,8 @@ module.exports = class CategoryController {
    * @param {import('express').Request} req
    * @param {import('express').Response} res
    */
-  add(req, res) {
-    res.render(`${this.CATEGORY_VIEWS}/form.njk`, {
-      title: 'Add New Category',
-    });
+  create(req, res) {
+    res.render(`${this.CATEGORY_VIEWS}/form.njk`);
   }
 
   /**
@@ -120,11 +118,14 @@ module.exports = class CategoryController {
    * @param {import('express').Response} res
    */
   async delete(req, res) {
+    const { id } = req.params;
+    if (!Number(id)) {
+      throw new CategoryIdNotDefinedError();
+    }
     try {
-      const { categoryId } = req.params;
-      const category = await this.categoryService.getById(categoryId);
+      const category = await this.categoryService.getById(id);
       await this.categoryService.delete(category);
-      req.session.messages = [`The brand with ID: ${categoryId} was removed (${category.name})`];
+      req.session.messages = [`The brand with ID: ${id} was removed (${category.name})`];
     } catch (e) {
       req.session.errors = [e.message, e.stack];
     }
