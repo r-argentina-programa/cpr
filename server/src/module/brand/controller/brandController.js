@@ -111,8 +111,9 @@ module.exports = class BrandController {
         products,
         brand,
       });
-    } catch (error) {
-      console.log(error);
+    } catch (e) {
+      req.session.errors = [e.message, e.stack];
+      res.redirect(this.ROUTE_BASE);
     }
   }
 };
