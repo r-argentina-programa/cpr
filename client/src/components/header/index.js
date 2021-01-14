@@ -8,11 +8,10 @@ export default function Header() {
   return (
     <header>
       <Navbar bg="dark" variant="dark" sticky="top">
-        <Navbar.Brand href="#home">Market</Navbar.Brand>
+        <Navbar.Brand href="/">Market</Navbar.Brand>
         <Nav className="mr-auto">
-          <Nav.Link href="#home">Home</Nav.Link>
-          <Nav.Link href="#Brands">Brands</Nav.Link>
-          <Nav.Link href="#Categories">Categories</Nav.Link>
+          <Nav.Link href="/brands">Brands</Nav.Link>
+          <Nav.Link href="/categories">Categories</Nav.Link>
         </Nav>
 
         <Form inline>
