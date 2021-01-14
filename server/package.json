@@ -6,8 +6,7 @@
   "scripts": {
     "dev": "nodemon src/app.js",
     "test:watch": "jest --watch",
-    "test": "jest",
-    "schema:sync": "node src/cli/init.db.js"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
