@@ -26,7 +26,10 @@ module.exports = class BrandController {
    */
   async brand(req, res) {
     const brands = await this.BrandService.getAll();
-    res.render(`${this.BRAND_VIEW_DIR}/index.njk`, { brands });
+    const { errors, messages } = req.session;
+    res.render(`${this.BRAND_VIEW_DIR}/index.njk`, { brands, messages, errors });
+    req.session.errors = [];
+    req.session.messages = [];
   }
 
   /**
@@ -50,8 +53,8 @@ module.exports = class BrandController {
     try {
       const brand = await this.BrandService.getById(id);
       res.render(`${this.BRAND_VIEW_DIR}/form.njk`, { brand });
-    } catch (error) {
-      console.log(error);
+    } catch (e) {
+      req.session.errors = [e.message, e.stack];
     }
   }
 
@@ -66,11 +69,17 @@ module.exports = class BrandController {
         const { path } = req.file;
         brand.logo = path;
       }
-      await this.BrandService.save(brand);
-      res.redirect('/admin/brand');
-    } catch (error) {
-      console.log(error);
+      const savedBrand = await this.BrandService.save(brand);
+
+      if (brand.id) {
+        req.session.messages = [`La marca con id ${savedBrand.id} se actualizó exitosamente`];
+      } else {
+        req.session.messages = [`Se creó la marca con id ${savedBrand.id} (${savedBrand.name})`];
+      }
+    } catch (e) {
+      req.session.errors = [e.message, e.stack];
     }
+    res.redirect('/admin/brand');
   }
 
   /**
@@ -82,10 +91,11 @@ module.exports = class BrandController {
       const { id } = req.params;
       const brand = await this.BrandService.getById(id);
       await this.BrandService.delete(brand);
-      res.redirect('/admin/brand');
-    } catch (error) {
-      console.log(error);
+      req.session.messages = [`Se eliminó la marca con ID: ${id} (${brand.name})`];
+    } catch (e) {
+      req.session.errors = [e.message, e.stack];
     }
+    res.redirect('/admin/brand');
   }
 
   async viewProducts(req, res) {
