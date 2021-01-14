@@ -5,6 +5,8 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
+const session = require('express-session');
+const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const {
   ProductController,
   ProductModel,
@@ -35,6 +37,28 @@ function configureSequelizeDatabase() {
   });
 }
 
+function configureSessionSequelizeDatabase() {
+  const sequelize = new Sequelize({
+    dialect: 'sqlite',
+    storage: process.env.SESSION_DB_PATH,
+  });
+  return sequelize;
+}
+
+function configureSession(container) {
+  const ONE_WEEK_IN_SECONDS = 604800000;
+
+  const sequelize = container.get('SessionSequelize');
+  const sessionOptions = {
+    store: new SequelizeStore({ db: sequelize }),
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: ONE_WEEK_IN_SECONDS },
+  };
+  return session(sessionOptions);
+}
+
 function configureMulter() {
   const storage = multer.diskStorage({
     destination(req, file, cb) {
@@ -54,6 +78,8 @@ function addCommonDefinitions(container) {
   container.addDefinitions({
     Sequelize: factory(configureSequelizeDatabase),
     Multer: factory(configureMulter),
+    SessionSequelize: factory(configureSessionSequelizeDatabase),
+    Session: factory(configureSession),
   });
 }
 
