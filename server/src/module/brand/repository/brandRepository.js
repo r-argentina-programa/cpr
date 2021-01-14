@@ -1,4 +1,5 @@
 const { fromModelToEntity } = require('../mapper/brandMapper');
+const { fromModelToEntity: fromModelToProductEntity } = require('../../product/mapper/mapper');
 const BrandNotDefinedError = require('../error/BrandNotDefinedError');
 const BrandIdNotDefinedError = require('../error/BrandIdNotDefinedError');
 const BrandNotFoundError = require('../error/BrandNotFoundError');
@@ -59,5 +60,10 @@ module.exports = class BrandRepository {
     }
 
     return fromModelToEntity(brandInstance);
+  }
+
+  async viewProducts(brandId) {
+    const products = await ProductModel.findAll({ where: { brand_fk: brandId } });
+    return products.map((product) => fromModelToProductEntity(product));
   }
 };

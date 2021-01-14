@@ -45,7 +45,10 @@ module.exports = class BrandService {
     return this.BrandRepository.getById(brandId);
   }
 
-  async viewProducts(brand) {
-    return this.BrandRepository.viewProducts(brand);
+  async viewProducts(brandId) {
+    if (!Number(brandId)) {
+      throw new BrandIdNotDefinedError();
+    }
+    return this.BrandRepository.viewProducts(brandId);
   }
 };
