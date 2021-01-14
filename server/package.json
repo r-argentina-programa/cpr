@@ -4,7 +4,9 @@
   "description": "Cart Price Rules",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/app.js"
+    "dev": "nodemon src/app.js",
+    "test:watch": "jest --watch",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -31,8 +33,11 @@
     "prettier": "^2.2.1"
   },
   "dependencies": {
+    "connect-session-sequelize": "^7.1.0",
+    "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "express-session": "^1.17.1",
     "express-validator": "^6.9.2",
     "multer": "^1.4.2",
     "nunjucks": "^3.2.2",

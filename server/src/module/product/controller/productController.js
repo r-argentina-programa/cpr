@@ -1,3 +1,4 @@
+const ProductIdNotDefinedError = require('../error/ProductIdNotDefinedError');
 const { fromDataToEntity } = require('../mapper/mapper');
 
 module.exports = class ProductController {
@@ -57,7 +58,7 @@ module.exports = class ProductController {
   async edit(req, res) {
     const { id } = req.params;
     if (!Number(id)) {
-      throw new Error('Product ID not defined');
+      throw new ProductIdNotDefinedError();
     }
     try {
       const product = await this.ProductService.getById(id);
@@ -78,7 +79,7 @@ module.exports = class ProductController {
   async delete(req, res) {
     const { id } = req.params;
     if (!Number(id)) {
-      throw new Error('Product ID not defined');
+      throw new ProductIdNotDefinedError();
     }
     try {
       const product = await this.ProductService.getById(id);

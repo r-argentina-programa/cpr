@@ -5,6 +5,8 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
+const session = require('express-session');
+const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const {
   ProductController,
   ProductModel,
@@ -35,6 +37,20 @@ function configureSequelizeDatabase() {
   });
 }
 
+function configureSession(container) {
+  const ONE_WEEK_IN_SECONDS = 604800000;
+
+  const sequelize = container.get('Sequelize');
+  const sessionOptions = {
+    store: new SequelizeStore({ db: sequelize }),
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: ONE_WEEK_IN_SECONDS },
+  };
+  return session(sessionOptions);
+}
+
 function configureMulter() {
   const storage = multer.diskStorage({
     destination(req, file, cb) {
@@ -54,6 +70,7 @@ function addCommonDefinitions(container) {
   container.addDefinitions({
     Sequelize: factory(configureSequelizeDatabase),
     Multer: factory(configureMulter),
+    Session: factory(configureSession),
   });
 }
 
@@ -86,7 +103,7 @@ function addBrandModuleDefinitions(container) {
   container.addDefinitions({
     BrandController: object(BrandController).construct(get('BrandService'), get('Multer')),
     BrandService: object(BrandService).construct(get('BrandRepository')),
-    BrandRepository: object(BrandRepository).construct(get('BrandModel')),
+    BrandRepository: object(BrandRepository).construct(get('BrandModel'), get('ProductModel')),
     BrandModel: factory(configureBrandModel),
   });
 }

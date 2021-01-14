@@ -32,7 +32,7 @@ module.exports = class ProductModel extends Model {
           allowNull: false,
         },
         brandFk: {
-          type: DataTypes.STRING,
+          type: DataTypes.INTEGER,
           references: {
             model: 'brands',
             key: 'id',
