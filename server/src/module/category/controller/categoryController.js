@@ -30,9 +30,14 @@ module.exports = class CategoryController {
    */
   async index(req, res) {
     const categoriesList = await this.categoryService.getAll();
+    const { errors, messages } = req.session;
     res.render(`${this.CATEGORY_VIEWS}/index.njk`, {
       categoriesList,
+      messages,
+      errors,
     });
+    req.session.errors = [];
+    req.session.messages = [];
   }
 
   /**
@@ -65,10 +70,15 @@ module.exports = class CategoryController {
       throw new CategoryIdNotDefinedError();
     }
 
-    const category = await this.categoryService.getById(categoryId);
-    res.render(`${this.CATEGORY_VIEWS}/form.njk`, {
-      category,
-    });
+    try {
+      const category = await this.categoryService.getById(categoryId);
+      res.render(`${this.CATEGORY_VIEWS}/form.njk`, {
+        category,
+      });
+    } catch (e) {
+      req.session.errors = [e.message, e.stack];
+      res.redirect(this.ROUTE_BASE);
+    }
   }
 
   /**
@@ -88,11 +98,21 @@ module.exports = class CategoryController {
   async save(req, res) {
     try {
       const categoryData = fromDataToEntity(req.body);
-      await this.categoryService.save(categoryData);
-      res.redirect(this.ROUTE_BASE);
-    } catch (error) {
-      console.log(error);
+      const savedCategory = await this.categoryService.save(categoryData);
+
+      if (categoryData.id) {
+        req.session.messages = [
+          `The brand with id ${savedCategory.id} was updated correctly (${savedCategory.name})`,
+        ];
+      } else {
+        req.session.messages = [
+          `The brand with id ${savedCategory.id} was created correctly (${savedCategory.name})`,
+        ];
+      }
+    } catch (e) {
+      req.session.errors = [e.message, e.stack];
     }
+    res.redirect(this.ROUTE_BASE);
   }
 
   /**
@@ -100,9 +120,14 @@ module.exports = class CategoryController {
    * @param {import('express').Response} res
    */
   async delete(req, res) {
-    const { categoryId } = req.params;
-    const category = await this.categoryService.getById(categoryId);
-    this.categoryService.delete(category);
+    try {
+      const { categoryId } = req.params;
+      const category = await this.categoryService.getById(categoryId);
+      await this.categoryService.delete(category);
+      req.session.messages = [`The brand with ID: ${categoryId} was removed (${category.name})`];
+    } catch (e) {
+      req.session.errors = [e.message, e.stack];
+    }
     res.redirect(this.ROUTE_BASE);
   }
 };

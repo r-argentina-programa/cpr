@@ -119,7 +119,11 @@ function addCategoryModuleDefinitions(container) {
 
 function addManagementModuleDefinitions(container) {
   container.addDefinitions({
-    ManagementController: object(ManagementController).construct(get('BrandService')),
+    ManagementController: object(ManagementController).construct(
+      get('BrandService'),
+      get('CategoryService'),
+      get('ProductService')
+    ),
   });
 }
 
