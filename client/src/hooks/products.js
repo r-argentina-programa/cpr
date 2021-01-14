@@ -8,7 +8,7 @@ export function ProductsProvider({ children }) {
 
   async function getAllProducts() {
     try {
-      const res = await api.get("/brands/all");
+      const res = await api.get("api/products/all");
       if (res.status === 200) {
         setProducts(res.data);
       }
