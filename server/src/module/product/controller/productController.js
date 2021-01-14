@@ -6,6 +6,7 @@ module.exports = class ProductController {
    * @param  {import("../service/productService")} ProductService
    */
   constructor(ProductService, UploadMiddleware, BrandService) {
+    this.ROUTE_BASE = '/admin/product';
     this.ProductService = ProductService;
     this.UploadMiddleware = UploadMiddleware;
     this.BrandService = BrandService;
@@ -16,7 +17,7 @@ module.exports = class ProductController {
    * @param  {import("express".Application)} app
    */
   configureRoutes(app) {
-    const ROUTE = '/admin/product';
+    const ROUTE = this.ROUTE_BASE;
     app.post(`${ROUTE}/save`, this.UploadMiddleware.single('file'), this.save.bind(this));
     app.get(`${ROUTE}/delete/:id`, this.delete.bind(this));
     app.get(`${ROUTE}/edit/:id`, this.edit.bind(this));
@@ -30,9 +31,14 @@ module.exports = class ProductController {
    */
   async index(req, res) {
     const productsList = await this.ProductService.getAll();
+    const { errors, messages } = req.session;
     res.render(`${this.PRODUCT_VIEWS}/index.njk`, {
       productsList,
+      messages,
+      errors,
     });
+    req.session.errors = [];
+    req.session.messages = [];
   }
 
   /**
@@ -44,11 +50,21 @@ module.exports = class ProductController {
     try {
       const product = fromDataToEntity(req.body);
       product.imageSrc = path;
-      await this.ProductService.save(product);
-      res.redirect('/admin/product');
-    } catch (error) {
-      console.log(error);
+      const savedProduct = await this.ProductService.save(product);
+
+      if (product.id) {
+        req.session.messages = [
+          `The product with id ${savedProduct.id} was updated correctly (${savedProduct.name})`,
+        ];
+      } else {
+        req.session.messages = [
+          `The product with id ${savedProduct.id} was created correctly (${savedProduct.name})`,
+        ];
+      }
+    } catch (e) {
+      req.session.errors = [e.message, e.stack];
     }
+    res.redirect(this.ROUTE_BASE);
   }
 
   /**
@@ -67,8 +83,9 @@ module.exports = class ProductController {
         product,
         brands,
       });
-    } catch (error) {
-      console.log(error);
+    } catch (e) {
+      req.session.errors = [e.message, e.stack];
+      res.redirect(this.ROUTE_BASE);
     }
   }
 
@@ -84,10 +101,11 @@ module.exports = class ProductController {
     try {
       const product = await this.ProductService.getById(id);
       await this.ProductService.delete(product);
-      res.redirect('/admin/product');
-    } catch (error) {
-      console.log(error);
+      req.session.messages = [`The product with ID: ${id} was removed (${product.name})`];
+    } catch (e) {
+      req.session.errors = [e.message, e.stack];
     }
+    res.redirect(this.ROUTE_BASE);
   }
 
   async create(req, res) {
