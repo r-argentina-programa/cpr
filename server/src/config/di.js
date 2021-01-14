@@ -86,7 +86,7 @@ function addBrandModuleDefinitions(container) {
   container.addDefinitions({
     BrandController: object(BrandController).construct(get('BrandService'), get('Multer')),
     BrandService: object(BrandService).construct(get('BrandRepository')),
-    BrandRepository: object(BrandRepository).construct(get('BrandModel')),
+    BrandRepository: object(BrandRepository).construct(get('BrandModel'), get('ProductModel')),
     BrandModel: factory(configureBrandModel),
   });
 }
