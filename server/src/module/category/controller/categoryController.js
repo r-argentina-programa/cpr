@@ -100,11 +100,11 @@ module.exports = class CategoryController {
 
       if (categoryData.id) {
         req.session.messages = [
-          `The brand with id ${savedCategory.id} was updated correctly (${savedCategory.name})`,
+          `The Category with id ${savedCategory.id} was updated correctly (${savedCategory.name})`,
         ];
       } else {
         req.session.messages = [
-          `The brand with id ${savedCategory.id} was created correctly (${savedCategory.name})`,
+          `The Category with id ${savedCategory.id} was created correctly (${savedCategory.name})`,
         ];
       }
     } catch (e) {
@@ -125,7 +125,7 @@ module.exports = class CategoryController {
     try {
       const category = await this.categoryService.getById(id);
       await this.categoryService.delete(category);
-      req.session.messages = [`The brand with ID: ${id} was removed (${category.name})`];
+      req.session.messages = [`The Category with ID: ${id} was removed (${category.name})`];
     } catch (e) {
       req.session.errors = [e.message, e.stack];
     }
