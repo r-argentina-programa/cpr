@@ -1,5 +1,10 @@
 import { ProductsProvider } from "./products";
+import { BrandsProvider } from "./brands";
 
 export default function Providers({ children }) {
-  return <ProductsProvider>{children}</ProductsProvider>;
+  return (
+    <BrandsProvider>
+      <ProductsProvider>{children}</ProductsProvider>
+    </BrandsProvider>
+  );
 }
