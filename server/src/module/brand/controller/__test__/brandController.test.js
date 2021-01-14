@@ -7,6 +7,7 @@ const serviceMock = {
   getAll: jest.fn(() => Array.from({ length: 3 }, (id) => createTestBrand(id + 1))),
   getById: jest.fn((id) => createTestBrand(id)),
   delete: jest.fn(),
+  viewProducts: jest.fn(),
 };
 
 const uploadMock = {
@@ -118,5 +119,19 @@ describe('BrandController methods', () => {
     expect(resMock.redirect).toHaveBeenCalledTimes(1);
     expect(reqMock.session.messages.length).toBe(1);
     expect(reqMock.session.errors.length).toBe(0);
+  });
+
+  test('viewProducts renders view.njk with a list of products', async () => {
+    const brand = serviceMock.getById(1);
+    const products = serviceMock.viewProducts(1);
+    await mockController.viewProducts(reqMock, resMock);
+
+    expect(serviceMock.getById).toHaveBeenCalledTimes(2);
+    expect(serviceMock.viewProducts).toHaveBeenCalledTimes(2);
+    expect(resMock.render).toHaveBeenCalledTimes(1);
+    expect(resMock.render).toHaveBeenCalledWith('brand/view/view.njk', {
+      brand,
+      products,
+    });
   });
 });
