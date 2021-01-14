@@ -1,0 +1,54 @@
+{% extends 'management/view/layout/base.njk' %} {% block body %}
+<h1 class="title is-1">Category Managment</h1>
+
+{% for error in errors %}
+<div class="notification is-danger">
+  {{error}}
+</div>
+{% endfor %}
+
+{% for message in messages %}
+<div class="notification is-success">
+  {{message}}
+</div>
+{% endfor %}
+
+<nav class="level-right">
+  <div class="level-item">
+    <a href="/admin/category/create" class="button is-primary is-large">
+      <span class="icon"><i class="fas fa-plus"></i></span>
+      <span>Add new Category</span>
+    </a>
+  </div>
+</nav>
+
+<div class="panel-block">
+  <table class="table is-striped is-narrow is-hoverable is-fullwidth">
+    <thead>
+      <tr>
+        <th>Id:</th>
+        <th>Name:</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for category in categoriesList %}
+      <tr>
+        <td>{{ category.id }}</td>
+        <td>{{ category.name }}</td>
+        <td>
+          <a href="/admin/category/edit/{{ category.id }}" class="button is-info is-fullwidth"
+            >Edit</a
+          >
+        </td>
+        <td>
+          <a href="/admin/category/delete/{{ category.id }}" class="button is-danger is-fullwidth"
+            >Delete</a
+          >
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

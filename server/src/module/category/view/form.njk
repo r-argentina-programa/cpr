@@ -1,0 +1,42 @@
+{% extends 'management/view/layout/base.njk' %} {% block body %} {% set category = data.category %}
+
+<div class="level-left">
+  <div class="level-item">
+    <h1 class="title is-1">
+      {{"Editing Category with ID: " + category.id if category.id else "New Category"}}
+    </h1>
+  </div>
+  <div class="level-item">
+    <span>
+      <a class="button is-link" href="/admin/category">Cancel</a>
+    </span>
+  </div>
+</div>
+
+<hr />
+
+<form action="/admin/category/save" method="POST" >
+  <input type="hidden" name="id" value="{{ category.id }}" readonly />
+
+  <div class="field">
+    <label class="label">Name</label>
+    <div class="control has-icons-left">
+      <input
+        class="input"
+        type="text"
+        name="name"
+        placeholder="Electronics"
+        value="{{ category.name }}"
+        required
+      />
+      <span class="icon is-small is-left">
+        <i class="fas fa-user"></i>
+      </span>
+    </div>
+  </div>
+
+  <input type="submit" class="button is-primary is-large" value="Save" />
+
+  <hr />
+</form>
+{% endblock %}
