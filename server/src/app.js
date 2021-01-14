@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const nunjucks = require('nunjucks');
-
+const cors = require('cors');
 const app = express();
 
 const configureDI = require('./config/di');
@@ -24,6 +24,7 @@ nunjucks.configure('src/module', {
 const container = configureDI();
 app.use(container.get('Session'));
 
+app.use(cors());
 initProductModule(app, container);
 initBrandModule(app, container);
 initCategoryModule(app, container);
