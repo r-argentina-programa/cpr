@@ -55,6 +55,7 @@ module.exports = class BrandController {
       res.render(`${this.BRAND_VIEW_DIR}/form.njk`, { brand });
     } catch (e) {
       req.session.errors = [e.message, e.stack];
+      res.redirect(this.ROUTE_BASE);
     }
   }
 
@@ -72,14 +73,18 @@ module.exports = class BrandController {
       const savedBrand = await this.BrandService.save(brand);
 
       if (brand.id) {
-        req.session.messages = [`La marca con id ${savedBrand.id} se actualizó exitosamente`];
+        req.session.messages = [
+          `The brand with id ${savedBrand.id} was updated correctly (${savedBrand.name})`,
+        ];
       } else {
-        req.session.messages = [`Se creó la marca con id ${savedBrand.id} (${savedBrand.name})`];
+        req.session.messages = [
+          `The brand with id ${savedBrand.id} was created correctly (${savedBrand.name})`,
+        ];
       }
     } catch (e) {
       req.session.errors = [e.message, e.stack];
     }
-    res.redirect('/admin/brand');
+    res.redirect(this.ROUTE_BASE);
   }
 
   /**
@@ -91,11 +96,11 @@ module.exports = class BrandController {
       const { id } = req.params;
       const brand = await this.BrandService.getById(id);
       await this.BrandService.delete(brand);
-      req.session.messages = [`Se eliminó la marca con ID: ${id} (${brand.name})`];
+      req.session.messages = [`The brand with ID: ${id} was removed (${brand.name})`];
     } catch (e) {
       req.session.errors = [e.message, e.stack];
     }
-    res.redirect('/admin/brand');
+    res.redirect(this.ROUTE_BASE);
   }
 
   async viewProducts(req, res) {
