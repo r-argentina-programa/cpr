@@ -92,7 +92,11 @@ module.exports = class BrandController {
     try {
       const { id } = req.params;
       const products = await this.BrandService.viewProducts(id);
-      res.render(`${this.BRAND_VIEW_DIR}/view.njk`);
+      const brand = await this.BrandService.getById(id);
+      res.render(`${this.BRAND_VIEW_DIR}/view.njk`, {
+        products,
+        brand,
+      });
     } catch (error) {
       console.log(error);
     }
