@@ -1,0 +1,23 @@
+{
+  "name": "cpr",
+  "version": "1.0.0",
+  "description": "Cart Price Rules repo",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/r-argentina-programa/cpr.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/r-argentina-programa/cpr/issues"
+  },
+  "homepage": "https://github.com/r-argentina-programa/cpr#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
