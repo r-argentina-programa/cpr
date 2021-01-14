@@ -70,7 +70,6 @@ module.exports = class BrandController {
         brand.logo = path;
       }
       const savedBrand = await this.BrandService.save(brand);
-
       if (brand.id) {
         req.session.messages = [`La marca con id ${savedBrand.id} se actualizó exitosamente`];
       } else {
