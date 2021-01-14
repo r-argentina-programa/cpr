@@ -31,9 +31,20 @@ const {
 const { ManagementController } = require('../module/management/module');
 
 function configureSequelizeDatabase() {
+  if (process.env.NODE_ENV === 'development') {
+    return new Sequelize(process.env.DATABASE_URL, {
+      dialect: 'postgres',
+      logging: false,
+    });
+  }
   return new Sequelize(process.env.DATABASE_URL, {
     dialect: 'postgres',
-    logging: false,
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false,
+      },
+    },
   });
 }
 
