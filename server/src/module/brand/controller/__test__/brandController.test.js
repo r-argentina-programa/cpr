@@ -106,7 +106,6 @@ describe('BrandController methods', () => {
     expect(serviceMock.save).toHaveBeenCalledTimes(1);
     expect(serviceMock.save).toHaveBeenCalledWith(createTestBrand(1));
     expect(resMock.redirect).toHaveBeenCalledTimes(1);
-    console.log(reqSaveMock.session.errors);
     expect(reqSaveMock.session.errors.length).toBe(0);
     expect(reqSaveMock.session.messages.length).toBe(1);
   });
@@ -130,8 +129,8 @@ describe('BrandController methods', () => {
     expect(serviceMock.viewProducts).toHaveBeenCalledTimes(2);
     expect(resMock.render).toHaveBeenCalledTimes(1);
     expect(resMock.render).toHaveBeenCalledWith('brand/view/view.njk', {
-      brand,
       products,
+      brand,
     });
   });
 });
