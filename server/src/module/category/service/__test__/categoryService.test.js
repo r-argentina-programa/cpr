@@ -8,7 +8,6 @@ const repositoryMock = {
   getAll: jest.fn(),
   getById: jest.fn(),
   delete: jest.fn(),
-  viewProducts: jest.fn(),
 };
 
 const mockService = new CategoryService(repositoryMock);
