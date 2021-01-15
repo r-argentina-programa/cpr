@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "NODE_ENV=development nodemon src/app.js",
-    "test:watch": "jest --watch --rootDir=src"
+    "test:watch": "jest --watch --rootDir=src",
+    "test": "jest"
   },
   "repository": {
     "type": "git",

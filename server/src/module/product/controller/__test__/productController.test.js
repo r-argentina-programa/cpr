@@ -135,7 +135,7 @@ describe('ProductController methods', () => {
         description: 'product description',
         brand_fk: '3',
       },
-      file: { path: '/public/uploads/test.jpg' },
+      file: { buffer: '/public/uploads/test.jpg' },
       session: {
         errors: [],
         messages: [],
