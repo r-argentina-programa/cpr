@@ -19,4 +19,4 @@
 2.  `cd server npm run dev` to run server in development mode
 3.  `cd client npm run start` to run client in development mode
 
-![product-management](https://files.slack.com/files-pri/T01HBFXCTJP-F01K94Q97CZ/image.png)
+![product-management](https://i.imgur.com/NNv70ZC.png)
