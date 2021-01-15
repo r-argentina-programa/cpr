@@ -1,21 +1,12 @@
-const ProductController = require('../productController');
-const ProductIdNotDefinedError = require('../../error/ProductIdNotDefinedError');
-const createTestProduct = require('./products.fixture');
-const createTestBrand = require('../../../brand/controller/__test__/brands.fixture');
+const CategoryController = require('../categoryController');
+const CategoryIdNotDefinedError = require('../../error/CategoryIdNotDefinedError');
+const createTestCategory = require('./categories.fixture');
 
 const serviceMock = {
-  save: jest.fn((product) => createTestProduct(product.id)),
-  getAll: jest.fn(() => Array.from({ length: 3 }, (id) => createTestProduct(id + 1))),
-  getById: jest.fn((id) => createTestProduct(id)),
+  save: jest.fn((category) => createTestCategory(category.id)),
+  getAll: jest.fn(() => Array.from({ length: 3 }, (id) => createTestCategory(id + 1))),
+  getById: jest.fn((id) => createTestCategory(id)),
   delete: jest.fn(),
-};
-
-const brandServiceMock = {
-  getAll: jest.fn(() => Array.from({ length: 3 }, (id) => createTestBrand(id + 1))),
-};
-
-const uploadMock = {
-  single: jest.fn(),
 };
 
 const reqMock = {
@@ -30,12 +21,11 @@ const resMock = {
   redirect: jest.fn(),
 };
 
-const mockController = new ProductController(serviceMock, uploadMock, brandServiceMock);
+const mockController = new CategoryController(serviceMock);
 
-describe('ProductController methods', () => {
+describe('CategoryController methods', () => {
   afterEach(() => {
     Object.values(serviceMock).forEach((mockFn) => mockFn.mockClear());
-    Object.values(brandServiceMock).forEach((mockFn) => mockFn.mockClear());
     Object.values(resMock).forEach((mockFn) => mockFn.mockClear());
     reqMock.session.errors = [];
     reqMock.session.messages = [];
@@ -50,35 +40,31 @@ describe('ProductController methods', () => {
 
     expect(app.get).toHaveBeenCalled();
     expect(app.post).toHaveBeenCalled();
-    expect(uploadMock.single).toHaveBeenCalled();
   });
 
-  test('index renders index.njk with a list of products', async () => {
-    const productsList = serviceMock.getAll();
+  test('index renders index.njk with a list of categories', async () => {
+    const categoriesList = serviceMock.getAll();
     await mockController.index(reqMock, resMock);
 
     const { errors, messages } = reqMock.session;
     expect(serviceMock.getAll).toHaveBeenCalledTimes(2);
     expect(resMock.render).toHaveBeenCalledTimes(1);
-    expect(resMock.render).toHaveBeenCalledWith('product/view/index.njk', {
-      productsList,
+    expect(resMock.render).toHaveBeenCalledWith('category/view/index.njk', {
+      categoriesList,
       errors,
       messages,
     });
   });
 
-  test('edit renders a form to edit a product', async () => {
-    const product = serviceMock.getById(1);
-    const brands = brandServiceMock.getAll();
+  test('edit renders a form to edit a category', async () => {
+    const category = serviceMock.getById(1);
     await mockController.edit(reqMock, resMock);
 
     expect(serviceMock.getById).toHaveBeenCalledTimes(2);
     expect(resMock.render).toHaveBeenCalledTimes(1);
-    expect(brandServiceMock.getAll).toHaveBeenCalledTimes(2);
 
-    expect(resMock.render).toHaveBeenCalledWith('product/view/form.njk', {
-      product,
-      brands,
+    expect(resMock.render).toHaveBeenCalledWith('category/view/form.njk', {
+      category,
     });
     expect(reqMock.session.errors.length).toBe(0);
   });
@@ -89,7 +75,7 @@ describe('ProductController methods', () => {
     };
 
     await expect(mockController.edit(reqMockWithoutProductId, resMock)).rejects.toThrowError(
-      ProductIdNotDefinedError
+      CategoryIdNotDefinedError
     );
   });
 
@@ -102,27 +88,18 @@ describe('ProductController methods', () => {
     expect(resMock.redirect).toHaveBeenCalledTimes(1);
   });
 
-  test('create renders a form to add a new product', async () => {
+  test('create renders form to add a new category', async () => {
     await mockController.create(reqMock, resMock);
-    const brands = brandServiceMock.getAll();
-    expect(brandServiceMock.getAll).toHaveBeenCalledTimes(2);
-
     expect(resMock.render).toHaveBeenCalledTimes(1);
-    expect(resMock.render).toHaveBeenCalledWith('product/view/form.njk', {
-      brands,
-    });
+    expect(resMock.render).toHaveBeenCalledWith('category/view/form.njk');
   });
 
-  test('saves a Product with a image', async () => {
+  test('saves a category with a image', async () => {
     const reqSaveMock = {
       body: {
         id: 1,
-        name: 'coca-cola',
-        defaultPrice: '300',
-        description: 'product description',
-        brand_fk: '3',
+        name: 'electronics',
       },
-      file: { path: '/public/uploads/test.jpg' },
       session: {
         errors: [],
         messages: [],
@@ -131,12 +108,12 @@ describe('ProductController methods', () => {
 
     await mockController.save(reqSaveMock, resMock);
     expect(serviceMock.save).toHaveBeenCalledTimes(1);
-    expect(serviceMock.save).toHaveBeenCalledWith(createTestProduct(1));
+    expect(serviceMock.save).toHaveBeenCalledWith(createTestCategory(1));
     expect(resMock.redirect).toHaveBeenCalledTimes(1);
     expect(reqSaveMock.session.errors.length).toBe(0);
   });
 
-  test('deletes an existing Product', async () => {
+  test('deletes an existing category', async () => {
     await mockController.delete(reqMock, resMock);
 
     expect(serviceMock.delete).toHaveBeenCalledTimes(1);
@@ -148,10 +125,25 @@ describe('ProductController methods', () => {
   test('deletes throws an error if id is not passed as parameter', async () => {
     const reqMockWithoutProductId = {
       params: {},
+      session: {
+        errors: [],
+        messages: [],
+      },
     };
 
     await expect(mockController.delete(reqMockWithoutProductId, resMock)).rejects.toThrowError(
-      ProductIdNotDefinedError
+      CategoryIdNotDefinedError
     );
+  });
+
+  test('deletes should load error if service throws error', async () => {
+    serviceMock.delete.mockImplementationOnce(() => {
+      throw new Error();
+    });
+    await mockController.delete(reqMock, resMock);
+
+    expect(serviceMock.delete).toHaveBeenCalledTimes(1);
+    expect(reqMock.session.errors.length).not.toBe(0);
+    expect(resMock.redirect).toHaveBeenCalledTimes(1);
   });
 });
