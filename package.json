@@ -4,7 +4,8 @@
   "description": "Cart Price Rules repo",
   "main": "index.js",
   "scripts": {
-    "start": "node server/src/app.js"
+    "start": "node server/src/app.js",
+    "server-install": "cd server && npm install"
   },
   "repository": {
     "type": "git",
