@@ -95,7 +95,7 @@ describe('BrandController methods', () => {
         name: 'coca-cola',
         logo: '/public/uploads/test.jpg',
       },
-      file: { path: '/public/uploads/test.jpg' },
+      file: { buffer: '/public/uploads/test.jpg' },
       session: {
         errors: [],
         messages: [],
