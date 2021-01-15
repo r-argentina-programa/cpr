@@ -100,9 +100,10 @@ function configureCategoryModel(container) {
 function addProductModuleDefinitions(container) {
   container.addDefinitions({
     ProductController: object(ProductController).construct(
+      get('BrandService'),
+      get('CategoryService'),
       get('ProductService'),
-      get('Multer'),
-      get('BrandService')
+      get('Multer')
     ),
     ProductService: object(ProductService).construct(get('ProductRepository')),
     ProductRepository: object(ProductRepository).construct(get('ProductModel')),

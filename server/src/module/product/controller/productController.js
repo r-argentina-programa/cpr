@@ -5,11 +5,12 @@ module.exports = class ProductController {
   /**
    * @param  {import("../service/productService")} ProductService
    */
-  constructor(ProductService, UploadMiddleware, BrandService) {
+  constructor(BrandService, CategoryService, ProductService, UploadMiddleware) {
     this.ROUTE_BASE = '/admin/product';
+    this.BrandService = BrandService;
+    this.CategoryService = CategoryService;
     this.ProductService = ProductService;
     this.UploadMiddleware = UploadMiddleware;
-    this.BrandService = BrandService;
     this.PRODUCT_VIEWS = 'product/view';
   }
 
@@ -109,7 +110,24 @@ module.exports = class ProductController {
   }
 
   async create(req, res) {
-    const brands = await this.BrandService.getAll();
-    res.render(`${this.PRODUCT_VIEWS}/form.njk`, { brands });
+    try {
+      const brands = await this.BrandService.getAll();
+      const categories = await this.CategoryService.getAll();
+
+      if (brands.length > 0 && categories.length > 0) {
+        res.render(`${this.PRODUCT_VIEWS}/form.njk`, { brands, categories });
+      } else if (!brands.length > 0 && !categories.length > 0) {
+        throw new Error('To create a product you must first create a brand and a category');
+      } else {
+        const error =
+          brands.length > 0
+            ? 'To create a product you must first create a category'
+            : 'To create a product you must first create a brand';
+        throw new Error(error);
+      }
+    } catch (e) {
+      req.session.errors = [e.message];
+    }
+    res.redirect(this.ROUTE_BASE);
   }
 };
