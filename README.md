@@ -1,6 +1,4 @@
-# cpr
-
-Cart Price Rules repo
+# Cart Price Rule
 
 ### Main modules
 
