@@ -54,7 +54,7 @@ function configureSession(container) {
   const sequelize = container.get('Sequelize');
   const sessionOptions = {
     store: new SequelizeStore({ db: sequelize }),
-    secret: process.env.SESSION_SECRET,
+    secret: 'secret',
     resave: false,
     saveUninitialized: false,
     cookie: { maxAge: ONE_WEEK_IN_SECONDS },
