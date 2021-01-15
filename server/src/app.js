@@ -1,7 +1,9 @@
 require('dotenv').config({ path: `${__dirname}/.env` });
+const path = require('path');
 const express = require('express');
 const nunjucks = require('nunjucks');
 const cors = require('cors');
+
 const app = express();
 
 const configureDI = require('./config/di');
@@ -13,6 +15,7 @@ const { initManagementModule } = require('./module/management/module');
 const PORT = process.env.PORT || 8000;
 
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, '../build')));
 app.use('/public', express.static('public'));
 
 nunjucks.configure(`${__dirname}/module`, {
@@ -31,6 +34,11 @@ initManagementModule(app, container);
 
 const mainDb = container.get('Sequelize');
 mainDb.sync();
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../build', 'index.html'));
+});
+
 app.listen(PORT, () => {
-  console.log(`Listening on http://localhost:${PORT}`);
+  console.log(`Listening on ${PORT}`);
 });
