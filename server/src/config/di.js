@@ -63,18 +63,9 @@ function configureSession(container) {
 }
 
 function configureMulter() {
-  const storage = multer.diskStorage({
-    destination(req, file, cb) {
-      const imgPath = process.env.MULTER_UPLOADS_DIR;
-      fs.mkdirSync(imgPath, { recursive: true });
-      cb(null, imgPath);
-    },
-    filename(req, file, cb) {
-      cb(null, Date.now() + path.extname(file.originalname));
-    },
-  });
+  const buffer = multer.memoryStorage({});
 
-  return multer({ storage });
+  return multer({ buffer });
 }
 
 function addCommonDefinitions(container) {

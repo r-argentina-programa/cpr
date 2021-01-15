@@ -43,7 +43,7 @@
         <td>{{ product.defaultPrice }}</td>
         <td>
           <figure class="image is-128x128">
-            <img src="/{{ product.imageSrc }}" width="128" height="128" alt="Product Logo"/>
+            <img src="data:image/png;base64, {{ product.imageSrc }}" alt="Product Logo" />
           </figure>
         </td>
         <td>{{ product.description }}</td>

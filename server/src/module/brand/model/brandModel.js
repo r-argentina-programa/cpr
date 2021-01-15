@@ -20,7 +20,7 @@ module.exports = class BrandModel extends Model {
           allowNull: false,
         },
         logo: {
-          type: DataTypes.STRING,
+          type: DataTypes.BLOB,
           allowNull: false,
         },
         updatedAt: {

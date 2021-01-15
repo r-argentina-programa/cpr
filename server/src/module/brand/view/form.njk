@@ -32,7 +32,7 @@
 
         <div class="field">
             {% if brand.logo %}
-                <img src="/{{brand.logo}}" width="256" height="256"/>
+                <img src="data:image/png;base64, {{ brand.logo }}" width="128" height="128" alt="Brand Logo"/>
             {% endif %}
             <label class="label">Logo</label>
             <div class="control has-icons-left">
