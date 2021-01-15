@@ -1,0 +1,31 @@
+{% extends 'management/view/layout/base.njk' %} {% block body %}
+<h1 class="title is-1">{{ 'Managing Category : ' + category.name }}</h1>
+
+<div class="panel-block">
+  <table class="table is-striped is-narrow is-hoverable is-fullwidth">
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Name</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr>
+        <td>{{ category.id }}</td>
+        <td>{{ category.name }}</td>
+        <td>
+          <a class="button is-link is-fullwidth" href="/admin/product/edit/{{ product.id }}">
+            <span>Edit</span>
+          </a>
+        </td>
+        <td>
+          <a class="button is-danger is-fullwidth" href="/admin/product/delete/{{ product.id }}">
+            <span>Delete</span>
+          </a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+{% endblock %}

@@ -8,6 +8,10 @@ module.exports = class ManagementController {
 
   configureRoutes(app) {
     const ROUTE = this.ROUTE_BASE;
+
+    app.get('/', (req, res) => {
+      res.send('Hello World! - Testing Codeship');
+    });
     app.get(`${ROUTE}/brands/all`, this.allBrands.bind(this));
     app.get(`${ROUTE}/brand/:id`, this.brand.bind(this));
     app.get(`${ROUTE}/categories/all`, this.allCategories.bind(this));
