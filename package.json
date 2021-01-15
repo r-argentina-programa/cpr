@@ -17,7 +17,5 @@
     "url": "https://github.com/r-argentina-programa/cpr/issues"
   },
   "homepage": "https://github.com/r-argentina-programa/cpr#readme",
-  "dependencies": {
-    "express": "^4.17.1"
-  }
+  "dependencies": {}
 }

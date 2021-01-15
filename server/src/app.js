@@ -15,7 +15,7 @@ const PORT = process.env.PORT || 8000;
 app.use(express.urlencoded({ extended: true }));
 app.use('/public', express.static('public'));
 
-nunjucks.configure('src/module', {
+nunjucks.configure(`${__dirname}/module`, {
   autoescape: true,
   express: app,
 });
