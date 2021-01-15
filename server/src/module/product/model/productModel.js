@@ -24,7 +24,7 @@ module.exports = class ProductModel extends Model {
           allowNull: false,
         },
         imageSrc: {
-          type: DataTypes.STRING,
+          type: DataTypes.BLOB,
           allowNull: false,
         },
         description: {

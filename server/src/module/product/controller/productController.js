@@ -46,10 +46,11 @@ module.exports = class ProductController {
    * @param  {import("express").Response} res
    */
   async save(req, res) {
-    const { path } = req.file;
     try {
       const product = fromDataToEntity(req.body);
-      product.imageSrc = path;
+      if (req.file) {
+        product.imageSrc = req.file.buffer.toString('base64');
+      }
       const savedProduct = await this.ProductService.save(product);
 
       if (product.id) {
