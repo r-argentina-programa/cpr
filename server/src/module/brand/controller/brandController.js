@@ -67,8 +67,7 @@ module.exports = class BrandController {
     try {
       const brand = fromDataToEntity(req.body);
       if (req.file) {
-        const { path } = req.file;
-        brand.logo = path;
+        brand.logo = req.file.buffer.toString('base64');
       }
       const savedBrand = await this.BrandService.save(brand);
       if (brand.id) {
