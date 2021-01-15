@@ -1,3 +1,6 @@
+const ProductIdNotDefinedError = require('../error/ProductIdNotDefinedError');
+const ProductNotDefinedError = require('../error/ProductNotDefinedError');
+const Product = require('../entity/entity');
 module.exports = class ProductService {
   /**
    * @param  {import("../repository/productRepository")} ProductRepository
@@ -7,22 +10,22 @@ module.exports = class ProductService {
   }
 
   async save(product) {
-    if (!product) {
-      throw new Error('Product Not Found');
+    if (!(product instanceof Product)) {
+      throw new ProductNotDefinedError();
     }
     return this.ProductRepository.save(product);
   }
 
-  async getById(product) {
-    if (!product) {
-      throw new Error('Product Not Found');
+  async getById(id) {
+    if (!Number(id)) {
+      throw new ProductIdNotDefinedError();
     }
-    return this.ProductRepository.getById(product);
+    return this.ProductRepository.getById(id);
   }
 
   async delete(product) {
-    if (!product) {
-      throw new Error('Product Not Found');
+    if (!(product instanceof Product)) {
+      throw new ProductNotDefinedError();
     }
     return this.ProductRepository.delete(product);
   }
