@@ -127,7 +127,7 @@ module.exports = class ProductController {
       }
     } catch (e) {
       req.session.errors = [e.message];
+      res.redirect(this.ROUTE_BASE);
     }
-    res.redirect(this.ROUTE_BASE);
   }
 };
