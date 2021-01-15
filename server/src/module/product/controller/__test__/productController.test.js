@@ -2,6 +2,7 @@ const ProductController = require('../productController');
 const ProductIdNotDefinedError = require('../../error/ProductIdNotDefinedError');
 const createTestProduct = require('./products.fixture');
 const createTestBrand = require('../../../brand/controller/__test__/brands.fixture');
+const createTestCategory = require('../../../category/controller/__test__/categories.fixture');
 
 const serviceMock = {
   save: jest.fn((product) => createTestProduct(product.id)),
@@ -12,6 +13,10 @@ const serviceMock = {
 
 const brandServiceMock = {
   getAll: jest.fn(() => Array.from({ length: 3 }, (id) => createTestBrand(id + 1))),
+};
+
+const categoryServiceMock = {
+  getAll: jest.fn(() => Array.from({ length: 3 }, (id) => createTestCategory(id + 1))),
 };
 
 const uploadMock = {
@@ -30,7 +35,12 @@ const resMock = {
   redirect: jest.fn(),
 };
 
-const mockController = new ProductController(serviceMock, uploadMock, brandServiceMock);
+const mockController = new ProductController(
+  brandServiceMock,
+  categoryServiceMock,
+  serviceMock,
+  uploadMock
+);
 
 describe('ProductController methods', () => {
   afterEach(() => {
@@ -105,11 +115,14 @@ describe('ProductController methods', () => {
   test('create renders a form to add a new product', async () => {
     await mockController.create(reqMock, resMock);
     const brands = brandServiceMock.getAll();
+    const categories = categoryServiceMock.getAll();
     expect(brandServiceMock.getAll).toHaveBeenCalledTimes(2);
+    expect(categoryServiceMock.getAll).toHaveBeenCalledTimes(2);
 
     expect(resMock.render).toHaveBeenCalledTimes(1);
     expect(resMock.render).toHaveBeenCalledWith('product/view/form.njk', {
       brands,
+      categories,
     });
   });
 
