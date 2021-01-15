@@ -18,3 +18,5 @@
 1.  `npm client-install` to install client dependencies and `npm server-install` for server dependencies
 2.  `cd server npm run dev` to run server in development mode
 3.  `cd client npm run start` to run client in development mode
+
+![product-management](https://files.slack.com/files-pri/T01HBFXCTJP-F01K94Q97CZ/image.png)
