@@ -63,12 +63,12 @@ describe('ManagementController methods', () => {
     expect(resMock._json.length).toBe(3);
   });
 
-  test('allBrands send 500 error if service throws error ', async () => {
+  test('allBrands sends error if service throws error ', async () => {
     brandServiceMock.getAll.mockImplementationOnce(() => {
       throw new Error();
     });
     await controller.allBrands(reqMock, resMock);
-    expect(resMock._status).toBe(500);
+    expect(resMock._status).not.toBe(200);
     expect(resMock._error).not.toBe(null);
   });
 
@@ -80,12 +80,12 @@ describe('ManagementController methods', () => {
     expect(resMock._json.id).toBe(brand.id);
   });
 
-  test('brand send 500 error if service throws error ', async () => {
+  test('brand sends error if service throws error ', async () => {
     brandServiceMock.getById.mockImplementationOnce(() => {
       throw new Error();
     });
     await controller.brand(reqMock, resMock);
-    expect(resMock._status).toBe(500);
+    expect(resMock._status).not.toBe(200);
     expect(resMock._error).not.toBe(null);
   });
 
@@ -96,12 +96,12 @@ describe('ManagementController methods', () => {
     expect(resMock._json.length).toBe(3);
   });
 
-  test('allCategories send 500 error if service throws error ', async () => {
+  test('allCategories sends error if service throws error ', async () => {
     categoryServiceMock.getAll.mockImplementationOnce(() => {
       throw new Error();
     });
     await controller.allCategories(reqMock, resMock);
-    expect(resMock._status).toBe(500);
+    expect(resMock._status).not.toBe(200);
     expect(resMock._error).not.toBe(null);
   });
 
@@ -113,12 +113,12 @@ describe('ManagementController methods', () => {
     expect(resMock._json.id).toBe(category.id);
   });
 
-  test('category send 500 error if service throws error ', async () => {
+  test('category sends error if service throws error ', async () => {
     categoryServiceMock.getById.mockImplementationOnce(() => {
       throw new Error();
     });
     await controller.category(reqMock, resMock);
-    expect(resMock._status).toBe(500);
+    expect(resMock._status).not.toBe(200);
     expect(resMock._error).not.toBe(null);
   });
 
@@ -129,12 +129,12 @@ describe('ManagementController methods', () => {
     expect(resMock._json.length).toBe(3);
   });
 
-  test('allProducts send 500 error if service throws error ', async () => {
+  test('allProducts sends error if service throws error ', async () => {
     productServiceMock.getAll.mockImplementationOnce(() => {
       throw new Error();
     });
     await controller.allProducts(reqMock, resMock);
-    expect(resMock._status).toBe(500);
+    expect(resMock._status).not.toBe(200);
     expect(resMock._error).not.toBe(null);
   });
 
@@ -146,12 +146,12 @@ describe('ManagementController methods', () => {
     expect(resMock._json.id).toBe(product.id);
   });
 
-  test('product send 500 error if service throws error ', async () => {
+  test('product sends error if service throws error ', async () => {
     productServiceMock.getById.mockImplementationOnce(() => {
       throw new Error();
     });
     await controller.product(reqMock, resMock);
-    expect(resMock._status).toBe(500);
+    expect(resMock._status).not.toBe(200);
     expect(resMock._error).not.toBe(null);
   });
 });
