@@ -1,6 +1,7 @@
 module.exports = class ManagementController {
   constructor(BrandService, CategoryService, ProductService) {
     this.ROUTE_BASE = '/api';
+    this.MANAGEMENT_VIEW_DIR = 'management/view';
     this.BrandService = BrandService;
     this.CategoryService = CategoryService;
     this.ProductService = ProductService;
@@ -9,12 +10,17 @@ module.exports = class ManagementController {
   configureRoutes(app) {
     const ROUTE = this.ROUTE_BASE;
 
+    app.get('/admin', this.login.bind(this));
     app.get(`${ROUTE}/brands/all`, this.allBrands.bind(this));
     app.get(`${ROUTE}/brand/:id`, this.brand.bind(this));
     app.get(`${ROUTE}/categories/all`, this.allCategories.bind(this));
     app.get(`${ROUTE}/category/:id`, this.category.bind(this));
     app.get(`${ROUTE}/products/all`, this.allProducts.bind(this));
     app.get(`${ROUTE}/product/:id`, this.product.bind(this));
+  }
+
+  async login(req, res) {
+    res.render(`${this.MANAGEMENT_VIEW_DIR}/login.njk`);
   }
 
   async allBrands(req, res) {
