@@ -26,15 +26,20 @@ export default function CardsList({ item, imageSrc }) {
 
   return (
     <>
-      <Card style={{ width: "15rem", height: "10rem" }}>
+      <Card style={{ width: "15rem", height: "19rem" }}>
         <Card.Body>
-          <Card.Title>{item.name}</Card.Title>
+          <Card.Title style={{ textAlign: "center" }}>{item.name}</Card.Title>
           <Card.Img variant="top" src={`data:image/png;base64, ${image}`} />
+          <Card.Subtitle style={{ margin: ".3rem 0", color: "grey" }}>
+            ${item.defaultPrice}
+          </Card.Subtitle>
           <TimeStyle>
             <TimeAgo date={`${item.createdAt}`} formatter={formatter} />
             <br />
           </TimeStyle>
-          <Button variant="info">See Details</Button>
+          <Button style={{ width: "100%" }} variant="info">
+            See Details
+          </Button>
         </Card.Body>
       </Card>
     </>
