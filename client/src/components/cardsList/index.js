@@ -18,6 +18,7 @@ const TimeStyle = styled.span`
 `;
 
 export default function CardsList({ item, imageSrc }) {
+  console.log(imageSrc);
   const [image, setImage] = useState("");
   useEffect(() => {
     const uint8 = new Uint8Array(imageSrc);
@@ -30,9 +31,11 @@ export default function CardsList({ item, imageSrc }) {
         <Card.Body>
           <Card.Title style={{ textAlign: "center" }}>{item.name}</Card.Title>
           <Card.Img variant="top" src={`data:image/png;base64, ${image}`} />
-          <Card.Subtitle style={{ margin: ".3rem 0", color: "grey" }}>
-            ${item.defaultPrice}
-          </Card.Subtitle>
+          {item.defaultPrice ? (
+            <Card.Subtitle style={{ margin: ".3rem 0", color: "grey" }}>
+              ${item.defaultPrice}
+            </Card.Subtitle>
+          ) : null}
           <TimeStyle>
             <TimeAgo date={`${item.createdAt}`} formatter={formatter} />
             <br />

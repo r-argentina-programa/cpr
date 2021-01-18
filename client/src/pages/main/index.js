@@ -14,15 +14,15 @@ const BrandsContainer = styled.div`
   display: flex;
   justify-content: center;
   padding: 0.5rem 0;
-  background-color: aliceblue;
+  background-color: #343a40;
   a {
     margin-right: 1rem;
     text-decoration: none;
-    color: darkblue;
+    color: #fff;
+    font-size: 17px;
 
     &:hover {
-      border: 1px solid hsla(0, 0%, 100%, 0.4);
-      color: blue;
+      color: #e6e6e6;
     }
   }
 `;
@@ -42,7 +42,7 @@ export default function Main() {
   }, []);
   return (
     <>
-      <Header />{" "}
+      <Header />
       <BrandsContainer>
         {brands.map((brand) => (
           <a href="/">{brand.name}</a>
