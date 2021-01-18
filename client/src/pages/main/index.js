@@ -3,7 +3,7 @@ import Header from "../../components/header";
 import { useProducts } from "../../hooks/products";
 import styled from "styled-components/macro";
 import CardsList from "../../components/cardsList";
-import { UseBrand } from "../../hooks/brands";
+import { useBrand } from "../../hooks/brands";
 import { Link } from "react-router-dom";
 
 const ListContainer = styled.div`
@@ -35,18 +35,32 @@ const Title = styled.h1`
 `;
 
 export default function Main() {
-  const { products, getAllProducts } = useProducts();
-  const { getAllBrands, brands } = UseBrand();
+  const { products, getAllProducts, setProducts } = useProducts();
+  const { getAllBrands, brands, getProductsFromABrand, data } = useBrand();
+
   useEffect(() => {
     getAllProducts();
     getAllBrands();
   }, []);
+
+  async function changeProductsData(id) {
+    await getProductsFromABrand(id);
+    await setProducts(data);
+  }
+
   return (
     <>
       <Header />
       <BrandsContainer>
         {brands.map((brand) => (
-          <Link key={brand.id} to={`/brand/${brand.id}`}>
+          <Link
+            key={brand.id}
+            to="#"
+            data-id={brand.id}
+            onClick={(e) =>
+              changeProductsData(e.target.getAttribute("data-id"))
+            }
+          >
             {brand.name}
           </Link>
         ))}

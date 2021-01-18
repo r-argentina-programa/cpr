@@ -16,6 +16,17 @@ module.exports = class ManagementController {
     app.get(`${ROUTE}/products/all`, this.allProducts.bind(this));
     app.get(`${ROUTE}/product/:id`, this.product.bind(this));
     app.get(`${ROUTE}/search/:term`, this.search.bind(this));
+    app.get(`${ROUTE}/brand/:id/viewProducts`, this.viewProducts.bind(this));
+  }
+
+  async viewProducts(req, res) {
+    const { id } = req.params;
+    try {
+      const products = await this.BrandService.viewProducts(id);
+      res.status(200).send(products);
+    } catch (error) {
+      console.log(error.message);
+    }
   }
 
   async allBrands(req, res) {

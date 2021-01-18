@@ -5,7 +5,7 @@ const BrandContext = createContext();
 
 export function BrandsProvider({ children }) {
   const [brands, setBrands] = useState([]);
-
+  const [data, setData] = useState([]);
   async function getAllBrands() {
     try {
       const res = await api.get("api/brands/all");
@@ -17,12 +17,24 @@ export function BrandsProvider({ children }) {
     }
   }
 
+  async function getProductsFromABrand(id) {
+    try {
+      const res = await api.get(`/api/brand/${id}/viewProducts`);
+      setData(res.data);
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
   return (
     <BrandContext.Provider
       value={{
         setBrands,
         brands,
         getAllBrands,
+        getProductsFromABrand,
+        data,
+        setData,
       }}
     >
       {children}
@@ -30,10 +42,10 @@ export function BrandsProvider({ children }) {
   );
 }
 
-export function UseBrand() {
+export function useBrand() {
   const context = useContext(BrandContext);
   if (!context) {
-    throw new Error("UseBrand must be used within a BrandProvider  ");
+    throw new Error("useBrand must be used within a BrandProvider  ");
   }
   return context;
 }
