@@ -5,6 +5,18 @@ import FormControl from "react-bootstrap/FormControl";
 import { useSearch } from "../../hooks/search";
 import { useEffect, useState } from "react";
 import SearchContainer from "../search";
+import styled from "styled-components/macro";
+
+const ContainerSearch = styled.div`
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding: 8px 4px 8px 2px;
+  font: 400 13.333px Arial;
+  border-radius: 4px;
+  outline: 0px;
+  padding-left: 5px;
+`;
 
 export default function Header() {
   const { getSearchData, setProducts } = useSearch();
@@ -33,16 +45,18 @@ export default function Header() {
           <Nav.Link href="/categories">Categories</Nav.Link>
         </Nav>
 
-        <Form inline>
-          <FormControl
-            type="text"
-            placeholder="Search"
-            className="mr-sm-2"
-            value={term}
-            onChange={(e) => setTerm(e.target.value)}
-          />
-          {term.length > 0 && <SearchContainer />}
-        </Form>
+        <ContainerSearch>
+          <Form inline>
+            <FormControl
+              type="text"
+              placeholder="Search"
+              className="mr-sm-2"
+              value={term}
+              onChange={(e) => setTerm(e.target.value)}
+            />
+            {term.length > 0 && <SearchContainer />}
+          </Form>
+        </ContainerSearch>
       </Navbar>
     </header>
   );
