@@ -4,7 +4,7 @@
   "description": "Cart Price Rules",
   "main": "index.js",
   "scripts": {
-    "dev": "NODE_ENV=development nodemon src/app.js",
+    "dev": " nodemon src/app.js",
     "test:watch": "jest --watch --rootDir=src"
   },
   "repository": {

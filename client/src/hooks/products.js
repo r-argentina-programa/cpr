@@ -5,7 +5,8 @@ const ProductsContext = createContext();
 
 export function ProductsProvider({ children }) {
   const [products, setProducts] = useState([]);
-
+  const [product, setProduct] = useState({});
+  const [loading, setLoading] = useState(false);
   async function getAllProducts() {
     try {
       const res = await api.get("api/products/all");
@@ -17,12 +18,27 @@ export function ProductsProvider({ children }) {
     }
   }
 
+  async function getProductDetails(id) {
+    try {
+      setLoading(true);
+      const res = await api.get(`api/product/${id}`);
+      if (res.status === 200) {
+        setProduct(res);
+      }
+    } catch (error) {
+      console.log(error.message);
+      setLoading(false);
+    }
+  }
   return (
     <ProductsContext.Provider
       value={{
         setProducts,
         products,
         getAllProducts,
+        getProductDetails,
+        product,
+        loading,
       }}
     >
       {children}
