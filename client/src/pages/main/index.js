@@ -2,8 +2,9 @@ import { useEffect } from "react";
 import Header from "../../components/header";
 import { useProducts } from "../../hooks/products";
 import styled from "styled-components/macro";
-import CardsList from "../../components/productsList";
+import CardsList from "../../components/cardsList";
 import { UseBrand } from "../../hooks/brands";
+import { Link } from "react-router-dom";
 
 const ListContainer = styled.div`
   display: flex;
@@ -14,15 +15,15 @@ const BrandsContainer = styled.div`
   display: flex;
   justify-content: center;
   padding: 0.5rem 0;
-  background-color: aliceblue;
+  background-color: #343a40;
   a {
     margin-right: 1rem;
     text-decoration: none;
-    color: darkblue;
+    color: #fff;
+    font-size: 17px;
 
     &:hover {
-      border: 1px solid hsla(0, 0%, 100%, 0.4);
-      color: blue;
+      color: #e6e6e6;
     }
   }
 `;
@@ -42,16 +43,23 @@ export default function Main() {
   }, []);
   return (
     <>
-      <Header />{" "}
+      <Header />
       <BrandsContainer>
         {brands.map((brand) => (
-          <a href="/">{brand.name}</a>
+          <Link key={brand.id} to={`/brand/${brand.id}`}>
+            {brand.name}
+          </Link>
         ))}
       </BrandsContainer>
       <Title>See all the products Here!</Title>
       <ListContainer className="container-fluid">
         {products.map((product) => (
-          <CardsList product={product} />
+          <CardsList
+            key={product.id}
+            item={product}
+            imageSrc={product.imageSrc.data}
+            link={`/product/${product.id}`}
+          />
         ))}
       </ListContainer>
     </>

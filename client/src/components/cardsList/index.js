@@ -7,7 +7,7 @@ import buildFormatter from "react-timeago/lib/formatters/buildFormatter";
 import englishString from "react-timeago/lib/language-strings/en";
 import { useEffect, useState } from "react";
 import ab2str from "arraybuffer-to-string";
-
+import { Link } from "react-router-dom";
 const formatter = buildFormatter(englishString);
 
 const TimeStyle = styled.span`
@@ -17,24 +17,33 @@ const TimeStyle = styled.span`
   text-transform: uppercase;
 `;
 
-export default function ProductsList({ product }) {
+export default function CardsList({ item, imageSrc, link }) {
   const [image, setImage] = useState("");
   useEffect(() => {
-    const uint8 = new Uint8Array(product.imageSrc.data);
+    const uint8 = new Uint8Array(imageSrc);
     setImage(ab2str(uint8));
-  }, [product.imageSrc.data]);
+  }, [imageSrc]);
 
   return (
     <>
-      <Card style={{ width: "15rem", height: "10rem" }}>
+      <Card style={{ width: "15rem", height: "19rem" }}>
         <Card.Body>
-          <Card.Title>{product.name}</Card.Title>
+          <Card.Title style={{ textAlign: "center" }}>{item.name}</Card.Title>
           <Card.Img variant="top" src={`data:image/png;base64, ${image}`} />
+          {item.defaultPrice ? (
+            <Card.Subtitle style={{ margin: ".3rem 0", color: "grey" }}>
+              ${item.defaultPrice}
+            </Card.Subtitle>
+          ) : null}
           <TimeStyle>
-            <TimeAgo date={`${product.createdAt}`} formatter={formatter} />
+            <TimeAgo date={`${item.createdAt}`} formatter={formatter} />
             <br />
           </TimeStyle>
-          <Button variant="info">See Details</Button>
+          <Link to={link}>
+            <Button style={{ width: "100%" }} variant="info">
+              See Details
+            </Button>
+          </Link>
         </Card.Body>
       </Card>
     </>
