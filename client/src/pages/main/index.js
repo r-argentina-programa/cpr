@@ -35,18 +35,34 @@ const Title = styled.h1`
 `;
 
 export default function Main() {
-  const { products, getAllProducts } = useProducts();
-  const { getAllBrands, brands } = UseBrand();
+  const { products, getAllProducts, setProducts } = useProducts();
+  const { getAllBrands, brands, getProductsFromABrand, data } = UseBrand();
+
   useEffect(() => {
     getAllProducts();
     getAllBrands();
   }, []);
+
+  function changeProductsData(id) {
+    getProductsFromABrand(id);
+    setProducts(data);
+  }
+
+  console.log(products);
+
   return (
     <>
       <Header />
       <BrandsContainer>
         {brands.map((brand) => (
-          <Link key={brand.id} to={`/brand/${brand.id}`}>
+          <Link
+            key={brand.id}
+            to="#"
+            data-id={brand.id}
+            onClick={(e) =>
+              changeProductsData(e.target.getAttribute("data-id"))
+            }
+          >
             {brand.name}
           </Link>
         ))}
