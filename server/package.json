@@ -4,9 +4,9 @@
   "description": "Cart Price Rules",
   "main": "index.js",
   "scripts": {
-    "dev": " nodemon src/app.js",
+    "dev": "nodemon src/app.js",
     "test:watch": "jest --watch --rootDir=src",
-    "test": "jest",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
