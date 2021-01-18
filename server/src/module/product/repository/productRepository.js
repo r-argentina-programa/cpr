@@ -1,3 +1,4 @@
+const { Op } = require('sequelize');
 const { fromModelToEntity } = require('../mapper/mapper');
 const Product = require('../entity/entity');
 
@@ -43,5 +44,14 @@ module.exports = class ProductRepository {
   async getAll() {
     const productsInstance = await this.productModel.findAll();
     return productsInstance.map((product) => fromModelToEntity(product));
+  }
+
+  async getAllProductsSearch(term) {
+    const products = await this.productModel.findAll({
+      where: {
+        [Op.or]: [{ name: { [Op.iLike]: `%${term}%` } }],
+      },
+    });
+    return products;
   }
 };

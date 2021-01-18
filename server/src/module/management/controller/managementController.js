@@ -15,6 +15,7 @@ module.exports = class ManagementController {
     app.get(`${ROUTE}/category/:id`, this.category.bind(this));
     app.get(`${ROUTE}/products/all`, this.allProducts.bind(this));
     app.get(`${ROUTE}/product/:id`, this.product.bind(this));
+    app.get(`${ROUTE}/search/:term`, this.search.bind(this));
   }
 
   async allBrands(req, res) {
@@ -72,5 +73,11 @@ module.exports = class ManagementController {
     } catch (e) {
       res.status(500).send(e);
     }
+  }
+
+  async search(req, res) {
+    const { term } = req.params;
+    const products = await this.ProductService.getAllProductsSearch(term);
+    res.status(200).json(products);
   }
 };
