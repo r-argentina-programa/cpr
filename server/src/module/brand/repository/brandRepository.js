@@ -8,6 +8,7 @@ const Brand = require('../entity/Brand');
 module.exports = class BrandRepository {
   /**
    * @param {typeof import('../model/BrandModel')} BrandModel
+   * @param {typeof import('../../product/model/productModel')} ProductModel
    */
   constructor(BrandModel, ProductModel) {
     this.BrandModel = BrandModel;
