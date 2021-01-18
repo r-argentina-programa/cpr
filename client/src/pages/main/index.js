@@ -4,6 +4,7 @@ import { useProducts } from "../../hooks/products";
 import styled from "styled-components/macro";
 import CardsList from "../../components/cardsList";
 import { UseBrand } from "../../hooks/brands";
+import { Link } from "react-router-dom";
 
 const ListContainer = styled.div`
   display: flex;
@@ -45,13 +46,20 @@ export default function Main() {
       <Header />
       <BrandsContainer>
         {brands.map((brand) => (
-          <a href="/">{brand.name}</a>
+          <Link key={brand.id} to={`/brand/${brand.id}`}>
+            {brand.name}
+          </Link>
         ))}
       </BrandsContainer>
       <Title>See all the products Here!</Title>
       <ListContainer className="container-fluid">
         {products.map((product) => (
-          <CardsList item={product} imageSrc={product.imageSrc.data} />
+          <CardsList
+            key={product.id}
+            item={product}
+            imageSrc={product.imageSrc.data}
+            link={`/product/${product.id}`}
+          />
         ))}
       </ListContainer>
     </>

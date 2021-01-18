@@ -27,7 +27,12 @@ export default function Brands() {
       <Title>See all brands Here!</Title>
       <ListContainer className="container-fluid">
         {brands.map((brand) => (
-          <CardsList item={brand} imageSrc={brand.logo.data} />
+          <CardsList
+            item={brand}
+            imageSrc={brand.logo.data}
+            link={`/brand/${brand.id}`}
+            key={brand.id}
+          />
         ))}
       </ListContainer>
     </>

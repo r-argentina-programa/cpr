@@ -7,7 +7,7 @@ import buildFormatter from "react-timeago/lib/formatters/buildFormatter";
 import englishString from "react-timeago/lib/language-strings/en";
 import { useEffect, useState } from "react";
 import ab2str from "arraybuffer-to-string";
-
+import { Link } from "react-router-dom";
 const formatter = buildFormatter(englishString);
 
 const TimeStyle = styled.span`
@@ -17,8 +17,7 @@ const TimeStyle = styled.span`
   text-transform: uppercase;
 `;
 
-export default function CardsList({ item, imageSrc }) {
-  console.log(imageSrc);
+export default function CardsList({ item, imageSrc, link }) {
   const [image, setImage] = useState("");
   useEffect(() => {
     const uint8 = new Uint8Array(imageSrc);
@@ -40,9 +39,11 @@ export default function CardsList({ item, imageSrc }) {
             <TimeAgo date={`${item.createdAt}`} formatter={formatter} />
             <br />
           </TimeStyle>
-          <Button style={{ width: "100%" }} variant="info">
-            See Details
-          </Button>
+          <Link to={link}>
+            <Button style={{ width: "100%" }} variant="info">
+              See Details
+            </Button>
+          </Link>
         </Card.Body>
       </Card>
     </>
