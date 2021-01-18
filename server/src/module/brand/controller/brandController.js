@@ -3,6 +3,7 @@ const BrandIdNotDefinedError = require('../error/BrandIdNotDefinedError');
 
 module.exports = class BrandController {
   constructor(brandService, uploadMiddleware) {
+    this.ADMIN_ROUTE = '/admin';
     this.ROUTE_BASE = '/admin/brand';
     this.BRAND_VIEW_DIR = 'brand/view';
     this.BrandService = brandService;
@@ -12,12 +13,25 @@ module.exports = class BrandController {
   configureRoutes(app) {
     const ROUTE = this.ROUTE_BASE;
 
-    app.get(`${ROUTE}/`, this.brand.bind(this));
-    app.get(`${ROUTE}/create`, this.createBrand.bind(this));
-    app.get(`${ROUTE}/edit/:id`, this.editBrand.bind(this));
-    app.get(`${ROUTE}/product/:id`, this.viewProducts.bind(this));
-    app.get(`${ROUTE}/delete/:id`, this.deleteBrand.bind(this));
-    app.post(`${ROUTE}/save`, this.uploadMiddleware.single('file'), this.saveBrand.bind(this));
+    app.get(`${ROUTE}/`, this.auth.bind(this), this.brand.bind(this));
+    app.get(`${ROUTE}/create`, this.auth.bind(this), this.createBrand.bind(this));
+    app.get(`${ROUTE}/edit/:id`, this.auth.bind(this), this.editBrand.bind(this));
+    app.get(`${ROUTE}/product/:id`, this.auth.bind(this), this.viewProducts.bind(this));
+    app.get(`${ROUTE}/delete/:id`, this.auth.bind(this), this.deleteBrand.bind(this));
+    app.post(
+      `${ROUTE}/save`,
+      this.auth.bind(this),
+      this.uploadMiddleware.single('file'),
+      this.saveBrand.bind(this)
+    );
+  }
+
+  async auth(req, res, next) {
+    if (req.session.username === process.env.ADMIN_USERNAME && req.session.admin) {
+      return next();
+    }
+    req.session.errors = ['You can only see this after you have logged in'];
+    res.redirect(`${this.ADMIN_ROUTE}`);
   }
 
   /**

@@ -38,7 +38,7 @@ module.exports = class ManagementController {
         admin.username === process.env.ADMIN_USERNAME &&
         admin.password === process.env.ADMIN_PASSWORD
       ) {
-        req.session.user = process.env.ADMIN_USERNAME;
+        req.session.username = process.env.ADMIN_USERNAME;
         req.session.admin = true;
         req.session.messages = [
           `Administrator "${process.env.ADMIN_USERNAME}" logged in successfully`,
@@ -56,8 +56,10 @@ module.exports = class ManagementController {
 
   async logout(req, res) {
     try {
-      req.session.user.destroy();
-      req.session.admin.destroy();
+      req.session.username = [];
+      req.session.admin = [];
+      req.session.messages = ['Administrator has been logged out'];
+      res.redirect(`${this.ADMIN_ROUTE}`);
     } catch (e) {
       req.session.errors = [e.message, e.stack];
       res.redirect(`${this.ADMIN_ROUTE}`);
