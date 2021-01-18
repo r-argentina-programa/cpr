@@ -1,6 +1,7 @@
 const ProductIdNotDefinedError = require('../error/ProductIdNotDefinedError');
 const ProductNotDefinedError = require('../error/ProductNotDefinedError');
 const Product = require('../entity/entity');
+
 module.exports = class ProductService {
   /**
    * @param  {import("../repository/productRepository")} ProductRepository
@@ -32,5 +33,9 @@ module.exports = class ProductService {
 
   async getAll() {
     return this.ProductRepository.getAll();
+  }
+
+  async getAllProductsSearch(term) {
+    return this.ProductRepository.getAllProductsSearch(term);
   }
 };
