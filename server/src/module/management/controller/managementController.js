@@ -15,6 +15,7 @@ module.exports = class ManagementController {
 
     app.get(`${this.ADMIN_ROUTE}`, this.loginForm.bind(this));
     app.post(`${this.ADMIN_ROUTE}/login`, this.login.bind(this));
+    app.get(`${this.ADMIN_ROUTE}/logout`, this.logout.bind(this));
     app.get(`${ROUTE}/brands/all`, this.allBrands.bind(this));
     app.get(`${ROUTE}/brand/:id`, this.brand.bind(this));
     app.get(`${ROUTE}/categories/all`, this.allCategories.bind(this));
@@ -47,6 +48,16 @@ module.exports = class ManagementController {
         req.session.errors = ['Incorrect username and / or password'];
         res.redirect(`${this.ADMIN_ROUTE}`);
       }
+    } catch (e) {
+      req.session.errors = [e.message, e.stack];
+      res.redirect(`${this.ADMIN_ROUTE}`);
+    }
+  }
+
+  async logout(req, res) {
+    try {
+      req.session.user.destroy();
+      req.session.admin.destroy();
     } catch (e) {
       req.session.errors = [e.message, e.stack];
       res.redirect(`${this.ADMIN_ROUTE}`);
