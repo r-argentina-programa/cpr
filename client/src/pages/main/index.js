@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import Header from "../../components/header";
 import { useProducts } from "../../hooks/products";
 import styled from "styled-components/macro";
-import CardsList from "../../components/productsList";
+import CardsList from "../../components/cardsList";
 import { UseBrand } from "../../hooks/brands";
 
 const ListContainer = styled.div`
@@ -51,7 +51,7 @@ export default function Main() {
       <Title>See all the products Here!</Title>
       <ListContainer className="container-fluid">
         {products.map((product) => (
-          <CardsList product={product} />
+          <CardsList item={product} imageSrc={product.imageSrc.data} />
         ))}
       </ListContainer>
     </>

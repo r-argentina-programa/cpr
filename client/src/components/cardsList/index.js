@@ -17,21 +17,21 @@ const TimeStyle = styled.span`
   text-transform: uppercase;
 `;
 
-export default function ProductsList({ product }) {
+export default function CardsList({ item, imageSrc }) {
   const [image, setImage] = useState("");
   useEffect(() => {
-    const uint8 = new Uint8Array(product.imageSrc.data);
+    const uint8 = new Uint8Array(imageSrc);
     setImage(ab2str(uint8));
-  }, [product.imageSrc.data]);
+  }, [imageSrc]);
 
   return (
     <>
       <Card style={{ width: "15rem", height: "10rem" }}>
         <Card.Body>
-          <Card.Title>{product.name}</Card.Title>
+          <Card.Title>{item.name}</Card.Title>
           <Card.Img variant="top" src={`data:image/png;base64, ${image}`} />
           <TimeStyle>
-            <TimeAgo date={`${product.createdAt}`} formatter={formatter} />
+            <TimeAgo date={`${item.createdAt}`} formatter={formatter} />
             <br />
           </TimeStyle>
           <Button variant="info">See Details</Button>
