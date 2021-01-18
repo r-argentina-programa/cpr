@@ -3,7 +3,7 @@ import Header from "../../components/header";
 import { useProducts } from "../../hooks/products";
 import styled from "styled-components/macro";
 import CardsList from "../../components/cardsList";
-import { UseBrand } from "../../hooks/brands";
+import { useBrand } from "../../hooks/brands";
 import { Link } from "react-router-dom";
 
 const ListContainer = styled.div`
@@ -36,19 +36,17 @@ const Title = styled.h1`
 
 export default function Main() {
   const { products, getAllProducts, setProducts } = useProducts();
-  const { getAllBrands, brands, getProductsFromABrand, data } = UseBrand();
+  const { getAllBrands, brands, getProductsFromABrand, data } = useBrand();
 
   useEffect(() => {
     getAllProducts();
     getAllBrands();
   }, []);
 
-  function changeProductsData(id) {
-    getProductsFromABrand(id);
-    setProducts(data);
+  async function changeProductsData(id) {
+    await getProductsFromABrand(id);
+    await setProducts(data);
   }
-
-  console.log(products);
 
   return (
     <>
