@@ -1,4 +1,4 @@
-{% extends 'management/view/layout/base.njk' %}{% block body %}
+{% extends 'management/view/layout/login-base.njk' %}{% block body %}
 <h1 class="title is-1">Login as administrator</h1>
 
 {% for error in errors %}
@@ -18,10 +18,7 @@
         <p class="control has-icons-left has-icons-right">
             <input class="input" type="text" name="username" placeholder="Username" required>
             <span class="icon is-small is-left">
-                <i class="fas fa-envelope"></i>
-            </span>
-            <span class="icon is-small is-right">
-                <i class="fas fa-check"></i>
+                <i class="fas fa-user"></i>
             </span>
         </p>
     </div>
