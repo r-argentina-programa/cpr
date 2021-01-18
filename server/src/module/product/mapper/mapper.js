@@ -1,6 +1,10 @@
 const Product = require('../entity/entity');
+const {
+  fromModelToEntity: categoryModelToEntityMapper,
+} = require('../../category/mapper/categoryMapper');
 
-function fromDataToEntity({ id, name, defaultPrice, imageSrc, description, brand_fk }) {
+function fromDataToEntity({ id, name, defaultPrice, imageSrc, description, brand_fk, categories }) {
+  categories = categories ? JSON.parse(categories) : [];
   return new Product({
     id,
     name,

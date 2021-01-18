@@ -91,8 +91,63 @@
       </div>
     </div>
   </div>
+
+  <label class="label">Categories</label>
+  <div class="field">
+    <div class="control">
+        <input name='categories' placeholder='categories'/>   
+    </div>
+  </div>
+
   <input type="submit" class="button is-primary is-large" value="Save" />
 
   <hr />
 </form>
+{% endblock %}
+
+{% block footerScripts %}
+<script>
+  const currentCategories = {{ product.categories | dump | safe }};
+  const categories = {{ categories | dump | safe }};
+
+  const cleanCategories = categories.map((category)=>({id:category.id,value:category.name}))
+  const cleanCurrentCategories = currentCategories.map((category)=>({id:category.id,value:category.name}))
+  console.log(cleanCategories)
+  const input = document.querySelector('input[name=categories]'),
+    tagify = new Tagify(input, {
+        enforceWhitelist : true,
+        delimiters       : null,
+        templates : {
+        tag : function(tagData){
+            try{
+            return `<tag title='${tagData.id}' contenteditable='false' spellcheck="false" class='tagify__tag ${tagData.class ? tagData.class : ""}' ${this.getAttributes(tagData)}>
+                        <x title='remove tag' class='tagify__tag__removeBtn'></x>
+                        <div>
+                            <span class='tagify__tag-text'>${tagData.value}</span>
+                        </div>
+                    </tag>`
+            }
+            catch(err){}
+        },
+
+        dropdownItem : function(tagData){
+            try{
+            return `<div class='tagify__dropdown__item ${tagData.class ? tagData.class : ""}' tagifySuggestionIdx="${tagData.tagifySuggestionIdx}">
+                            <span>${tagData.value}</span>
+                        </div>`
+            }
+            catch(err){}
+        }
+    },
+         whitelist : cleanCategories,
+        dropdown : {
+        enabled: 1, // suggest tags after a single character input
+        classname : 'extra-properties' // custom class for the suggestions dropdown
+    } // map tags' values to this property name, so this property will be the actual value and not the printed value on the screen
+    });
+    
+    tagify.addTags(cleanCurrentCategories);
+
+
+</script>
 {% endblock %}

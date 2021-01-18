@@ -32,6 +32,7 @@
         <th>Logo</th>
         <th>Description</th>
         <th>Brand</th>
+        <th>categories</th>
       </tr>
     </thead>
 
@@ -48,6 +49,11 @@
         </td>
         <td>{{ product.description }}</td>
         <td>{{ product.brandFk }}</td>
+
+        {% for category in product.categories %}
+          <td>{{ category.name }}</td>
+        {% endfor %}
+
         <td>
           <a href="/admin/product/edit/{{ product.id }}" class="button is-info is-fullwidth"
             >Edit</a

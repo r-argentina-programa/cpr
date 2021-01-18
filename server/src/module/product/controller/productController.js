@@ -49,10 +49,14 @@ module.exports = class ProductController {
   async save(req, res) {
     try {
       const product = fromDataToEntity(req.body);
+      let categories = [];
+      if (req.body.categories) {
+        categories = JSON.parse(req.body.categories).map((e) => e.id);
+      }
       if (req.file) {
         product.imageSrc = req.file.buffer.toString('base64');
       }
-      const savedProduct = await this.ProductService.save(product);
+      const savedProduct = await this.ProductService.save(product, categories);
 
       if (product.id) {
         req.session.messages = [
@@ -81,9 +85,13 @@ module.exports = class ProductController {
     try {
       const product = await this.ProductService.getById(id);
       const brands = await this.BrandService.getAll();
+      const categories = await this.CategoryService.getAll();
+
+      console.log(product);
       res.render(`${this.PRODUCT_VIEWS}/form.njk`, {
         product,
         brands,
+        categories,
       });
     } catch (e) {
       req.session.errors = [e.message, e.stack];
@@ -114,9 +122,12 @@ module.exports = class ProductController {
     try {
       const brands = await this.BrandService.getAll();
       const categories = await this.CategoryService.getAll();
-
       if (brands.length > 0 && categories.length > 0) {
-        res.render(`${this.PRODUCT_VIEWS}/form.njk`, { brands, categories });
+        res.render(`${this.PRODUCT_VIEWS}/form.njk`, {
+          brands,
+          categories,
+          product: { categories: [] },
+        });
       } else if (!brands.length > 0 && !categories.length > 0) {
         throw new Error('To create a product you must first create a brand and a category');
       } else {

@@ -10,11 +10,11 @@ module.exports = class ProductService {
     this.ProductRepository = ProductRepository;
   }
 
-  async save(product) {
+  async save(product, categories) {
     if (!(product instanceof Product)) {
       throw new ProductNotDefinedError();
     }
-    return this.ProductRepository.save(product);
+    return this.ProductRepository.save(product, categories);
   }
 
   async getById(id) {
