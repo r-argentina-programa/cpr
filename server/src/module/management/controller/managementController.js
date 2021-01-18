@@ -1,6 +1,9 @@
+const { fromDataToEntity } = require('../mapper/adminMapper');
+
 module.exports = class ManagementController {
   constructor(BrandService, CategoryService, ProductService) {
     this.ROUTE_BASE = '/api';
+    this.ADMIN_ROUTE = '/admin';
     this.MANAGEMENT_VIEW_DIR = 'management/view';
     this.BrandService = BrandService;
     this.CategoryService = CategoryService;
@@ -10,7 +13,8 @@ module.exports = class ManagementController {
   configureRoutes(app) {
     const ROUTE = this.ROUTE_BASE;
 
-    app.get('/admin', this.login.bind(this));
+    app.get(`${this.ADMIN_ROUTE}`, this.loginForm.bind(this));
+    app.post(`${this.ADMIN_ROUTE}/login`, this.login.bind(this));
     app.get(`${ROUTE}/brands/all`, this.allBrands.bind(this));
     app.get(`${ROUTE}/brand/:id`, this.brand.bind(this));
     app.get(`${ROUTE}/categories/all`, this.allCategories.bind(this));
@@ -19,8 +23,34 @@ module.exports = class ManagementController {
     app.get(`${ROUTE}/product/:id`, this.product.bind(this));
   }
 
+  async loginForm(req, res) {
+    const { errors, messages } = req.session;
+    res.render(`${this.MANAGEMENT_VIEW_DIR}/login.njk`, { messages, errors });
+    req.session.errors = [];
+    req.session.messages = [];
+  }
+
   async login(req, res) {
-    res.render(`${this.MANAGEMENT_VIEW_DIR}/login.njk`);
+    try {
+      const admin = fromDataToEntity(req.body);
+      if (
+        admin.username === process.env.ADMIN_USERNAME &&
+        admin.password === process.env.ADMIN_PASSWORD
+      ) {
+        req.session.user = process.env.ADMIN_USERNAME;
+        req.session.admin = true;
+        req.session.messages = [
+          `Administrator "${process.env.ADMIN_USERNAME}" logged in successfully`,
+        ];
+        res.redirect(`${this.ADMIN_ROUTE}/product`);
+      } else {
+        req.session.errors = ['Incorrect username and / or password'];
+        res.redirect(`${this.ADMIN_ROUTE}`);
+      }
+    } catch (e) {
+      req.session.errors = [e.message, e.stack];
+      res.redirect(`${this.ADMIN_ROUTE}`);
+    }
   }
 
   async allBrands(req, res) {

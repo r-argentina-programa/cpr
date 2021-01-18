@@ -1,9 +1,22 @@
-{% extends 'management/view/layout/base.njk' %}
+{% extends 'management/view/layout/base.njk' %}{% block body %}
+<h1 class="title is-1">Login as administrator</h1>
 
-{% block body %}
+{% for error in errors %}
+<div class="notification is-danger">
+  {{error}}
+</div>
+{% endfor %}
+
+{% for message in messages %}
+<div class="notification is-success">
+  {{message}}
+</div>
+{% endfor %}
+
+<form action="/admin/login" method="POST">
     <div class="field">
         <p class="control has-icons-left has-icons-right">
-            <input class="input" type="text" placeholder="Username">
+            <input class="input" type="text" name="username" placeholder="Username" required>
             <span class="icon is-small is-left">
                 <i class="fas fa-envelope"></i>
             </span>
@@ -14,7 +27,7 @@
     </div>
     <div class="field">
         <p class="control has-icons-left">
-            <input class="input" type="password" placeholder="Password">
+            <input class="input" type="password" name="password" placeholder="Password" required>
             <span class="icon is-small is-left">
                 <i class="fas fa-lock"></i>
             </span>
@@ -22,9 +35,8 @@
     </div>
     <div class="field">
         <p class="control">
-            <button class="button is-success">
-      Login
-    </button>
+            <input type="submit" class="button is-success" value="Login" />
         </p>
     </div>
+</form>
 {% endblock %}
