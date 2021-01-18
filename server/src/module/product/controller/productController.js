@@ -6,6 +6,7 @@ module.exports = class ProductController {
    * @param  {import("../service/productService")} ProductService
    */
   constructor(BrandService, CategoryService, ProductService, UploadMiddleware) {
+    this.ADMIN_ROUTE = '/admin';
     this.ROUTE_BASE = '/admin/product';
     this.BrandService = BrandService;
     this.CategoryService = CategoryService;
@@ -19,11 +20,29 @@ module.exports = class ProductController {
    */
   configureRoutes(app) {
     const ROUTE = this.ROUTE_BASE;
-    app.post(`${ROUTE}/save`, this.UploadMiddleware.single('file'), this.save.bind(this));
-    app.get(`${ROUTE}/delete/:id`, this.delete.bind(this));
-    app.get(`${ROUTE}/edit/:id`, this.edit.bind(this));
-    app.get(`${ROUTE}/`, this.index.bind(this));
-    app.get(`${ROUTE}/create`, this.create.bind(this));
+    app.post(
+      `${ROUTE}/save`,
+      this.auth.bind(this),
+      this.UploadMiddleware.single('file'),
+      this.save.bind(this)
+    );
+    app.get(`${ROUTE}/delete/:id`, this.auth.bind(this), this.delete.bind(this));
+    app.get(`${ROUTE}/edit/:id`, this.auth.bind(this), this.edit.bind(this));
+    app.get(`${ROUTE}/`, this.auth.bind(this), this.index.bind(this));
+    app.get(`${ROUTE}/create`, this.auth.bind(this), this.create.bind(this));
+  }
+
+  /**
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   * @param {import('express').NextFunction} next
+   */
+  async auth(req, res, next) {
+    if (req.session.username === process.env.ADMIN_USERNAME && req.session.admin) {
+      return next();
+    }
+    req.session.errors = ['You can only see this after you have logged in'];
+    res.redirect(`${this.ADMIN_ROUTE}`);
   }
 
   /**
