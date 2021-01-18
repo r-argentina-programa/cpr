@@ -26,6 +26,11 @@ module.exports = class BrandController {
     );
   }
 
+  /**
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   * @param {import('express').NextFunction} next
+   */
   async auth(req, res, next) {
     if (req.session.username === process.env.ADMIN_USERNAME && req.session.admin) {
       return next();
