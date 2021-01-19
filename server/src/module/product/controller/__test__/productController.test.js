@@ -46,6 +46,7 @@ describe('ProductController methods', () => {
   afterEach(() => {
     Object.values(serviceMock).forEach((mockFn) => mockFn.mockClear());
     Object.values(brandServiceMock).forEach((mockFn) => mockFn.mockClear());
+    Object.values(categoryServiceMock).forEach((mockFn) => mockFn.mockClear());
     Object.values(resMock).forEach((mockFn) => mockFn.mockClear());
     reqMock.session.errors = [];
     reqMock.session.messages = [];
@@ -80,6 +81,7 @@ describe('ProductController methods', () => {
   test('edit renders a form to edit a product', async () => {
     const product = serviceMock.getById(1);
     const brands = brandServiceMock.getAll();
+    const categories = categoryServiceMock.getAll();
     await mockController.edit(reqMock, resMock);
 
     expect(serviceMock.getById).toHaveBeenCalledTimes(2);
@@ -89,6 +91,7 @@ describe('ProductController methods', () => {
     expect(resMock.render).toHaveBeenCalledWith('product/view/form.njk', {
       product,
       brands,
+      categories,
     });
     expect(reqMock.session.errors.length).toBe(0);
   });
@@ -123,10 +126,11 @@ describe('ProductController methods', () => {
     expect(resMock.render).toHaveBeenCalledWith('product/view/form.njk', {
       brands,
       categories,
+      product: { categories: [] },
     });
   });
 
-  test('saves a Product with a image', async () => {
+  test('saves a Product with a image without categories', async () => {
     const reqSaveMock = {
       body: {
         id: 1,
@@ -142,9 +146,11 @@ describe('ProductController methods', () => {
       },
     };
 
+    const categories = [];
+
     await mockController.save(reqSaveMock, resMock);
     expect(serviceMock.save).toHaveBeenCalledTimes(1);
-    expect(serviceMock.save).toHaveBeenCalledWith(createTestProduct(1));
+    expect(serviceMock.save).toHaveBeenCalledWith(createTestProduct(1), categories);
     expect(resMock.redirect).toHaveBeenCalledTimes(1);
     expect(reqSaveMock.session.errors.length).toBe(0);
   });
