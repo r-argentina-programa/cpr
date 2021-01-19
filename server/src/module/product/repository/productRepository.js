@@ -1,6 +1,7 @@
 const { Op } = require('sequelize');
 const { fromModelToEntity } = require('../mapper/mapper');
 const Product = require('../entity/entity');
+const CategoryModel = require('../../category/model/categoryModel');
 
 module.exports = class ProductRepository {
   /**
@@ -10,15 +11,28 @@ module.exports = class ProductRepository {
     this.productModel = productModel;
   }
 
-  async save(product) {
+  async save(product, categories = []) {
     if (!(product instanceof Product)) {
       throw new Error('Product not Defined');
     }
     let productModel;
 
-    const buildOptions = { isNewRecord: !product.id };
+    const buildOptions = {
+      isNewRecord: !product.id,
+    };
+
     productModel = this.productModel.build(product, buildOptions);
     productModel = await productModel.save();
+
+    if (!buildOptions.isNewRecord) {
+      const currentCategories = await productModel.getCategories();
+      const categoriesId = currentCategories.map((category) => category.id);
+      await productModel.removeCategory(categoriesId);
+    }
+
+    categories.map(async (id) => {
+      await productModel.addCategory(id);
+    });
 
     return fromModelToEntity(productModel);
   }
@@ -27,7 +41,12 @@ module.exports = class ProductRepository {
     if (!id) {
       throw new Error('Id not defined');
     }
-    const productInstance = await this.productModel.findByPk(id);
+    const productInstance = await this.productModel.findByPk(id, {
+      include: {
+        model: CategoryModel,
+        as: 'categories',
+      },
+    });
     if (!productInstance) {
       throw new Error(`Product with ID ${id} was not found`);
     }
@@ -42,7 +61,12 @@ module.exports = class ProductRepository {
   }
 
   async getAll() {
-    const productsInstance = await this.productModel.findAll();
+    const productsInstance = await this.productModel.findAll({
+      include: {
+        model: CategoryModel,
+        as: 'categories',
+      },
+    });
     return productsInstance.map((product) => fromModelToEntity(product));
   }
 
