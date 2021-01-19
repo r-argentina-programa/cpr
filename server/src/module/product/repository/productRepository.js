@@ -11,6 +11,9 @@ module.exports = class ProductRepository {
     this.productModel = productModel;
   }
 
+  /**
+   * @param {Product} product
+   */
   async save(product, categories = []) {
     if (!(product instanceof Product)) {
       throw new Error('Product not Defined');
@@ -37,6 +40,9 @@ module.exports = class ProductRepository {
     return fromModelToEntity(productModel);
   }
 
+  /**
+   * @param {number} id
+   */
   async getById(id) {
     if (!id) {
       throw new Error('Id not defined');
@@ -53,6 +59,9 @@ module.exports = class ProductRepository {
     return fromModelToEntity(productInstance);
   }
 
+  /**
+   * @param {Product} product
+   */
   async delete(product) {
     if (!product) {
       throw new Error('Product Not Found');
@@ -73,6 +82,9 @@ module.exports = class ProductRepository {
     return productsInstance.map((product) => fromModelToEntity(product));
   }
 
+  /**
+   * @param {string} term
+   */
   async getAllProductsSearch(term) {
     const products = await this.productModel.findAll({
       where: {

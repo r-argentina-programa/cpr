@@ -120,6 +120,10 @@ module.exports = class BrandController {
     res.redirect(this.ROUTE_BASE);
   }
 
+  /**
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   */
   async viewProducts(req, res) {
     try {
       const { id } = req.params;

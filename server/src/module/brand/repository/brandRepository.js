@@ -16,7 +16,7 @@ module.exports = class BrandRepository {
   }
 
   /**
-   * @param {import(Brand)} brand
+   * @param {Brand} brand
    */
   async save(brand) {
     if (!(brand instanceof Brand)) {
@@ -63,6 +63,9 @@ module.exports = class BrandRepository {
     return fromModelToEntity(brandInstance);
   }
 
+  /**
+   * @param {number} brandId
+   */
   async viewProducts(brandId) {
     const products = await this.ProductModel.findAll({ where: { brand_fk: brandId } });
     return products.map((product) => fromModelToProductEntity(product));

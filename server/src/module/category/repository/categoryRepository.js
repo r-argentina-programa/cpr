@@ -52,7 +52,7 @@ module.exports = class CategoryRepository {
 
   /**
    * @param {import('../entity/Category')} category
-   * @returns {Promise<Boolean>} Returns true if a car was deleted, otherwise it returns false
+   * @returns {Promise<Boolean>} Returns true if a category was deleted, otherwise it returns false
    */
   async delete(category) {
     if (!(category instanceof Category)) {
@@ -62,6 +62,9 @@ module.exports = class CategoryRepository {
     return Boolean(await this.categoryModel.destroy({ where: { id: category.id } }));
   }
 
+  /**
+   * @param {number} categoryId
+   */
   async viewProducts(categoryId) {
     const products = await this.categoryModel.findByPk(categoryId, {
       include: { model: this.productModel, as: 'products' },
