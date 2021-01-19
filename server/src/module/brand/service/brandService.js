@@ -45,6 +45,9 @@ module.exports = class BrandService {
     return this.BrandRepository.getById(brandId);
   }
 
+  /**
+   * @param {number} brandId
+   */
   async viewProducts(brandId) {
     if (!Number(brandId)) {
       throw new BrandIdNotDefinedError();

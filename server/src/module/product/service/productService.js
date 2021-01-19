@@ -10,6 +10,9 @@ module.exports = class ProductService {
     this.ProductRepository = ProductRepository;
   }
 
+  /**
+   * @param {Product} product
+   */
   async save(product, categories) {
     if (!(product instanceof Product)) {
       throw new ProductNotDefinedError();
@@ -17,6 +20,9 @@ module.exports = class ProductService {
     return this.ProductRepository.save(product, categories);
   }
 
+  /**
+   * @param {number} id
+   */
   async getById(id) {
     if (!Number(id)) {
       throw new ProductIdNotDefinedError();
@@ -24,6 +30,9 @@ module.exports = class ProductService {
     return this.ProductRepository.getById(id);
   }
 
+  /**
+   * @param {Product} product
+   */
   async delete(product) {
     if (!(product instanceof Product)) {
       throw new ProductNotDefinedError();
@@ -35,6 +44,9 @@ module.exports = class ProductService {
     return this.ProductRepository.getAll();
   }
 
+  /**
+   * @param {string} term
+   */
   async getAllProductsSearch(term) {
     return this.ProductRepository.getAllProductsSearch(term);
   }

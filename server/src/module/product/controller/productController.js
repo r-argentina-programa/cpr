@@ -136,6 +136,10 @@ module.exports = class ProductController {
     res.redirect(this.ROUTE_BASE);
   }
 
+  /**
+   * @param  {import("express").Request} req
+   * @param  {import("express").Response} res
+   */
   async create(req, res) {
     try {
       const brands = await this.BrandService.getAll();

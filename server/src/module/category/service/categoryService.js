@@ -11,7 +11,7 @@ module.exports = class CategoryService {
   }
 
   /**
-   * @param {import('../entity/Category')} category
+   * @param {Category} category
    */
   async save(category) {
     if (!(category instanceof Category)) {
@@ -35,7 +35,7 @@ module.exports = class CategoryService {
   }
 
   /**
-   * @param {import('../entity/Category')} category
+   * @param {Category} category
    */
   async delete(category) {
     if (!(category instanceof Category)) {
@@ -45,6 +45,9 @@ module.exports = class CategoryService {
     return this.CategoryRepository.delete(category);
   }
 
+  /**
+   * @param {number} categoryId
+   */
   async viewProducts(categoryId) {
     return this.CategoryRepository.viewProducts(categoryId);
   }
