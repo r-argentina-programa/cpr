@@ -106,7 +106,6 @@ module.exports = class ProductController {
       const brands = await this.BrandService.getAll();
       const categories = await this.CategoryService.getAll();
 
-      console.log(product);
       res.render(`${this.PRODUCT_VIEWS}/form.njk`, {
         product,
         brands,
