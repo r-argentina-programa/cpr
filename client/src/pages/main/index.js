@@ -45,7 +45,7 @@ export default function Main() {
 
   async function changeProductsData(id) {
     await getProductsFromABrand(id);
-    await setProducts(data);
+    setProducts(data);
   }
 
   return (
