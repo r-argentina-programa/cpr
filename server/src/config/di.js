@@ -2,8 +2,6 @@ require('dotenv').config();
 const { default: DIContainer, object, get, factory } = require('rsdi');
 const { Sequelize } = require('sequelize');
 const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
 
 const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);

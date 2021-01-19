@@ -21,7 +21,6 @@ module.exports = class CategoryRepository {
     }
 
     let categoryModel;
-    console.log(category);
     const buildOptions = { isNewRecord: !category.id };
     categoryModel = this.categoryModel.build(category, buildOptions);
     categoryModel = await categoryModel.save();

@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import styled from "styled-components";
 import CardsList from "../../components/cardsList";
 import Header from "../../components/header";
-import { UseBrand } from "../../hooks/brands";
+import { useBrand } from "../../hooks/brands";
 
 const Title = styled.h1`
   margin: 1rem 0;
@@ -16,7 +16,7 @@ const ListContainer = styled.div`
 `;
 
 export default function Brands() {
-  const { getAllBrands, brands } = UseBrand();
+  const { getAllBrands, brands } = useBrand();
 
   useEffect(() => {
     getAllBrands();

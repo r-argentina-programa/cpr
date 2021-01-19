@@ -19,10 +19,11 @@ export function BrandsProvider({ children }) {
 
   async function getProductsFromABrand(id) {
     try {
-      console.log(id);
       const res = await api.get(`/api/brand/${id}/viewProducts`);
       setData(res.data);
-    } catch (error) {}
+    } catch (error) {
+      console.log(error.message);
+    }
   }
 
   return (
@@ -41,10 +42,10 @@ export function BrandsProvider({ children }) {
   );
 }
 
-export function UseBrand() {
+export function useBrand() {
   const context = useContext(BrandContext);
   if (!context) {
-    throw new Error("UseBrand must be used within a BrandProvider  ");
+    throw new Error("useBrand must be used within a BrandProvider  ");
   }
   return context;
 }
