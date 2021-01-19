@@ -1,6 +1,11 @@
 const { fromDataToEntity } = require('../mapper/adminMapper');
 
 module.exports = class ManagementController {
+  /**
+   * @param  {import("../../brand/service/brandService")} BrandService
+   * @param  {import("../../category/service/categoryService"} CategoryService
+   * @param  {import("../../product/service/productService"} ProductService
+   */
   constructor(BrandService, CategoryService, ProductService) {
     this.ROUTE_BASE = '/api';
     this.ADMIN_ROUTE = '/admin';
@@ -23,14 +28,25 @@ module.exports = class ManagementController {
     app.get(`${ROUTE}/products/all`, this.allProducts.bind(this));
     app.get(`${ROUTE}/product/:id`, this.product.bind(this));
     app.get(`${ROUTE}/search/:term`, this.search.bind(this));
-    app.get(`${ROUTE}/brand/:id/viewProducts`, this.viewProducts.bind(this));
+    app.get(`${ROUTE}/brand/:id/viewProducts`, this.viewProductsByBrand.bind(this));
+    app.get(`${ROUTE}/category/:id/viewProducts`, this.viewProductsByCategory.bind(this));
   }
 
-  async viewProducts(req, res) {
+  async viewProductsByBrand(req, res) {
     const { id } = req.params;
     try {
       const products = await this.BrandService.viewProducts(id);
       res.status(200).send(products);
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
+  async viewProductsByCategory(req, res) {
+    const { id } = req.params;
+    try {
+      const products = await this.CategoryService.viewProducts(id);
+      res.json(products);
     } catch (error) {
       console.log(error.message);
     }

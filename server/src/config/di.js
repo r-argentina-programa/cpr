@@ -113,7 +113,10 @@ function addCategoryModuleDefinitions(container) {
   container.addDefinitions({
     CategoryController: object(CategoryController).construct(get('CategoryService')),
     CategoryService: object(CategoryService).construct(get('CategoryRepository')),
-    CategoryRepository: object(CategoryRepository).construct(get('CategoryModel')),
+    CategoryRepository: object(CategoryRepository).construct(
+      get('CategoryModel'),
+      get('ProductModel')
+    ),
     CategoryModel: factory(configureCategoryModel),
   });
 }

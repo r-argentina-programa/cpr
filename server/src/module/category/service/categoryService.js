@@ -44,4 +44,8 @@ module.exports = class CategoryService {
 
     return this.CategoryRepository.delete(category);
   }
+
+  async viewProducts(categoryId) {
+    return this.CategoryRepository.viewProducts(categoryId);
+  }
 };

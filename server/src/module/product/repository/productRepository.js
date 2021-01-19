@@ -65,6 +65,9 @@ module.exports = class ProductRepository {
       include: {
         model: CategoryModel,
         as: 'categories',
+        through: {
+          attributes: [],
+        },
       },
     });
     return productsInstance.map((product) => fromModelToEntity(product));

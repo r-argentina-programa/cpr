@@ -38,7 +38,6 @@ module.exports = class ProductModel extends Model {
             key: 'id',
           },
         },
-        // category_fk TODO
         updatedAt: {
           type: DataTypes.DATE,
           defaultValue: Sequelize.NOW,

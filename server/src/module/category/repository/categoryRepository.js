@@ -1,4 +1,5 @@
 const { fromModelToEntity } = require('../mapper/categoryMapper');
+const { fromModelToEntity: fromModelToProductEntity } = require('../../product/mapper/mapper');
 const CategoryNotDefinedError = require('../error/CategoryNotDefinedError');
 const CategoryIdNotDefinedError = require('../error/CategoryIdNotDefinedError');
 const CategoryNotFoundError = require('../error/CategoryNotFoundError');
@@ -8,8 +9,9 @@ module.exports = class CategoryRepository {
   /**
    * @param {typeof import('../model/categoryModel')} categoryModel
    */
-  constructor(categoryModel) {
+  constructor(categoryModel, productModel) {
     this.categoryModel = categoryModel;
+    this.productModel = productModel;
   }
 
   /**
@@ -58,5 +60,12 @@ module.exports = class CategoryRepository {
     }
 
     return Boolean(await this.categoryModel.destroy({ where: { id: category.id } }));
+  }
+
+  async viewProducts(categoryId) {
+    const products = await this.categoryModel.findByPk(categoryId, {
+      include: { model: this.productModel, as: 'products' },
+    });
+    return products.products.map((product) => fromModelToProductEntity(product));
   }
 };
