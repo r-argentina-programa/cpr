@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "nodemon src/app.js",
     "test:watch": "jest --watch --rootDir=src",
+    "test:coverage": "jest --coverage",
     "test": "jest"
   },
   "repository": {
