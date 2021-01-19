@@ -1,4 +1,4 @@
-const Category = require('../../entity/category');
+const Category = require('../../entity/Category');
 
 module.exports = function createTestCategory(id) {
   return new Category({
