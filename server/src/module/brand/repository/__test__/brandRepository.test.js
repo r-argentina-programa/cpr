@@ -1,6 +1,6 @@
 const { Sequelize } = require('sequelize');
 const BrandRepository = require('../brandRepository');
-const brandModel = require('../../model/BrandModel');
+const brandModel = require('../../model/brandModel');
 const productModel = require('../../../product/model/productModel');
 const createTestBrand = require('../../controller/__test__/brands.fixture');
 const createTestProduct = require('../../../product/controller/__test__/products.fixture');
