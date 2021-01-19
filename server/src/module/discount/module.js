@@ -2,6 +2,7 @@ const DiscountController = require('./controller/discountController');
 const DiscountService = require('./service/discountService');
 const DiscountRepository = require('./repository/discountRepository');
 const DiscountModel = require('./model/discountModel');
+const DiscountTypeModel = require('./model/discountTypeModel');
 
 /**
  * @param  {import("rsdi").IDIContainer} container
@@ -20,5 +21,6 @@ module.exports = {
   DiscountService,
   DiscountRepository,
   DiscountModel,
+  DiscountTypeModel,
   initDiscountModule,
 };
