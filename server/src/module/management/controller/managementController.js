@@ -1,6 +1,11 @@
 const { fromDataToEntity } = require('../mapper/adminMapper');
 
 module.exports = class ManagementController {
+  /**
+   * @param  {import("../../brand/service/brandService")} BrandService
+   * @param  {import("../../category/service/categoryService"} CategoryService
+   * @param  {import("../../product/service/productService"} ProductService
+   */
   constructor(BrandService, CategoryService, ProductService) {
     this.ROUTE_BASE = '/api';
     this.ADMIN_ROUTE = '/admin';
@@ -10,6 +15,9 @@ module.exports = class ManagementController {
     this.ProductService = ProductService;
   }
 
+  /**
+   * @param  {import("express".Application)} app
+   */
   configureRoutes(app) {
     const ROUTE = this.ROUTE_BASE;
 
@@ -23,10 +31,15 @@ module.exports = class ManagementController {
     app.get(`${ROUTE}/products/all`, this.allProducts.bind(this));
     app.get(`${ROUTE}/product/:id`, this.product.bind(this));
     app.get(`${ROUTE}/search/:term`, this.search.bind(this));
-    app.get(`${ROUTE}/brand/:id/viewProducts`, this.viewProducts.bind(this));
+    app.get(`${ROUTE}/brand/:id/viewProducts`, this.viewProductsByBrand.bind(this));
+    app.get(`${ROUTE}/category/:id/viewProducts`, this.viewProductsByCategory.bind(this));
   }
 
-  async viewProducts(req, res) {
+  /**
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   */
+  async viewProductsByBrand(req, res) {
     const { id } = req.params;
     try {
       const products = await this.BrandService.viewProducts(id);
@@ -36,6 +49,24 @@ module.exports = class ManagementController {
     }
   }
 
+  /**
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   */
+  async viewProductsByCategory(req, res) {
+    const { id } = req.params;
+    try {
+      const products = await this.CategoryService.viewProducts(id);
+      res.json(products);
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
+  /**
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   */
   async loginForm(req, res) {
     const { errors, messages } = req.session;
     res.render(`${this.MANAGEMENT_VIEW_DIR}/login.njk`, { messages, errors });
@@ -43,6 +74,10 @@ module.exports = class ManagementController {
     req.session.messages = [];
   }
 
+  /**
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   */
   async login(req, res) {
     try {
       const admin = fromDataToEntity(req.body);
@@ -66,6 +101,10 @@ module.exports = class ManagementController {
     }
   }
 
+  /**
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   */
   async logout(req, res) {
     try {
       req.session.username = [];
@@ -78,6 +117,10 @@ module.exports = class ManagementController {
     }
   }
 
+  /**
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   */
   async allBrands(req, res) {
     try {
       const brands = await this.BrandService.getAll();
@@ -87,6 +130,10 @@ module.exports = class ManagementController {
     }
   }
 
+  /**
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   */
   async brand(req, res) {
     try {
       const { id } = req.params;
@@ -97,6 +144,10 @@ module.exports = class ManagementController {
     }
   }
 
+  /**
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   */
   async allCategories(req, res) {
     try {
       const categories = await this.CategoryService.getAll();
@@ -106,6 +157,10 @@ module.exports = class ManagementController {
     }
   }
 
+  /**
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   */
   async category(req, res) {
     try {
       const { id } = req.params;
@@ -116,6 +171,10 @@ module.exports = class ManagementController {
     }
   }
 
+  /**
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   */
   async allProducts(req, res) {
     try {
       const products = await this.ProductService.getAll();
@@ -125,6 +184,10 @@ module.exports = class ManagementController {
     }
   }
 
+  /**
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   */
   async product(req, res) {
     try {
       const { id } = req.params;
@@ -135,6 +198,10 @@ module.exports = class ManagementController {
     }
   }
 
+  /**
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   */
   async search(req, res) {
     const { term } = req.params;
     const products = await this.ProductService.getAllProductsSearch(term);

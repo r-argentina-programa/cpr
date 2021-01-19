@@ -38,7 +38,6 @@ module.exports = class ProductModel extends Model {
             key: 'id',
           },
         },
-        // category_fk TODO
         updatedAt: {
           type: DataTypes.DATE,
           defaultValue: Sequelize.NOW,
@@ -61,6 +60,10 @@ module.exports = class ProductModel extends Model {
   }
 
   static setupAssociation(CategoryModel) {
-    ProductModel.belongsToMany(CategoryModel, { through: 'category_products' });
+    ProductModel.belongsToMany(CategoryModel, {
+      through: 'category_products',
+      foreignKey: 'product_id',
+      as: 'categories',
+    });
   }
 };

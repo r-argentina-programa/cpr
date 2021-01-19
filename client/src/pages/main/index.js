@@ -5,13 +5,14 @@ import styled from "styled-components/macro";
 import CardsList from "../../components/cardsList";
 import { useBrand } from "../../hooks/brands";
 import { Link } from "react-router-dom";
+import { useCategories } from "../../hooks/categories";
 
 const ListContainer = styled.div`
   display: flex;
   align-items: center;
 `;
 
-const BrandsContainer = styled.div`
+const NavContainer = styled.div`
   display: flex;
   justify-content: center;
   padding: 0.5rem 0;
@@ -37,34 +38,59 @@ const Title = styled.h1`
 export default function Main() {
   const { products, getAllProducts, setProducts } = useProducts();
   const { getAllBrands, brands, getProductsFromABrand, data } = useBrand();
+  const {
+    getAllCategories,
+    categories,
+    getProductsFromCategory,
+    dataCategories,
+  } = useCategories();
 
   useEffect(() => {
     getAllProducts();
     getAllBrands();
+    getAllCategories();
   }, []);
 
   async function changeProductsData(id) {
     await getProductsFromABrand(id);
-    await setProducts(data);
+    setProducts(data);
   }
 
+  async function changeProductsDataByCategory(id) {
+    await getProductsFromCategory(id);
+    await setProducts(dataCategories);
+  }
   return (
     <>
       <Header />
-      <BrandsContainer>
+      <NavContainer>
         {brands.map((brand) => (
           <Link
             key={brand.id}
             to="#"
-            data-id={brand.id}
+            brand-id={brand.id}
             onClick={(e) =>
-              changeProductsData(e.target.getAttribute("data-id"))
+              changeProductsData(e.target.getAttribute("brand-id"))
             }
           >
             {brand.name}
           </Link>
         ))}
-      </BrandsContainer>
+      </NavContainer>
+      <NavContainer>
+        {categories.map((category) => (
+          <Link
+            key={category.id}
+            to="#"
+            category-id={category.id}
+            onClick={(e) =>
+              changeProductsDataByCategory(e.target.getAttribute("category-id"))
+            }
+          >
+            {category.name}
+          </Link>
+        ))}
+      </NavContainer>
       <Title>See all the products Here!</Title>
       <ListContainer className="container-fluid">
         {products.map((product) => (

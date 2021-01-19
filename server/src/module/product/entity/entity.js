@@ -1,5 +1,15 @@
 module.exports = class Product {
-  constructor({ id, name, defaultPrice, imageSrc, description, brandFk, updatedAt, createdAt }) {
+  constructor({
+    id,
+    name,
+    defaultPrice,
+    imageSrc,
+    description,
+    brandFk,
+    categories = [],
+    updatedAt,
+    createdAt,
+  }) {
     this.id = id;
     this.name = name;
     this.defaultPrice = defaultPrice;
@@ -8,5 +18,6 @@ module.exports = class Product {
     this.brandFk = brandFk;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
+    this.categories = categories;
   }
 };
