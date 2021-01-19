@@ -6,6 +6,7 @@ module.exports = class CategoryController {
    * @param  {import("../service/categoryService")} categoryService
    */
   constructor(categoryService) {
+    this.ADMIN_ROUTE = '/admin';
     this.categoryService = categoryService;
     this.CATEGORY_VIEWS = 'category/view';
     this.ROUTE_BASE = '/admin/category';
@@ -16,12 +17,25 @@ module.exports = class CategoryController {
    */
   configureRoutes(app) {
     const ROUTE = this.ROUTE_BASE;
-    app.get(`${ROUTE}`, this.index.bind(this));
-    app.get(`${ROUTE}/view/:id`, this.view.bind(this));
-    app.get(`${ROUTE}/edit/:id`, this.edit.bind(this));
-    app.get(`${ROUTE}/create`, this.create.bind(this));
-    app.post(`${ROUTE}/save`, this.save.bind(this));
-    app.get(`${ROUTE}/delete/:id`, this.delete.bind(this));
+    app.get(`${ROUTE}`, this.auth.bind(this), this.index.bind(this));
+    app.get(`${ROUTE}/view/:id`, this.auth.bind(this), this.view.bind(this));
+    app.get(`${ROUTE}/edit/:id`, this.auth.bind(this), this.edit.bind(this));
+    app.get(`${ROUTE}/create`, this.auth.bind(this), this.create.bind(this));
+    app.post(`${ROUTE}/save`, this.auth.bind(this), this.save.bind(this));
+    app.get(`${ROUTE}/delete/:id`, this.auth.bind(this), this.delete.bind(this));
+  }
+
+  /**
+   * @param {import('express').Request} req
+   * @param {import('express').Response} res
+   * @param {import('express').NextFunction} next
+   */
+  async auth(req, res, next) {
+    if (req.session.username === process.env.ADMIN_USERNAME && req.session.admin) {
+      return next();
+    }
+    req.session.errors = ['You can only see this after you have logged in'];
+    res.redirect(`${this.ADMIN_ROUTE}`);
   }
 
   /**

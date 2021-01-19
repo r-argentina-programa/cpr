@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <title>Administration Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/css/main.css"/>
+  </head>
+
+  <body>
+    <section>
+      <div class="container">
+        <nav class="navbar" role="navigation" aria-label="main navigation">
+          <div class="navbar-brand">
+            <a class="navbar-item" href="/admin/product">
+              <h2 class="title is-2">Admin Panel</h2>
+            </a>
+          </div>
+        </nav>
+
+        {% block body %}{% endblock %}
+      </div>
+    </section>
+    {% block footerScripts %}{% endblock %}
+  </body>
+</html>
