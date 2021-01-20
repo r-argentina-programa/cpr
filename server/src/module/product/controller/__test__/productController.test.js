@@ -206,6 +206,32 @@ describe('ProductController methods', () => {
     expect(reqSaveMock.session.errors).toHaveLength(0);
   });
 
+  test('save, saves a new Product with a image and categories', async () => {
+    const reqSaveMock = {
+      body: {
+        id: 0,
+        name: 'coca-cola',
+        defaultPrice: '300',
+        description: 'product description',
+        brand_fk: '3',
+        categories: '[{"id":1,"value":"Bebida"},{"id":2,"value":"Hogar"}]',
+      },
+      file: { buffer: '/public/uploads/test.jpg' },
+      session: {
+        errors: [],
+        messages: [],
+      },
+    };
+
+    const categories = [1, 2];
+
+    await mockController.save(reqSaveMock, resMock);
+    expect(serviceMock.save).toHaveBeenCalledTimes(1);
+    expect(serviceMock.save).toHaveBeenCalledWith(createTestProduct(0), categories);
+    expect(resMock.redirect).toHaveBeenCalledTimes(1);
+    expect(reqSaveMock.session.errors).toHaveLength(0);
+  });
+
   test('save, updates a Product with a image without categories', async () => {
     const reqSaveMock = {
       body: {
