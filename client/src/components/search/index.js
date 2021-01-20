@@ -1,4 +1,3 @@
-import { useSearch } from "../../hooks/search";
 import styled from "styled-components/macro";
 import ab2str from "arraybuffer-to-string";
 import { useEffect, useState } from "react";
@@ -66,8 +65,7 @@ const ContainerProduct = styled.div`
   }
 `;
 export default function SearchContainer() {
-  const { products } = useSearch();
-
+  const products = [];
   return (
     <Container>
       <ContainerResults>
