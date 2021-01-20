@@ -8,6 +8,7 @@ import {
   GET_ALL_PRODUCTS,
   GET_PRODUCT_DETAILS,
   PRODUCTS_BY_BRAND,
+  PRODUCTS_BY_CATEGORY,
 } from "./productTypes";
 
 export const ProductContext = createContext();
@@ -47,10 +48,20 @@ const ProductContextProvider = ({ children }) => {
         dispatch({ type: PRODUCTS_BY_BRAND, payload: res.data });
       }
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
     }
   };
 
+  const getProductsByCategory = async (categoryId) => {
+    try {
+      const res = await api.get(`/api/category/${categoryId}/viewProducts`);
+      if (res.status === 200) {
+        dispatch({ type: PRODUCTS_BY_CATEGORY, payload: res.data });
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
   return (
     <ProductContext.Provider
       value={{
@@ -59,6 +70,7 @@ const ProductContextProvider = ({ children }) => {
         getProductDetails,
         product: state.product,
         getProductsByBrand,
+        getProductsByCategory,
       }}
     >
       {children}

@@ -2,12 +2,14 @@ import {
   GET_ALL_PRODUCTS,
   GET_PRODUCT_DETAILS,
   PRODUCTS_BY_BRAND,
+  PRODUCTS_BY_CATEGORY,
 } from "./productTypes";
 
 export default function productReducer(state, action) {
   switch (action.type) {
     case GET_ALL_PRODUCTS:
     case PRODUCTS_BY_BRAND:
+    case PRODUCTS_BY_CATEGORY:
       return {
         ...state,
         products: [...action.payload],

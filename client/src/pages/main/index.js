@@ -36,9 +36,12 @@ const Title = styled.h1`
 `;
 
 export default function Main() {
-  const { getAllProducts, products, getProductsByBrand } = useContext(
-    ProductContext
-  );
+  const {
+    getAllProducts,
+    products,
+    getProductsByBrand,
+    getProductsByCategory,
+  } = useContext(ProductContext);
   const { getAllBrands, brands } = useContext(BrandContext);
   const { getAllCategories, categories } = useContext(CategoryContext);
 
@@ -47,7 +50,6 @@ export default function Main() {
     getAllBrands();
     getAllCategories();
   }, []);
-
   return (
     <>
       <Header />
@@ -67,7 +69,14 @@ export default function Main() {
       </NavContainer>
       <NavContainer>
         {categories.map((category) => (
-          <Link key={category.id} to="#" category-id={category.id}>
+          <Link
+            key={category.id}
+            to="#"
+            category-id={category.id}
+            onClick={(e) =>
+              getProductsByCategory(e.target.getAttribute("category-id"))
+            }
+          >
             {category.name}
           </Link>
         ))}
