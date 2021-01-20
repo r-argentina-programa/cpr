@@ -28,6 +28,8 @@ const reqMock = {
   session: {
     errors: [],
     messages: [],
+    username: process.env.ADMIN_USERNAME,
+    admin: true,
   },
 };
 const resMock = {
@@ -42,6 +44,8 @@ const mockController = new ProductController(
   uploadMock
 );
 
+const nextMock = jest.fn();
+
 describe('ProductController methods', () => {
   afterEach(() => {
     Object.values(serviceMock).forEach((mockFn) => mockFn.mockClear());
@@ -50,6 +54,7 @@ describe('ProductController methods', () => {
     Object.values(resMock).forEach((mockFn) => mockFn.mockClear());
     reqMock.session.errors = [];
     reqMock.session.messages = [];
+    nextMock.mockClear();
   });
 
   test('configures routes', () => {
@@ -62,6 +67,20 @@ describe('ProductController methods', () => {
     expect(app.get).toHaveBeenCalled();
     expect(app.post).toHaveBeenCalled();
     expect(uploadMock.single).toHaveBeenCalled();
+  });
+
+  test('Auth calls next because session username matches with admin username', () => {
+    mockController.auth(reqMock, resMock, nextMock);
+    expect(nextMock).toHaveBeenCalled();
+    expect(reqMock.session.errors).toHaveLength(0);
+  });
+
+  test('Auth sets session errors and redirects because session username doesnt match with admin username', () => {
+    reqMock.session.username = 'customer';
+    mockController.auth(reqMock, resMock, nextMock);
+    expect(nextMock).not.toHaveBeenCalled();
+    expect(reqMock.session.errors).not.toHaveLength(0);
+    expect(resMock.redirect).toHaveBeenCalled();
   });
 
   test('index renders index.njk with a list of products', async () => {
@@ -111,7 +130,7 @@ describe('ProductController methods', () => {
       throw new Error();
     });
     await mockController.edit(reqMock, resMock);
-    expect(reqMock.session.errors.length).not.toBe(0);
+    expect(reqMock.session.errors).not.toHaveLength(0);
     expect(resMock.redirect).toHaveBeenCalledTimes(1);
   });
 
@@ -152,15 +171,15 @@ describe('ProductController methods', () => {
     expect(serviceMock.save).toHaveBeenCalledTimes(1);
     expect(serviceMock.save).toHaveBeenCalledWith(createTestProduct(1), categories);
     expect(resMock.redirect).toHaveBeenCalledTimes(1);
-    expect(reqSaveMock.session.errors.length).toBe(0);
+    expect(reqSaveMock.session.errors).toHaveLength(0);
   });
 
   test('deletes an existing Product', async () => {
     await mockController.delete(reqMock, resMock);
 
     expect(serviceMock.delete).toHaveBeenCalledTimes(1);
-    expect(reqMock.session.errors.length).toBe(0);
-    expect(reqMock.session.messages.length).not.toBe(0);
+    expect(reqMock.session.errors).toHaveLength(0);
+    expect(reqMock.session.messages).not.toHaveLength(0);
     expect(resMock.redirect).toHaveBeenCalledTimes(1);
   });
 
@@ -172,5 +191,27 @@ describe('ProductController methods', () => {
     await expect(mockController.delete(reqMockWithoutProductId, resMock)).rejects.toThrowError(
       ProductIdNotDefinedError
     );
+  });
+
+  test('deletes sets error because product was not found', async () => {
+    serviceMock.getById.mockImplementationOnce(() => {
+      throw new Error();
+    });
+    await mockController.delete(reqMock, resMock);
+
+    expect(serviceMock.delete).toHaveBeenCalledTimes(0);
+    expect(reqMock.session.errors).not.toHaveLength(0);
+    expect(resMock.redirect).toHaveBeenCalledTimes(1);
+  });
+
+  test('deletes sets error because delete was not successful', async () => {
+    serviceMock.delete.mockImplementationOnce(() => {
+      throw new Error();
+    });
+    await mockController.delete(reqMock, resMock);
+
+    expect(serviceMock.delete).toHaveBeenCalledTimes(1);
+    expect(reqMock.session.errors).not.toHaveLength(0);
+    expect(resMock.redirect).toHaveBeenCalledTimes(1);
   });
 });
