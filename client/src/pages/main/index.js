@@ -35,11 +35,12 @@ const Title = styled.h1`
 
 export default function Main() {
   const brands = [];
-  const products = [];
   const categories = [];
-  const { getAllProducts } = useContext(ProductContext);
+  const { getAllProducts, products } = useContext(ProductContext);
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    getAllProducts();
+  }, []);
 
   return (
     <>

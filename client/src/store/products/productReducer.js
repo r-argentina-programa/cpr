@@ -5,7 +5,7 @@ export default function productReducer(state, action) {
     case GET_ALL_PRODUCTS:
       return {
         ...state,
-        products: [...state.products],
+        products: [...action.payload],
       };
     default:
       return state;
