@@ -14,12 +14,17 @@ const reqMock = {
   session: {
     errors: [],
     messages: [],
+    username: process.env.ADMIN_USERNAME,
+    admin: true,
   },
 };
+
 const resMock = {
   render: jest.fn(),
   redirect: jest.fn(),
 };
+
+const nextMock = jest.fn();
 
 const mockController = new CategoryController(serviceMock);
 
@@ -27,6 +32,7 @@ describe('CategoryController methods', () => {
   afterEach(() => {
     Object.values(serviceMock).forEach((mockFn) => mockFn.mockClear());
     Object.values(resMock).forEach((mockFn) => mockFn.mockClear());
+    nextMock.mockClear();
     reqMock.session.errors = [];
     reqMock.session.messages = [];
   });
@@ -40,6 +46,20 @@ describe('CategoryController methods', () => {
 
     expect(app.get).toHaveBeenCalled();
     expect(app.post).toHaveBeenCalled();
+  });
+
+  test('Auth calls next because session username matches with admin username', () => {
+    mockController.auth(reqMock, resMock, nextMock);
+    expect(nextMock).toHaveBeenCalled();
+    expect(reqMock.session.errors).toHaveLength(0);
+  });
+
+  test('Auth sets session errors and redirects because session username doesnt match with admin username', () => {
+    reqMock.session.username = 'customer';
+    mockController.auth(reqMock, resMock, nextMock);
+    expect(nextMock).not.toHaveBeenCalled();
+    expect(reqMock.session.errors).not.toHaveLength(0);
+    expect(resMock.redirect).toHaveBeenCalled();
   });
 
   test('index renders index.njk with a list of categories', async () => {
