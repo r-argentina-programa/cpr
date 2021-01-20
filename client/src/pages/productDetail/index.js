@@ -1,27 +1,30 @@
 import Header from "../../components/header";
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Card from "react-bootstrap/Card";
 import ab2str from "arraybuffer-to-string";
+import { ProductContext } from "../../store/products/productContext";
 
 export default function ProductDetail() {
   const { id } = useParams();
   const [image, setImage] = useState("");
+  const { product, getProductDetails } = useContext(ProductContext);
+
+  useEffect(() => {
+    getProductDetails(id);
+  }, []);
 
   useEffect(() => {
     let uint8;
-    if (product.data) {
-      uint8 = new Uint8Array(product.data.imageSrc.data);
+    if (product.imageSrc) {
+      uint8 = new Uint8Array(product.imageSrc.data);
     }
     setImage(ab2str(uint8));
   }, [product]);
-
-  const product = [];
-  let data;
   return (
     <>
       <Header />
-      {!data ? (
+      {!product ? (
         <p>Loading.. Please wait</p>
       ) : (
         <div className="container-fluid">
@@ -31,9 +34,11 @@ export default function ProductDetail() {
               alt="Card image"
               style={{ width: "30%", height: "10rem", alignSelf: "center" }}
             />
-            <Card.Title className="text-center">{data.name}</Card.Title>
-            <Card.Text className="text-center">{data.description}</Card.Text>
-            <Card.Text className="text-center">${data.defaultPrice}</Card.Text>
+            <Card.Title className="text-center">{product.name}</Card.Title>
+            <Card.Text className="text-center">{product.description}</Card.Text>
+            <Card.Text className="text-center">
+              ${product.defaultPrice}
+            </Card.Text>
           </Card>
         </div>
       )}
