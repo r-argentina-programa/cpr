@@ -149,7 +149,32 @@ describe('ProductController methods', () => {
     });
   });
 
-  test('saves a Product with a image without categories', async () => {
+  test('save, saves a new Product with a image without categories', async () => {
+    const reqSaveMock = {
+      body: {
+        id: 0,
+        name: 'coca-cola',
+        defaultPrice: '300',
+        description: 'product description',
+        brand_fk: '3',
+      },
+      file: { buffer: '/public/uploads/test.jpg' },
+      session: {
+        errors: [],
+        messages: [],
+      },
+    };
+
+    const categories = [];
+
+    await mockController.save(reqSaveMock, resMock);
+    expect(serviceMock.save).toHaveBeenCalledTimes(1);
+    expect(serviceMock.save).toHaveBeenCalledWith(createTestProduct(0), categories);
+    expect(resMock.redirect).toHaveBeenCalledTimes(1);
+    expect(reqSaveMock.session.errors).toHaveLength(0);
+  });
+
+  test('save, updates a Product with a image without categories', async () => {
     const reqSaveMock = {
       body: {
         id: 1,
@@ -172,6 +197,34 @@ describe('ProductController methods', () => {
     expect(serviceMock.save).toHaveBeenCalledWith(createTestProduct(1), categories);
     expect(resMock.redirect).toHaveBeenCalledTimes(1);
     expect(reqSaveMock.session.errors).toHaveLength(0);
+  });
+
+  test('save, set errors because save was not successful', async () => {
+    const reqSaveMock = {
+      body: {
+        id: 1,
+        name: 'coca-cola',
+        defaultPrice: '300',
+        description: 'product description',
+        brand_fk: '3',
+      },
+      file: { buffer: '/public/uploads/test.jpg' },
+      session: {
+        errors: [],
+        messages: [],
+      },
+    };
+
+    const categories = [];
+    serviceMock.save.mockImplementationOnce(() => {
+      throw new Error();
+    });
+
+    await mockController.save(reqSaveMock, resMock);
+    expect(serviceMock.save).toHaveBeenCalledTimes(1);
+    expect(serviceMock.save).toHaveBeenCalledWith(createTestProduct(1), categories);
+    expect(resMock.redirect).toHaveBeenCalledTimes(1);
+    expect(reqSaveMock.session.errors).not.toHaveLength(0);
   });
 
   test('deletes an existing Product', async () => {
