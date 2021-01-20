@@ -76,6 +76,41 @@ describe('CategoryController methods', () => {
     });
   });
 
+  test('view renders view.njk with one category', async () => {
+    await mockController.view(reqMock, resMock, nextMock);
+    const category = serviceMock.getById(1);
+
+    const { errors } = reqMock.session;
+    expect(serviceMock.getById).toHaveBeenCalledTimes(2);
+    expect(resMock.render).toHaveBeenCalledTimes(1);
+    expect(resMock.render).toHaveBeenCalledWith('category/view/view.njk', {
+      category,
+    });
+    expect(errors).toHaveLength(0);
+  });
+
+  test('view throws error because id is not defined', async () => {
+    const reqMockWithoutId = Object.assign({}, reqMock, { params: { id: undefined } });
+    await mockController.view(reqMockWithoutId, resMock, nextMock);
+    const { errors } = reqMock.session;
+
+    expect(resMock.render).toHaveBeenCalledTimes(0);
+    expect(resMock.redirect).toHaveBeenCalled();
+    expect(errors).not.toHaveLength(0);
+  });
+
+  test('view set errors and redirects because category is not found', async () => {
+    serviceMock.getById.mockImplementationOnce(() => {
+      throw new Error();
+    });
+    await mockController.view(reqMock, resMock, nextMock);
+    const { errors } = reqMock.session;
+
+    expect(resMock.render).toHaveBeenCalledTimes(0);
+    expect(resMock.redirect).toHaveBeenCalled();
+    expect(errors).not.toHaveLength(0);
+  });
+
   test('edit renders a form to edit a category', async () => {
     const category = serviceMock.getById(1);
     await mockController.edit(reqMock, resMock);
