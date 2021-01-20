@@ -43,9 +43,9 @@ module.exports = class ManagementController {
     const { id } = req.params;
     try {
       const products = await this.BrandService.viewProducts(id);
-      res.status(200).send(products);
+      res.status(200).json(products);
     } catch (error) {
-      console.log(error.message);
+      res.status(500).send(error);
     }
   }
 
@@ -57,9 +57,9 @@ module.exports = class ManagementController {
     const { id } = req.params;
     try {
       const products = await this.CategoryService.viewProducts(id);
-      res.json(products);
+      res.status(200).json(products);
     } catch (error) {
-      console.log(error.message);
+      res.status(500).send(error);
     }
   }
 
@@ -107,10 +107,14 @@ module.exports = class ManagementController {
    */
   async logout(req, res) {
     try {
-      req.session.username = [];
-      req.session.admin = [];
-      req.session.messages = ['Administrator has been logged out'];
-      res.redirect(`${this.ADMIN_ROUTE}`);
+      if (req.session.admin) {
+        req.session.username = [];
+        req.session.admin = [];
+        req.session.messages = ['Administrator has been logged out'];
+        res.redirect(`${this.ADMIN_ROUTE}`);
+      } else {
+        throw new Error();
+      }
     } catch (e) {
       req.session.errors = [e.message, e.stack];
       res.redirect(`${this.ADMIN_ROUTE}`);
