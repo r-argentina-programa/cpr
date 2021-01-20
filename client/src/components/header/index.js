@@ -2,10 +2,10 @@ import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import Form from "react-bootstrap/Form";
 import FormControl from "react-bootstrap/FormControl";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import SearchContainer from "../search";
 import styled from "styled-components/macro";
-
+import { ProductContext } from "../../store/products/productContext";
 const ContainerSearch = styled.div`
   display: flex;
   align-items: center;
@@ -19,21 +19,19 @@ const ContainerSearch = styled.div`
 
 export default function Header() {
   const [term, setTerm] = useState("");
+  const { getProductBySearch } = useContext(ProductContext);
   let time = null;
-  /*
+
   useEffect(() => {
     clearTimeout(time);
     if (term.trim()) {
       // eslint-disable-next-line
       time = setTimeout(() => {
-        getSearchData(term);
+        getProductBySearch(term);
       }, 2000);
     }
-    return () => {
-      setProducts([]);
-    };
   }, [term]);
-*/
+
   return (
     <header>
       <Navbar bg="dark" variant="dark" sticky="top">

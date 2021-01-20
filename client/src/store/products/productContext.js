@@ -9,6 +9,7 @@ import {
   GET_PRODUCT_DETAILS,
   PRODUCTS_BY_BRAND,
   PRODUCTS_BY_CATEGORY,
+  GET_PRODUCT_SEARCH,
 } from "./productTypes";
 
 export const ProductContext = createContext();
@@ -17,6 +18,7 @@ const ProductContextProvider = ({ children }) => {
   const initialState = {
     products: [],
     product: {},
+    search: [],
   };
 
   const [state, dispatch] = useReducer(productReducer, initialState);
@@ -62,15 +64,28 @@ const ProductContextProvider = ({ children }) => {
       console.log(error.message);
     }
   };
+
+  const getProductBySearch = async (term) => {
+    try {
+      const res = await api.get(`/api/search/${term}`);
+      if (res.status === 200) {
+        dispatch({ type: GET_PRODUCT_SEARCH, payload: res.data });
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
   return (
     <ProductContext.Provider
       value={{
-        getAllProducts,
         products: state.products,
-        getProductDetails,
         product: state.product,
+        search: state.search,
+        getAllProducts,
+        getProductDetails,
         getProductsByBrand,
         getProductsByCategory,
+        getProductBySearch,
       }}
     >
       {children}

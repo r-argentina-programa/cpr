@@ -3,6 +3,7 @@ import {
   GET_PRODUCT_DETAILS,
   PRODUCTS_BY_BRAND,
   PRODUCTS_BY_CATEGORY,
+  GET_PRODUCT_SEARCH,
 } from "./productTypes";
 
 export default function productReducer(state, action) {
@@ -18,6 +19,11 @@ export default function productReducer(state, action) {
       return {
         ...state,
         product: { ...action.payload },
+      };
+    case GET_PRODUCT_SEARCH:
+      return {
+        ...state,
+        search: [...action.payload],
       };
     default:
       return state;
