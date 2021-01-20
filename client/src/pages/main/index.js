@@ -1,11 +1,11 @@
-import { useEffect } from "react";
 import Header from "../../components/header";
-import { useProducts } from "../../hooks/products";
 import styled from "styled-components/macro";
 import CardsList from "../../components/cardsList";
-import { useBrand } from "../../hooks/brands";
 import { Link } from "react-router-dom";
-import { useCategories } from "../../hooks/categories";
+import { useContext, useEffect } from "react";
+import { ProductContext } from "../../store/products/productContext";
+import { BrandContext } from "../../store/brand/brandContext";
+import { CategoryContext } from "../../store/category/categoryContext";
 
 const ListContainer = styled.div`
   display: flex;
@@ -36,30 +36,20 @@ const Title = styled.h1`
 `;
 
 export default function Main() {
-  const { products, getAllProducts, setProducts } = useProducts();
-  const { getAllBrands, brands, getProductsFromABrand, data } = useBrand();
   const {
-    getAllCategories,
-    categories,
-    getProductsFromCategory,
-    dataCategories,
-  } = useCategories();
+    getAllProducts,
+    products,
+    getProductsByBrand,
+    getProductsByCategory,
+  } = useContext(ProductContext);
+  const { getAllBrands, brands } = useContext(BrandContext);
+  const { getAllCategories, categories } = useContext(CategoryContext);
 
   useEffect(() => {
     getAllProducts();
     getAllBrands();
     getAllCategories();
   }, []);
-
-  async function changeProductsData(id) {
-    await getProductsFromABrand(id);
-    setProducts(data);
-  }
-
-  async function changeProductsDataByCategory(id) {
-    await getProductsFromCategory(id);
-    await setProducts(dataCategories);
-  }
   return (
     <>
       <Header />
@@ -70,7 +60,7 @@ export default function Main() {
             to="#"
             brand-id={brand.id}
             onClick={(e) =>
-              changeProductsData(e.target.getAttribute("brand-id"))
+              getProductsByBrand(e.target.getAttribute("brand-id"))
             }
           >
             {brand.name}
@@ -84,7 +74,7 @@ export default function Main() {
             to="#"
             category-id={category.id}
             onClick={(e) =>
-              changeProductsDataByCategory(e.target.getAttribute("category-id"))
+              getProductsByCategory(e.target.getAttribute("category-id"))
             }
           >
             {category.name}

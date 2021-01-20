@@ -112,7 +112,6 @@
 
   const cleanCategories = categories.map((category)=>({id:category.id,value:category.name}))
   const cleanCurrentCategories = currentCategories.map((category)=>({id:category.id,value:category.name}))
-  console.log(cleanCategories)
   const input = document.querySelector('input[name=categories]'),
     tagify = new Tagify(input, {
         enforceWhitelist : true,
