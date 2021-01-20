@@ -42,7 +42,7 @@ module.exports = class DiscountTypeModel extends Model {
 
   static setupAssociation(DiscountModel) {
     DiscountTypeModel.hasMany(DiscountModel, {
-      foreignKey: 'fkDiscountType',
+      foreignKey: 'fk_discount_type',
       as: 'getType',
     });
   }

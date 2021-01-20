@@ -141,7 +141,10 @@ function addDiscountModuleDefinitions(container) {
   container.addDefinitions({
     DiscountController: object(DiscountController).construct(get('DiscountService')),
     DiscountService: object(DiscountService).construct(get('DiscountRepository')),
-    DiscountRepository: object(DiscountRepository).construct(get('DiscountTypeModel')),
+    DiscountRepository: object(DiscountRepository).construct(
+      get('DiscountModel'),
+      get('DiscountTypeModel')
+    ),
     DiscountModel: factory(configureDiscountModel),
     DiscountTypeModel: factory(configureDiscountTypeModel),
   });
