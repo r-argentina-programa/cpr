@@ -1,18 +1,10 @@
 const Discount = require('../entity/Discount');
 
-function fromDataToEntity({
-  id,
-  'fk-discount-type': fkDiscountType,
-  value,
-  'discount-from': discountFrom,
-  'discount-to': discountTo,
-}) {
+function fromDataToEntity({ id, type, value }) {
   return new Discount({
     id,
-    fkDiscountType,
+    type,
     value,
-    discountFrom,
-    discountTo,
   });
 }
 

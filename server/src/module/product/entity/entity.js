@@ -7,6 +7,7 @@ module.exports = class Product {
     description,
     brandFk,
     categories = [],
+    discounts,
     updatedAt,
     createdAt,
   }) {
@@ -19,5 +20,6 @@ module.exports = class Product {
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
     this.categories = categories;
+    this.discounts = discounts;
   }
 };

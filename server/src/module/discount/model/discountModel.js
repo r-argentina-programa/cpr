@@ -15,20 +15,21 @@ module.exports = class DiscountModel extends Model {
           autoIncrement: true,
           unique: true,
         },
-        fkDiscountType: {
-          type: DataTypes.INTEGER,
+        type: {
+          type: DataTypes.STRING,
           allowNull: false,
         },
         value: {
           type: DataTypes.INTEGER,
           allowNull: false,
         },
-        discountFrom: {
+        updatedAt: {
           type: DataTypes.DATE,
           defaultValue: Sequelize.NOW,
         },
-        discountTo: {
+        createdAt: {
           type: DataTypes.DATE,
+          defaultValue: Sequelize.NOW,
         },
       },
       {
@@ -36,14 +37,16 @@ module.exports = class DiscountModel extends Model {
         modelName: 'Discount',
         underscored: true,
         paranoid: true,
-        timestamps: true,
+        timestamps: false,
       }
     );
 
     return DiscountModel;
   }
 
-  static setupAssociation(DiscountTypeModel) {
-    DiscountModel.belongsTo(DiscountTypeModel);
+  static setupAssociation(ProductModel, CategoryModel, BrandModel) {
+    DiscountModel.belongsToMany(ProductModel, { through: 'discount_products' });
+    DiscountModel.belongsToMany(CategoryModel, { through: 'discount_category' });
+    DiscountModel.belongsToMany(BrandModel, { through: 'discount_brand' });
   }
 };

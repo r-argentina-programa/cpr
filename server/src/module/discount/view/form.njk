@@ -19,12 +19,12 @@
   <input type="hidden" name="id" value="{{ discount.id }}" readonly />
 
   <div class="field">
-    <label class="label">Type</label>
+    <label class="label">Value</label>
     <div class="control has-icons-left">
       <input
         class="input"
-        type="text"
-        name="fk-discount-type"
+        type="number"
+        name="value"
         placeholder="Type"
         required
       />
@@ -35,11 +35,11 @@
   </div>
 
     <div class="field">
-    <label class="label">Value</label>
+    <label class="label">Type</label>
     <div class="control has-icons-left">
-        <select name="value">
-          <option value="1">FIXED</option>
-          <option value="2">PERCENTAGE</option>
+        <select name="type">
+          <option value="Fixed">FIXED</option>
+          <option value="Percentage">PERCENTAGE</option>
         </select>
       <span class="icon is-small is-left">
         <i class="fas fa-user"></i>

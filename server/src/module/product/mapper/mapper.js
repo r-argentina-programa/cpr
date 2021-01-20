@@ -2,6 +2,7 @@ const Product = require('../entity/entity');
 const {
   fromModelToEntity: categoryModelToEntityMapper,
 } = require('../../category/mapper/categoryMapper');
+const { calculatePrice } = require('../../management/utils/calculatePrice');
 
 function fromDataToEntity({ id, name, defaultPrice, imageSrc, description, brand_fk, categories }) {
   categories = categories ? JSON.parse(categories) : [];
@@ -20,7 +21,13 @@ function fromDataToEntity({ id, name, defaultPrice, imageSrc, description, brand
  * @returns {import('../../entity/club')}
  */
 function fromModelToEntity(model) {
-  return new Product(model.toJSON());
+  const modelJson = model.toJSON();
+  modelJson.discounts = modelJson.discounts || [];
+  modelJson.discounts = modelJson.discounts.map((discount) =>
+    calculatePrice(discount, modelJson.defaultPrice)
+  );
+  modelJson.discounts.sort((a, b) => a.finalPrice - b.finalPrice);
+  return new Product(modelJson);
 }
 
 module.exports = {

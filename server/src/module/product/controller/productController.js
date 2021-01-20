@@ -103,6 +103,7 @@ module.exports = class ProductController {
     }
     try {
       const product = await this.ProductService.getById(id);
+      console.log('PRODUCTO', product);
       const brands = await this.BrandService.getAll();
       const categories = await this.CategoryService.getAll();
 
