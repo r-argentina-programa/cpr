@@ -12,6 +12,7 @@ const Title = styled.h1`
 const ListContainer = styled.div`
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
 `;
 
 export default function Brands() {
