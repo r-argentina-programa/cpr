@@ -8,6 +8,7 @@ const repositoryMock = {
   getAll: jest.fn(),
   getById: jest.fn(),
   delete: jest.fn(),
+  viewProducts: jest.fn(),
 };
 
 const mockService = new CategoryService(repositoryMock);
@@ -52,5 +53,13 @@ describe('CategoryService methods', () => {
 
   test('delete throws an error if param is not instance of Brand', async () => {
     await expect(mockService.delete({})).rejects.toThrowError(CategoryNotDefinedError);
+  });
+
+  test('viewProducts calls repository viewProduct method', async () => {
+    const id = 1;
+    await mockService.viewProducts(id);
+
+    expect(repositoryMock.viewProducts).toHaveBeenCalledTimes(1);
+    expect(repositoryMock.viewProducts).toHaveBeenCalledWith(id);
   });
 });
