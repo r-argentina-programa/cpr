@@ -99,6 +99,13 @@
     </div>
   </div>
 
+    <label class="label">Discounts</label>
+  <div class="field">
+    <div class="control">
+        <input name='discounts' placeholder='discounts'/>   
+    </div>
+  </div>
+
   <input type="submit" class="button is-primary is-large" value="Save" />
 
   <hr />
@@ -146,6 +153,48 @@
     });
     
     tagify.addTags(cleanCurrentCategories);
+  </script>
+  <script>
+  const currentDiscounts = {{ discounts | dump | safe }};
+  const discounts = {{ discounts | dump | safe }};
+  console.log(discounts)
+
+  const cleanDiscounts = discounts.map((discount)=>({id:discount.id,value:discount.value, type:discount.type}))
+  const cleanCurrentDiscounts = currentDiscounts.map((discount)=>({id:discount.id,value:discount.value, type:discount.type}))
+  const input2 = document.querySelector('input[name=discounts]'),
+  discountsTagify = new Tagify(input2, {
+        enforceWhitelist : true,
+        delimiters       : null,
+        templates : {
+        tag : function(tagData){
+            try{
+            return `<tag title='${tagData.id}' contenteditable='false' spellcheck="false" class='tagify__tag ${tagData.class ? tagData.class : ""}' ${this.getAttributes(tagData)}>
+                        <x title='remove tag' class='tagify__tag__removeBtn'></x>
+                        <div>
+                            <span class='tagify__tag-text'>${tagData.value}</span><span>${tagData.type}</span>
+                        </div>
+                    </tag>`
+            }
+            catch(err){}
+        },
+
+        dropdownItem : function(tagData){
+            try{
+            return `<div class='tagify__dropdown__item ${tagData.class ? tagData.class : ""}' tagifySuggestionIdx="${tagData.tagifySuggestionIdx}">
+                            <span>${tagData.value}</span><span>${tagData.type}</span>
+                        </div>`
+            }
+            catch(err){}
+        }
+    },
+         whitelist : cleanDiscounts,
+        dropdown : {
+        enabled: 1, // suggest tags after a single character input
+        classname : 'extra-properties' // custom class for the suggestions dropdown
+    } // map tags' values to this property name, so this property will be the actual value and not the printed value on the screen
+    });
+    
+    tagify.addTags(cleanCurrentDiscounts);
 
 
 </script>

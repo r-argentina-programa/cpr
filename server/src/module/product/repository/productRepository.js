@@ -18,7 +18,7 @@ module.exports = class ProductRepository {
   /**
    * @param {Product} product
    */
-  async save(product, categories = []) {
+  async save(product, categories = [], discounts = []) {
     if (!(product instanceof Product)) {
       throw new ProductNotDefinedError();
     }
@@ -39,6 +39,17 @@ module.exports = class ProductRepository {
 
     categories.map(async (id) => {
       await productModel.addCategory(id);
+    });
+
+    if (!buildOptions.isNewRecord) {
+      const currentDiscounts = await productModel.getDiscounts();
+      const discountsId = currentDiscounts.map((discount) => discount.id);
+      await productModel.removeDiscount(discountsId);
+    }
+    console.log('Discounts en el repositorio', discounts);
+
+    discounts.map(async (id) => {
+      await productModel.addDiscount(id);
     });
 
     return fromModelToEntity(productModel);

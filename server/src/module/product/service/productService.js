@@ -13,11 +13,11 @@ module.exports = class ProductService {
   /**
    * @param {Product} product
    */
-  async save(product, categories) {
+  async save(product, categories, discounts) {
     if (!(product instanceof Product)) {
       throw new ProductNotDefinedError();
     }
-    return this.ProductRepository.save(product, categories);
+    return this.ProductRepository.save(product, categories, discounts);
   }
 
   /**
