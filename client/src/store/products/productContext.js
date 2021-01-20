@@ -20,7 +20,6 @@ const ProductContextProvider = ({ children }) => {
       const res = await api.get("/api/products/all");
       if (res.status === 200) {
         dispatch({ type: GET_ALL_PRODUCTS, payload: res.data });
-        console.log(res);
       }
     } catch (error) {
       console.log(error.message);

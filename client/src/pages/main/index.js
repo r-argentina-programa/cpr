@@ -4,6 +4,7 @@ import CardsList from "../../components/cardsList";
 import { Link } from "react-router-dom";
 import { useContext, useEffect } from "react";
 import { ProductContext } from "../../store/products/productContext";
+import { BrandContext } from "../../store/brand/brandContext";
 
 const ListContainer = styled.div`
   display: flex;
@@ -34,12 +35,12 @@ const Title = styled.h1`
 `;
 
 export default function Main() {
-  const brands = [];
   const categories = [];
   const { getAllProducts, products } = useContext(ProductContext);
-
+  const { getAllBrands, brands } = useContext(BrandContext);
   useEffect(() => {
     getAllProducts();
+    getAllBrands();
   }, []);
 
   return (
