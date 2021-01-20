@@ -29,7 +29,11 @@ export default function CardsList({ item, imageSrc, link }) {
       <Card style={{ width: "15rem", height: "19rem" }}>
         <Card.Body>
           <Card.Title style={{ textAlign: "center" }}>{item.name}</Card.Title>
-          <Card.Img variant="top" src={`data:image/png;base64, ${image}`} />
+          <Card.Img
+            variant="top"
+            src={`data:image/png;base64, ${image}`}
+            style={{ height: "9rem", width: "10rem" }}
+          />
           {item.defaultPrice ? (
             <Card.Subtitle style={{ margin: ".3rem 0", color: "grey" }}>
               ${item.defaultPrice}
