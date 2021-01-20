@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { useContext, useEffect } from "react";
 import { ProductContext } from "../../store/products/productContext";
 import { BrandContext } from "../../store/brand/brandContext";
+import { CategoryContext } from "../../store/category/categoryContext";
 
 const ListContainer = styled.div`
   display: flex;
@@ -35,12 +36,14 @@ const Title = styled.h1`
 `;
 
 export default function Main() {
-  const categories = [];
   const { getAllProducts, products } = useContext(ProductContext);
   const { getAllBrands, brands } = useContext(BrandContext);
+  const { getAllCategories, categories } = useContext(CategoryContext);
+
   useEffect(() => {
     getAllProducts();
     getAllBrands();
+    getAllCategories();
   }, []);
 
   return (
