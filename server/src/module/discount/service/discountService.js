@@ -44,4 +44,8 @@ module.exports = class DiscountService {
 
     return this.DiscountRepository.delete(discount);
   }
+
+  async saveType(type) {
+    return this.DiscountRepository.saveType(type);
+  }
 };

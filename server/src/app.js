@@ -11,6 +11,7 @@ const { initProductModule } = require('./module/product/module');
 const { initBrandModule } = require('./module/brand/module');
 const { initCategoryModule } = require('./module/category/module');
 const { initManagementModule } = require('./module/management/module');
+const { initDiscountModule } = require('./module/discount/module');
 
 const PORT = process.env.PORT || 8000;
 
@@ -31,6 +32,7 @@ initProductModule(app, container);
 initBrandModule(app, container);
 initCategoryModule(app, container);
 initManagementModule(app, container);
+initDiscountModule(app, container);
 
 const mainDb = container.get('Sequelize');
 mainDb.sync();
