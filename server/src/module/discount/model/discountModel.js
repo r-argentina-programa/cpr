@@ -20,7 +20,7 @@ module.exports = class DiscountModel extends Model {
           allowNull: false,
           references: {
             model: {
-              model: 'discount_types',
+              tableName: 'discount_types',
               key: 'id',
             },
           },
