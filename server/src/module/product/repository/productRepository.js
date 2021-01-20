@@ -1,5 +1,8 @@
 const { Op } = require('sequelize');
 const { fromModelToEntity } = require('../mapper/mapper');
+const ProductNotDefinedError = require('../error/ProductNotDefinedError');
+const ProductIdNotDefinedError = require('../error/ProductIdNotDefinedError');
+const ProductNotFoundError = require('../error/ProductNotFoundError');
 const Product = require('../entity/entity');
 const CategoryModel = require('../../category/model/categoryModel');
 
@@ -16,7 +19,7 @@ module.exports = class ProductRepository {
    */
   async save(product, categories = []) {
     if (!(product instanceof Product)) {
-      throw new Error('Product not Defined');
+      throw new ProductNotDefinedError();
     }
     let productModel;
 
@@ -45,7 +48,7 @@ module.exports = class ProductRepository {
    */
   async getById(id) {
     if (!id) {
-      throw new Error('Id not defined');
+      throw new ProductIdNotDefinedError();
     }
     const productInstance = await this.productModel.findByPk(id, {
       include: {
@@ -54,7 +57,7 @@ module.exports = class ProductRepository {
       },
     });
     if (!productInstance) {
-      throw new Error(`Product with ID ${id} was not found`);
+      throw new ProductNotFoundError(`There is not existing product with ID ${id}`);
     }
     return fromModelToEntity(productInstance);
   }
@@ -64,7 +67,7 @@ module.exports = class ProductRepository {
    */
   async delete(product) {
     if (!product) {
-      throw new Error('Product Not Found');
+      throw new ProductNotFoundError();
     }
     return this.productModel.destroy({ where: { id: product.id } });
   }

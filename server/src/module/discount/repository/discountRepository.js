@@ -13,7 +13,7 @@ module.exports = class DiscountRepository {
   }
 
   /**
-   * @param {import('../entity/Discount')} discount
+   * @param { Discount } discount
    */
   async save(discount) {
     if (!(discount instanceof Discount)) {
@@ -42,7 +42,7 @@ module.exports = class DiscountRepository {
     }
     const discountInstance = await this.discountModel.findByPk(discountId);
     if (!discountInstance) {
-      throw new DiscountNotFoundError(`There is no existing discount with ID ${discountId}`);
+      throw new DiscountNotFoundError(`There is not existing discount with ID ${discountId}`);
     }
 
     return fromModelToEntity(discountInstance);
