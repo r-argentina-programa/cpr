@@ -164,11 +164,13 @@ function addManagementModuleDefinitions(container) {
 function setupAssociations(container) {
   const productModel = container.get('ProductModel');
   const categoryModel = container.get('CategoryModel');
+  const brandModel = container.get('BrandModel');
   const discountModel = container.get('DiscountModel');
   const discountTypeModel = container.get('DiscountTypeModel');
-  productModel.setupAssociation(categoryModel);
-  categoryModel.setupAssociation(productModel);
-  discountModel.setupAssociation(discountTypeModel);
+  productModel.setupAssociation(categoryModel, discountModel);
+  brandModel.setupAssociation(productModel, discountModel);
+  categoryModel.setupAssociation(productModel, discountModel);
+  discountModel.setupAssociation(productModel, categoryModel, brandModel);
 }
 
 module.exports = function configureDI() {

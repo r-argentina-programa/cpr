@@ -5,6 +5,7 @@ const ProductIdNotDefinedError = require('../error/ProductIdNotDefinedError');
 const ProductNotFoundError = require('../error/ProductNotFoundError');
 const Product = require('../entity/entity');
 const CategoryModel = require('../../category/model/categoryModel');
+const DiscountModel = require('../../discount/model/discountModel');
 
 module.exports = class ProductRepository {
   /**
@@ -51,11 +52,28 @@ module.exports = class ProductRepository {
       throw new ProductIdNotDefinedError();
     }
     const productInstance = await this.productModel.findByPk(id, {
-      include: {
-        model: CategoryModel,
-        as: 'categories',
-      },
+      include: [
+        {
+          model: CategoryModel,
+          as: 'categories',
+          include: {
+            model: DiscountModel,
+            as: 'discounts',
+          },
+        },
+        {
+          model: DiscountModel,
+          as: 'discounts',
+        },
+      ],
     });
+
+    // console.log('discounts', productInstance.discounts);
+    if (Array.isArray(productInstance.categories)) {
+      productInstance.categories.forEach((category) => {
+        productInstance.discounts.push(...category.discounts);
+      });
+    }
     if (!productInstance) {
       throw new ProductNotFoundError(`There is not existing product with ID ${id}`);
     }
