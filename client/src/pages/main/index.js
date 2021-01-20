@@ -10,6 +10,7 @@ import { CategoryContext } from "../../store/category/categoryContext";
 const ListContainer = styled.div`
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
 `;
 
 const NavContainer = styled.div`
