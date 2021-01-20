@@ -149,6 +149,38 @@ describe('ProductController methods', () => {
     });
   });
 
+  test('create throws error because there are no brands created', async () => {
+    brandServiceMock.getAll.mockImplementationOnce(() => []);
+    await mockController.create(reqMock, resMock);
+    expect(brandServiceMock.getAll).toHaveBeenCalledTimes(1);
+
+    expect(resMock.render).toHaveBeenCalledTimes(0);
+    expect(reqMock.session.errors).not.toHaveLength(0);
+    expect(resMock.redirect).toHaveBeenCalled();
+  });
+
+  test('create throws error because there are no categories created', async () => {
+    categoryServiceMock.getAll.mockImplementationOnce(() => []);
+    await mockController.create(reqMock, resMock);
+    expect(categoryServiceMock.getAll).toHaveBeenCalledTimes(1);
+
+    expect(resMock.render).toHaveBeenCalledTimes(0);
+    expect(reqMock.session.errors).not.toHaveLength(0);
+    expect(resMock.redirect).toHaveBeenCalled();
+  });
+
+  test('create throws error because there are no categories and brands created', async () => {
+    categoryServiceMock.getAll.mockImplementationOnce(() => []);
+    brandServiceMock.getAll.mockImplementationOnce(() => []);
+    await mockController.create(reqMock, resMock);
+    expect(categoryServiceMock.getAll).toHaveBeenCalledTimes(1);
+    expect(brandServiceMock.getAll).toHaveBeenCalledTimes(1);
+
+    expect(resMock.render).toHaveBeenCalledTimes(0);
+    expect(reqMock.session.errors).not.toHaveLength(0);
+    expect(resMock.redirect).toHaveBeenCalled();
+  });
+
   test('save, saves a new Product with a image without categories', async () => {
     const reqSaveMock = {
       body: {
