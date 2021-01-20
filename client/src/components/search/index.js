@@ -67,7 +67,6 @@ const ContainerProduct = styled.div`
 `;
 export default function SearchContainer() {
   const { search: products } = useContext(ProductContext);
-  console.log(products);
   return (
     <Container>
       <ContainerResults>
