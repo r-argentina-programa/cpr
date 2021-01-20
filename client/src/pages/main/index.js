@@ -27,6 +27,10 @@ const NavContainer = styled.div`
       color: #e6e6e6;
     }
   }
+  span {
+    color: antiquewhite;
+    margin-right: 1.2rem;
+  }
 `;
 
 const Title = styled.h1`
@@ -54,6 +58,7 @@ export default function Main() {
     <>
       <Header />
       <NavContainer>
+        <span>Brands:</span>
         {brands.map((brand) => (
           <Link
             key={brand.id}
@@ -68,6 +73,7 @@ export default function Main() {
         ))}
       </NavContainer>
       <NavContainer>
+        <span>Categories:</span>
         {categories.map((category) => (
           <Link
             key={category.id}
