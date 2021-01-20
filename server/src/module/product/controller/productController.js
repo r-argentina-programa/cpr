@@ -1,3 +1,4 @@
+const Discount = require('../../discount/entity/Discount');
 const ProductIdNotDefinedError = require('../error/ProductIdNotDefinedError');
 const { fromDataToEntity } = require('../mapper/mapper');
 
@@ -5,12 +6,13 @@ module.exports = class ProductController {
   /**
    * @param  {import("../service/productService")} ProductService
    */
-  constructor(BrandService, CategoryService, ProductService, UploadMiddleware) {
+  constructor(BrandService, CategoryService, ProductService, DiscountService, UploadMiddleware) {
     this.ADMIN_ROUTE = '/admin';
     this.ROUTE_BASE = '/admin/product';
     this.BrandService = BrandService;
     this.CategoryService = CategoryService;
     this.ProductService = ProductService;
+    this.DiscountService = DiscountService;
     this.UploadMiddleware = UploadMiddleware;
     this.PRODUCT_VIEWS = 'product/view';
   }
@@ -72,10 +74,16 @@ module.exports = class ProductController {
       if (req.body.categories) {
         categories = JSON.parse(req.body.categories).map((e) => e.id);
       }
+      let discounts = [];
+      if (req.body.discounts) {
+        discounts = JSON.parse(req.body.discounts).map((e) => e.id);
+      }
       if (req.file) {
         product.imageSrc = req.file.buffer.toString('base64');
       }
-      const savedProduct = await this.ProductService.save(product, categories);
+      console.log('Discounts en el controlador', discounts);
+
+      const savedProduct = await this.ProductService.save(product, categories, discounts);
 
       if (product.id) {
         req.session.messages = [
@@ -145,10 +153,13 @@ module.exports = class ProductController {
     try {
       const brands = await this.BrandService.getAll();
       const categories = await this.CategoryService.getAll();
+      const discounts = await this.DiscountService.getAll();
+      // console.log('descuentos', discounts);
       if (brands.length > 0 && categories.length > 0) {
         res.render(`${this.PRODUCT_VIEWS}/form.njk`, {
           brands,
           categories,
+          discounts,
           product: { categories: [] },
         });
       } else if (!brands.length > 0 && !categories.length > 0) {

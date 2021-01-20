@@ -108,6 +108,7 @@ function addProductModuleDefinitions(container) {
       get('BrandService'),
       get('CategoryService'),
       get('ProductService'),
+      get('DiscountService'),
       get('Multer')
     ),
     ProductService: object(ProductService).construct(get('ProductRepository')),
