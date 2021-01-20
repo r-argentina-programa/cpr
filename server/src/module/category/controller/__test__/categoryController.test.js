@@ -149,7 +149,26 @@ describe('CategoryController methods', () => {
     expect(resMock.render).toHaveBeenCalledWith('category/view/form.njk');
   });
 
-  test('saves a category with a image', async () => {
+  test('save, saves a new category', async () => {
+    const reqSaveMock = {
+      body: {
+        id: 0,
+        name: 'electronics',
+      },
+      session: {
+        errors: [],
+        messages: [],
+      },
+    };
+
+    await mockController.save(reqSaveMock, resMock);
+    expect(serviceMock.save).toHaveBeenCalledTimes(1);
+    expect(serviceMock.save).toHaveBeenCalledWith(createTestCategory(0));
+    expect(resMock.redirect).toHaveBeenCalledTimes(1);
+    expect(reqSaveMock.session.errors).toHaveLength(0);
+  });
+
+  test('save, updates a category', async () => {
     const reqSaveMock = {
       body: {
         id: 1,
@@ -165,7 +184,42 @@ describe('CategoryController methods', () => {
     expect(serviceMock.save).toHaveBeenCalledTimes(1);
     expect(serviceMock.save).toHaveBeenCalledWith(createTestCategory(1));
     expect(resMock.redirect).toHaveBeenCalledTimes(1);
-    expect(reqSaveMock.session.errors.length).toBe(0);
+    expect(reqSaveMock.session.errors).toHaveLength(0);
+  });
+
+  test('save set errors if body is not defined', async () => {
+    const reqSaveMock = {
+      session: {
+        errors: [],
+        messages: [],
+      },
+    };
+    serviceMock.save.mockImplementationOnce(() => {
+      throw new Error();
+    });
+    await mockController.save(reqSaveMock, resMock);
+    expect(resMock.redirect).toHaveBeenCalledTimes(1);
+    expect(reqSaveMock.session.errors).not.toHaveLength(0);
+  });
+
+  test('save set errors if service save throw error', async () => {
+    const reqSaveMock = {
+      body: {
+        id: 1,
+        name: 'electronics',
+      },
+      session: {
+        errors: [],
+        messages: [],
+      },
+    };
+    serviceMock.save.mockImplementationOnce(() => {
+      throw new Error();
+    });
+    await mockController.save(reqSaveMock, resMock);
+    expect(serviceMock.save).toHaveBeenCalledTimes(1);
+    expect(resMock.redirect).toHaveBeenCalledTimes(1);
+    expect(reqSaveMock.session.errors).not.toHaveLength(0);
   });
 
   test('deletes an existing category', async () => {
