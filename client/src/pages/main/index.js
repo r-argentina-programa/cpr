@@ -1,11 +1,7 @@
-import { useEffect } from "react";
 import Header from "../../components/header";
-import { useProducts } from "../../hooks/products";
 import styled from "styled-components/macro";
 import CardsList from "../../components/cardsList";
-import { useBrand } from "../../hooks/brands";
 import { Link } from "react-router-dom";
-import { useCategories } from "../../hooks/categories";
 
 const ListContainer = styled.div`
   display: flex;
@@ -36,57 +32,22 @@ const Title = styled.h1`
 `;
 
 export default function Main() {
-  const { products, getAllProducts, setProducts } = useProducts();
-  const { getAllBrands, brands, getProductsFromABrand, data } = useBrand();
-  const {
-    getAllCategories,
-    categories,
-    getProductsFromCategory,
-    dataCategories,
-  } = useCategories();
-
-  useEffect(() => {
-    getAllProducts();
-    getAllBrands();
-    getAllCategories();
-  }, []);
-
-  async function changeProductsData(id) {
-    await getProductsFromABrand(id);
-    setProducts(data);
-  }
-
-  async function changeProductsDataByCategory(id) {
-    await getProductsFromCategory(id);
-    await setProducts(dataCategories);
-  }
+  const brands = [];
+  const products = [];
+  const categories = [];
   return (
     <>
       <Header />
       <NavContainer>
         {brands.map((brand) => (
-          <Link
-            key={brand.id}
-            to="#"
-            brand-id={brand.id}
-            onClick={(e) =>
-              changeProductsData(e.target.getAttribute("brand-id"))
-            }
-          >
+          <Link key={brand.id} to="#" brand-id={brand.id}>
             {brand.name}
           </Link>
         ))}
       </NavContainer>
       <NavContainer>
         {categories.map((category) => (
-          <Link
-            key={category.id}
-            to="#"
-            category-id={category.id}
-            onClick={(e) =>
-              changeProductsDataByCategory(e.target.getAttribute("category-id"))
-            }
-          >
+          <Link key={category.id} to="#" category-id={category.id}>
             {category.name}
           </Link>
         ))}

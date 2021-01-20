@@ -2,7 +2,6 @@ import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import Form from "react-bootstrap/Form";
 import FormControl from "react-bootstrap/FormControl";
-import { useSearch } from "../../hooks/search";
 import { useEffect, useState } from "react";
 import SearchContainer from "../search";
 import styled from "styled-components/macro";
@@ -19,10 +18,9 @@ const ContainerSearch = styled.div`
 `;
 
 export default function Header() {
-  const { getSearchData, setProducts } = useSearch();
   const [term, setTerm] = useState("");
   let time = null;
-
+  /*
   useEffect(() => {
     clearTimeout(time);
     if (term.trim()) {
@@ -35,7 +33,7 @@ export default function Header() {
       setProducts([]);
     };
   }, [term]);
-
+*/
   return (
     <header>
       <Navbar bg="dark" variant="dark" sticky="top">
