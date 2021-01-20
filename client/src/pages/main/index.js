@@ -2,6 +2,8 @@ import Header from "../../components/header";
 import styled from "styled-components/macro";
 import CardsList from "../../components/cardsList";
 import { Link } from "react-router-dom";
+import { useContext, useEffect } from "react";
+import { ProductContext } from "../../store/products/productContext";
 
 const ListContainer = styled.div`
   display: flex;
@@ -35,6 +37,10 @@ export default function Main() {
   const brands = [];
   const products = [];
   const categories = [];
+  const { getAllProducts } = useContext(ProductContext);
+
+  useEffect(() => {}, []);
+
   return (
     <>
       <Header />
