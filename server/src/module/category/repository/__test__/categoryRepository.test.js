@@ -2,28 +2,37 @@ const { Sequelize } = require('sequelize');
 const CategoryRepository = require('../categoryRepository');
 const categoryModel = require('../../model/categoryModel');
 const productModel = require('../../../product/model/productModel');
+const discountModel = require('../../../discount/model/discountModel');
 const createTestCategory = require('../../controller/__test__/categories.fixture');
 const CategoryNotDefinedError = require('../../error/CategoryNotDefinedError');
 const CategoryIdNotDefinedError = require('../../error/CategoryIdNotDefinedError');
 const CategoryNotFoundError = require('../../error/CategoryNotFoundError');
 
 describe('categoryRepository methods', () => {
-  let sequelize, CategoryModel, ProductModel, categoryRepository;
+  let sequelize, CategoryModel, ProductModel, DiscountModel, categoryRepository;
   beforeEach(async (done) => {
     sequelize = new Sequelize('sqlite::memory', { logging: false });
     CategoryModel = categoryModel.setup(sequelize);
     ProductModel = productModel.setup(sequelize);
+    DiscountModel = discountModel.setup(sequelize);
     CategoryModel.belongsToMany(ProductModel, {
       through: 'category_products',
       foreignKey: 'category_id',
       as: 'products',
+    });
+    CategoryModel.belongsToMany(DiscountModel, {
+      through: 'discount_category',
+      foreignKey: 'category_id',
+      as: 'discounts',
     });
     ProductModel.belongsToMany(CategoryModel, {
       through: 'category_products',
       foreignKey: 'product_id',
       as: 'categories',
     });
-    categoryRepository = new CategoryRepository(CategoryModel, ProductModel);
+    DiscountModel.belongsToMany(ProductModel, { through: 'discount_products' });
+    DiscountModel.belongsToMany(CategoryModel, { through: 'discount_category' });
+    categoryRepository = new CategoryRepository(CategoryModel, ProductModel, DiscountModel);
     await sequelize.sync({ force: true });
     done();
   });

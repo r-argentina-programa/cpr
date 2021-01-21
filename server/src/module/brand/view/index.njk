@@ -15,7 +15,7 @@
 
 <nav class="level-right">
   <div class="level-item">
-    <a href="/admin/brand/create" class="button is-primary is-large">
+    <a href="/admin/brand/create" class="button is-primary is-medium is-light">
       <span class="icon"><i class="fas fa-plus"></i></span>
       <span>Add new Brand</span>
     </a>
@@ -29,6 +29,10 @@
         <th>Id</th>
         <th>Brand</th>
         <th>Logo</th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
       </tr>
     </thead>
 
@@ -43,22 +47,22 @@
           </figure>
         </td>
         <td>
-          <a class="button is-link is-fullwidth" href="/admin/brand/edit/{{ brand.id }}">
+          <a class="button is-link is-fullwidth is-light" href="/admin/brand/edit/{{ brand.id }}">
             <span>Edit</span>
           </a>
         </td>
         <td>
-          <a class="button is-danger is-fullwidth" href="/admin/brand/delete/{{ brand.id }}">
+          <a class="button is-danger is-fullwidth is-light" href="/admin/brand/delete/{{ brand.id }}">
             <span>Delete</span>
           </a>
         </td>
         <td>
-          <a href="/admin/product/create" class="button is-primary is-fullwidth"
+          <a href="/admin/product/create" class="button is-primary is-fullwidth is-light"
             >Create New Product</a
           >
         </td>
          <td>
-          <a href="/admin/brand/product/{{brand.id}}" class="button is-light is-fullwidth"
+          <a href="/admin/brand/product/{{brand.id}}" class="button is-light is-fullwidth is-light"
             >View Products</a
           >
         </td>

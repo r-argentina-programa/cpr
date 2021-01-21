@@ -20,7 +20,7 @@ module.exports = class CategoryRepository {
   /**
    * @param {import('../entity/Category')} category
    */
-  async save(category) {
+  async save(category, discounts = []) {
     if (!(category instanceof Category)) {
       throw new CategoryNotDefinedError();
     }
@@ -30,11 +30,26 @@ module.exports = class CategoryRepository {
     categoryModel = this.categoryModel.build(category, buildOptions);
     categoryModel = await categoryModel.save();
 
+    if (!buildOptions.isNewRecord) {
+      const currentDiscounts = await categoryModel.getDiscounts();
+      const discountsId = currentDiscounts.map((discount) => discount.id);
+      await categoryModel.removeDiscount(discountsId);
+    }
+
+    discounts.map(async (id) => {
+      await categoryModel.addDiscount(id);
+    });
+
     return fromModelToEntity(categoryModel);
   }
 
   async getAll() {
-    const categoryInstances = await this.categoryModel.findAll();
+    const categoryInstances = await this.categoryModel.findAll({
+      include: {
+        model: this.discountModel,
+        as: 'discounts',
+      },
+    });
     return categoryInstances.map(fromModelToEntity);
   }
 
@@ -45,7 +60,12 @@ module.exports = class CategoryRepository {
     if (!Number(categoryId)) {
       throw new CategoryIdNotDefinedError();
     }
-    const categoryInstance = await this.categoryModel.findByPk(categoryId);
+    const categoryInstance = await this.categoryModel.findByPk(categoryId, {
+      include: {
+        model: this.discountModel,
+        as: 'discounts',
+      },
+    });
     if (!categoryInstance) {
       throw new CategoryNotFoundError(`There is no existing category with ID ${categoryId}`);
     }
@@ -92,7 +112,5 @@ module.exports = class CategoryRepository {
       product.discounts.push(...products.discounts);
       return fromModelToProductEntity(product);
     });
-
-    return products.products.map((product) => fromModelToProductEntity(product));
   }
 };

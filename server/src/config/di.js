@@ -138,7 +138,10 @@ function addBrandModuleDefinitions(container) {
 
 function addCategoryModuleDefinitions(container) {
   container.addDefinitions({
-    CategoryController: object(CategoryController).construct(get('CategoryService')),
+    CategoryController: object(CategoryController).construct(
+      get('CategoryService'),
+      get('DiscountService')
+    ),
     CategoryService: object(CategoryService).construct(get('CategoryRepository')),
     CategoryRepository: object(CategoryRepository).construct(
       get('CategoryModel'),

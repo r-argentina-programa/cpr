@@ -1,72 +1,83 @@
-{% extends 'management/view/layout/base.njk' %} {% block body %}
-<h1 class="title is-1">Product Managment</h1>
+{% extends 'management/view/layout/base.njk' %}
+{% block body %}
+  <h1 class="title is-1">Product Managment</h1>
 
-{% for error in errors %}
-<div class="notification is-danger">
-  {{error}}
-</div>
-{% endfor %}
+  {% for error in errors %}
+    <div class="notification is-danger">
+      {{error}}
+    </div>
+  {% endfor %}
 
-{% for message in messages %}
-<div class="notification is-success">
-  {{message}}
-</div>
-{% endfor %}
+  {% for message in messages %}
+    <div class="notification is-success">
+      {{message}}
+    </div>
+  {% endfor %}
 
-<nav class="level-right">
-  <div class="level-item">
-    <a href="/admin/product/create" class="button is-primary is-large">
-      <span class="icon"><i class="fas fa-plus"></i></span>
-      <span>Add new Product</span>
-    </a>
-  </div>
-</nav>
+  <nav class="level-right">
+    <div class="level-item">
+      <a href="/admin/product/create" class="button is-primary is-medium is-light">
+        <span class="icon">
+          <i class="fas fa-plus"></i>
+        </span>
+        <span>Add new Product</span>
+      </a>
+    </div>
+  </nav>
 
-<div class="panel-block">
-  <table class="table is-striped is-narrow is-hoverable is-fullwidth">
-    <thead>
-      <tr>
-        <th>Id:</th>
-        <th>Name:</th>
-        <th>Default Price</th>
-        <th>Logo</th>
-        <th>Description</th>
-        <th>Brand</th>
-        <th>categories</th>
-      </tr>
-    </thead>
+  <div class="panel-block">
+    <table class="table is-striped is-narrow is-hoverable is-fullwidth">
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Name</th>
+          <th>Default Price</th>
+          <th>Image</th>
+          <th>Description</th>
+          <th>Brand</th>
+          <th>Categories</th>
+          <th>Discounts</th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
 
-    <tbody>
-      {% for product in productsList %}
-      <tr>
-        <td>{{ product.id }}</td>
-        <td>{{ product.name }}</td>
-        <td>{{ product.defaultPrice }}</td>
-        <td>
-          <figure class="image is-128x128">
-            <img src="data:image/png;base64, {{ product.imageSrc }}" alt="Product Logo" />
-          </figure>
-        </td>
-        <td>{{ product.description }}</td>
-        <td>{{ product.brandFk }}</td>
-
-        {% for category in product.categories %}
-          <td>{{ category.name }}</td>
+      <tbody>
+        {% for product in productsList %}
+          <tr>
+            <td>{{ product.id }}</td>
+            <td>{{ product.name }}</td>
+            <td>${{ product.defaultPrice }}</td>
+            <td>
+              <figure class="image is-128x128">
+                <img src="data:image/png;base64, {{ product.imageSrc }}" alt="Product Logo"/>
+              </figure>
+            </td>
+            <td>{{ product.description }}</td>
+            <td>{{ product.brand.name }}</td>
+            <td>
+              {% for category in product.categories %}
+                {{ category.name }}
+              {% endfor %}
+            </td>
+            <td>
+              {% for discount in product.discounts %}
+                {{ discount.value + '%' if discount.type === 'Percentage' else '$' + discount.value}}
+              {% endfor %}
+            </td>
+            <td>
+              <a href="/admin/product/edit/{{ product.id }}" class="button is-info is-fullwidth is-light">
+                Edit
+              </a>
+            </td>
+            <td>
+              <a href="/admin/product/delete/{{ product.id }}" class="button is-danger is-fullwidth is-light">
+                Delete
+              </a>
+            </td>
+          </tr>
         {% endfor %}
-
-        <td>
-          <a href="/admin/product/edit/{{ product.id }}" class="button is-info is-fullwidth"
-            >Edit</a
-          >
-        </td>
-        <td>
-          <a href="/admin/product/delete/{{ product.id }}" class="button is-danger is-fullwidth"
-            >Delete</a
-          >
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-</div>
+      </tbody>
+    </table>
+  </div>
 {% endblock %}

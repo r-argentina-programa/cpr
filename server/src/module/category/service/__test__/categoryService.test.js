@@ -14,12 +14,13 @@ const repositoryMock = {
 const mockService = new CategoryService(repositoryMock);
 
 describe('CategoryService methods', () => {
-  test("save calls repository's save method", async () => {
+  test("save calls repository's save method without discounts", async () => {
     const category = createTestCategory(1);
+    const discounts = undefined;
     await mockService.save(category);
 
     expect(repositoryMock.save).toHaveBeenCalledTimes(1);
-    expect(repositoryMock.save).toHaveBeenCalledWith(category);
+    expect(repositoryMock.save).toHaveBeenCalledWith(category, discounts);
   });
 
   test('save throws an error if param is not instance of Category', async () => {

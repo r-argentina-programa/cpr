@@ -1,200 +1,208 @@
-{% extends 'management/view/layout/base.njk' %} {% block body %} {% set product = data.product %}
+{% extends 'management/view/layout/base.njk' %}
+{% block body %}
+  {% set product = data.product %}
 
-<div class="level-left">
-  <div class="level-item">
-    <h1 class="title is-1">
-      {{"Edit a product with ID: " + product.id if product.id else "New product"}}
-    </h1>
+  <div class="level-left">
+    <div class="level-item">
+      <h1 class="title is-1">
+        {{"Edit a product with ID: " + product.id if product.id else "New product"}}
+      </h1>
+    </div>
+    <div class="level-item">
+      <span>
+        <a class="button is-link is-light" href="/admin/product">Cancel</a>
+      </span>
+    </div>
   </div>
-  <div class="level-item">
-    <span>
-      <a class="button is-link" href="/admin/product">Cancel</a>
-    </span>
-  </div>
-</div>
 
-<hr />
+  <hr/>
 
-<form action="/admin/product/save" method="POST" enctype="multipart/form-data">
-  <input type="hidden" name="id" value="{{ product.id }}" readonly />
+  <form action="/admin/product/save" method="POST" enctype="multipart/form-data">
+    <input type="hidden" name="id" value="{{ product.id }}" readonly/>
 
-  <div class="field">
-    <label class="label">Name</label>
-    <div class="control has-icons-left">
-      <input
+    <div class="field">
+      <label class="label">Name</label>
+      <div class="control has-icons-left">
+        <input
         class="input"
         type="text"
         name="name"
         placeholder="Chocolinas"
         value="{{ product.name }}"
         required
-      />
-      <span class="icon is-small is-left">
-        <i class="fas fa-user"></i>
-      </span>
+/>
+        <span class="icon is-small is-left">
+          <i class="fas fa-user"></i>
+        </span>
+      </div>
     </div>
-  </div>
 
-  <div class="field">
-    <label class="label">Default Price</label>
-    <div class="control has-icons-left">
-      <input
+    <div class="field">
+      <label class="label">Default Price</label>
+      <div class="control has-icons-left">
+        <input
         class="input"
         type="number"
         name="defaultPrice"
         placeholder="$500"
         value="{{ product.defaultPrice }}"
         required
-      />
-      <span class="icon is-small is-left">
-        <i class="fas fa-user"></i>
-      </span>
+/>
+        <span class="icon is-small is-left">
+          <i class="fas fa-user"></i>
+        </span>
+      </div>
     </div>
-  </div>
 
-  <div class="field">
-    <label class="label">imageSrc</label>
-    <div class="control has-icons-left">
-      <input class="input" type="file" name="file" value="data:image/png;base64, {{ product.imageSrc }}" required />
-      <span class="icon is-small is-left">
-        <i class="fas fa-user"></i>
-      </span>
+    <div class="field">
+      <label class="label">Image</label>
+      {% if product.imageSrc %}
+        <img src="data:image/png;base64, {{ product.imageSrc }}" width="128" height="128" alt="Product Image"/>
+      {% endif %}
+      <div class="control has-icons-left">
+        <input class="input" type="file" name="file" value="data:image/png;base64, {{ product.imageSrc }}" {{"" if product.imageSrc else "required"}}/>
+        <span class="icon is-small is-left">
+          <i class="fas fa-user"></i>
+        </span>
+      </div>
     </div>
-  </div>
 
-  <div class="field">
-    <label class="label">Description</label>
-    <div class="control has-icons-left">
-      <input
+    <div class="field">
+      <label class="label">Description</label>
+      <div class="control has-icons-left">
+        <input
         class="input"
         type="text"
         name="description"
         placeholder="Description"
         value="{{ product.description }}"
         required
-      />
-      <span class="icon is-small is-left">
-        <i class="fas fa-user"></i>
-      </span>
-    </div>
-  </div>
-
-  <label class="label">Brand</label>
-  <div class="field">
-    <div class="control">
-      <div class="select is-medium is-rounded">
-        <select name="brand_fk">
-          {% for brand in brands %}
-            <option value="{{ brand.id }}" {{ 'selected' if product.brandFk === brand.id }}>{{ brand.name }}</option>
-          {% endfor %}
-        </select>
+/>
+        <span class="icon is-small is-left">
+          <i class="fas fa-user"></i>
+        </span>
       </div>
     </div>
-  </div>
 
-  <label class="label">Categories</label>
-  <div class="field">
-    <div class="control">
-        <input name='categories' placeholder='categories'/>   
+    <label class="label">Brand</label>
+    <div class="field">
+      <div class="control">
+        <div class="select">
+          <select name="brand_fk">
+            {% for brand in brands %}
+              <option value="{{ brand.id }}" {{ 'selected' if product.brandFk === brand.id }}>{{ brand.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
     </div>
-  </div>
+
+    <label class="label">Categories</label>
+    <div class="field">
+      <div class="control">
+        <input name='categories' placeholder='categories'/>
+      </div>
+    </div>
 
     <label class="label">Discounts</label>
-  <div class="field">
-    <div class="control">
-        <input name='discounts' placeholder='discounts'/>   
+    <div class="field">
+      <div class="control">
+        <input name='discounts' placeholder='discounts'/>
+      </div>
     </div>
-  </div>
 
-  <input type="submit" class="button is-primary is-large" value="Save" />
+    <input type="submit" class="button is-success" value="Save changes"/>
 
-  <hr />
-</form>
+    <hr/>
+  </form>
 {% endblock %}
 
 {% block footerScripts %}
-<script>
-  const currentCategories = {{ product.categories | dump | safe }};
-  const categories = {{ categories | dump | safe }};
+  <script>
+    const currentCategories = {{ product.categories | dump | safe }};
+    const categories = {{ categories | dump | safe }};
 
-  const cleanCategories = categories.map((category)=>({id:category.id,value:category.name}))
-  const cleanCurrentCategories = currentCategories.map((category)=>({id:category.id,value:category.name}))
-  const input = document.querySelector('input[name=categories]'),
-    categoriesTagify = new Tagify(input, {
-        enforceWhitelist : true,
-        delimiters       : null,
-        templates : {
-        tag : function(tagData){
-            try{
-            return `<tag title='${tagData.id}' contenteditable='false' spellcheck="false" class='tagify__tag ${tagData.class ? tagData.class : ""}' ${this.getAttributes(tagData)}>
+    const cleanCategories = categories.map((category) => ({id: category.id, value: category.name}))
+      const cleanCurrentCategories = currentCategories.map((category) => ({id: category.id, value: category.name}))
+        const input = document.querySelector('input[name=categories]'),
+          tagify = new Tagify(input, {
+            enforceWhitelist: true,
+            delimiters: null,
+            templates: {
+              tag: function (tagData) {
+                try {
+                  return `<tag title='${tagData.id}' contenteditable='false' spellcheck="false" class='tagify__tag ${tagData.class
+                    ? tagData.class
+                    : ""}' ${this.getAttributes(tagData)}>
                         <x title='remove tag' class='tagify__tag__removeBtn'></x>
                         <div>
                             <span class='tagify__tag-text'>${tagData.value}</span>
                         </div>
                     </tag>`
-            }
-            catch(err){}
-        },
+                } catch (err) {}
+              },
 
-        dropdownItem : function(tagData){
-            try{
-            return `<div class='tagify__dropdown__item ${tagData.class ? tagData.class : ""}' tagifySuggestionIdx="${tagData.tagifySuggestionIdx}">
+              dropdownItem: function (tagData) {
+                try {
+                  return `<div class='tagify__dropdown__item ${tagData.class
+                    ? tagData.class
+                    : ""}' tagifySuggestionIdx="${tagData.tagifySuggestionIdx}">
                             <span>${tagData.value}</span>
                         </div>`
-            }
-            catch(err){}
-        }
-    },
-         whitelist : cleanCategories,
-        dropdown : {
-        enabled: 1, // suggest tags after a single character input
-        classname : 'extra-properties' // custom class for the suggestions dropdown
-    } // map tags' values to this property name, so this property will be the actual value and not the printed value on the screen
-    });
-    
-    categoriesTagify.addTags(cleanCurrentCategories);
+                } catch (err) {}
+              }
+            },
+            whitelist: cleanCategories,
+            dropdown: {
+              enabled: 1, // suggest tags after a single character input
+              classname: 'extra-properties' // custom class for the suggestions dropdown
+            } // map tags' values to this property name, so this property will be the actual value and not the printed value on the screen
+          });
+
+        tagify.addTags(cleanCurrentCategories);
   </script>
   <script>
-  const currentDiscounts = {{ product.discounts | dump | safe }};
-  const discounts = {{ discounts | dump | safe }};
+    const currentDiscounts = {{ discounts | dump | safe }};
+    const discounts = {{ discounts | dump | safe }};
 
-  const cleanDiscounts = discounts.map((discount)=>({id:discount.id,value:discount.value, type:discount.type}))
-  const cleanCurrentDiscounts = currentDiscounts.map((discount)=>({id:discount.id,value:discount.value, type:discount.type}))
-  const input2 = document.querySelector('input[name=discounts]'),
-  discountsTagify = new Tagify(input2, {
-        enforceWhitelist : true,
-        delimiters       : null,
-        templates : {
-        tag : function(tagData){
-            try{
-            return `<tag title='${tagData.id}' contenteditable='false' spellcheck="false" class='tagify__tag ${tagData.class ? tagData.class : ""}' ${this.getAttributes(tagData)}>
+    const cleanDiscounts = discounts.map((discount) => ({id: discount.id, value: discount.value, type: discount.type}))
+      const cleanCurrentDiscounts = currentDiscounts.map((discount) => ({id: discount.id, value: discount.value, type: discount.type}))
+        const input2 = document.querySelector('input[name=discounts]'),
+          discountsTagify = new Tagify(input2, {
+            enforceWhitelist: true,
+            delimiters: null,
+            templates: {
+              tag: function (tagData) {
+                try {
+                  return `<tag title='${tagData.id}' contenteditable='false' spellcheck="false" class='tagify__tag ${tagData.class
+                    ? tagData.class
+                    : ""}' ${this.getAttributes(tagData)}>
                         <x title='remove tag' class='tagify__tag__removeBtn'></x>
                         <div>
                             <span class='tagify__tag-text'>${tagData.value}</span><span>${tagData.type}</span>
                         </div>
                     </tag>`
-            }
-            catch(err){}
-        },
+                } catch (err) {}
+              },
 
-        dropdownItem : function(tagData){
-            try{
-            return `<div class='tagify__dropdown__item ${tagData.class ? tagData.class : ""}' tagifySuggestionIdx="${tagData.tagifySuggestionIdx}">
-                            <span>${tagData.value}</span><span>${tagData.type}</span>
+              dropdownItem: function (tagData) {
+                const valueText = tagData.type === 'Fixed' ? `$${tagData.value}` : `${tagData.value}%`
+                try {
+                  return `<div class='tagify__dropdown__item ${tagData.class
+                    ? tagData.class
+                    : ""}' tagifySuggestionIdx="${tagData.tagifySuggestionIdx}">
+                            <span>${valueText} Off</span>
                         </div>`
-            }
-            catch(err){}
-        }
-    },
-         whitelist : cleanDiscounts,
-        dropdown : {
-        enabled: 1, // suggest tags after a single character input
-        classname : 'extra-properties' // custom class for the suggestions dropdown
-    } // map tags' values to this property name, so this property will be the actual value and not the printed value on the screen
-    });
-    
-    discountsTagify.addTags(cleanCurrentDiscounts);
+                } catch (err) {}
+              }
+            },
+            whitelist: cleanDiscounts,
+            dropdown: {
+              enabled: 1, // suggest tags after a single character input
+              classname: 'extra-properties' // custom class for the suggestions dropdown
+            } // map tags' values to this property name, so this property will be the actual value and not the printed value on the screen
+          });
 
-
-</script>
+        tagify.addTags(cleanCurrentDiscounts);
+  </script>
 {% endblock %}
