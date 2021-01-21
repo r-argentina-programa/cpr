@@ -6,6 +6,7 @@ module.exports = class Product {
     imageSrc,
     description,
     brandFk,
+    brand,
     categories = [],
     discount,
     discounts,
@@ -19,6 +20,7 @@ module.exports = class Product {
     this.imageSrc = imageSrc;
     this.description = description;
     this.brandFk = brandFk;
+    this.brand = brand;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
     this.categories = categories;
