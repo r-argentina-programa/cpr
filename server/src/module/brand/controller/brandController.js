@@ -91,11 +91,11 @@ module.exports = class BrandController {
       const savedBrand = await this.BrandService.save(brand);
       if (brand.id) {
         req.session.messages = [
-          `The brand with id ${savedBrand.id} was updated correctly (${savedBrand.name})`,
+          `The brand ${savedBrand.name} was updated correctly (ID: ${savedBrand.id})`,
         ];
       } else {
         req.session.messages = [
-          `The brand with id ${savedBrand.id} was created correctly (${savedBrand.name})`,
+          `The brand ${savedBrand.name} was created correctly (ID: ${savedBrand.id})`,
         ];
       }
     } catch (e) {
@@ -113,7 +113,7 @@ module.exports = class BrandController {
       const { id } = req.params;
       const brand = await this.BrandService.getById(id);
       await this.BrandService.delete(brand);
-      req.session.messages = [`The brand with ID: ${id} was removed (${brand.name})`];
+      req.session.messages = [`The brand ${brand.name} was removed (ID: ${id})`];
     } catch (e) {
       req.session.errors = [e.message, e.stack];
     }
