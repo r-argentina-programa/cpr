@@ -14,7 +14,6 @@ import {
 export default function ProductDetail() {
   const { id } = useParams();
   const [image, setImage] = useState("");
-  const [brandLogo, setBrandLogo] = useState("");
   const { product, getProductDetails } = useContext(ProductContext);
   const { getBrandById, brand } = useContext(BrandContext);
 
