@@ -1,6 +1,6 @@
 const DiscountController = require('../discountController');
 const DiscountIdNotDefinedError = require('../../error/DiscountIdNotDefinedError');
-const createTestDiscount = require('./discounts.fixture');
+const createTestDiscount = require('./discount.fixture');
 
 const serviceMock = {
   getAll: jest.fn(() => Array.from({ length: 3 }, (id) => createTestDiscount(id + 1))),
