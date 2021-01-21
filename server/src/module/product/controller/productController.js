@@ -86,11 +86,11 @@ module.exports = class ProductController {
 
       if (product.id) {
         req.session.messages = [
-          `The product with id ${savedProduct.id} was updated correctly (${savedProduct.name})`,
+          `The brand ${savedProduct.name} was updated correctly (ID: ${savedProduct.id})`,
         ];
       } else {
         req.session.messages = [
-          `The product with id ${savedProduct.id} was created correctly (${savedProduct.name})`,
+          `The brand ${savedProduct.name} was created correctly (ID: ${savedProduct.id})`,
         ];
       }
     } catch (e) {
@@ -138,7 +138,7 @@ module.exports = class ProductController {
     try {
       const product = await this.ProductService.getById(id);
       await this.ProductService.delete(product);
-      req.session.messages = [`The product with ID: ${id} was removed (${product.name})`];
+      req.session.messages = [`The product ${product.name} was removed (ID: ${id})`];
     } catch (e) {
       req.session.errors = [e.message, e.stack];
     }
@@ -155,21 +155,17 @@ module.exports = class ProductController {
       const categories = await this.CategoryService.getAll();
       const discounts = await this.DiscountService.getAll();
 
-      if (brands.length > 0 && categories.length > 0) {
+      if (brands.length > 0 && categories.length > 0 && discounts.length > 0) {
         res.render(`${this.PRODUCT_VIEWS}/form.njk`, {
           brands,
           categories,
           discounts,
           product: { categories: [], discounts: [] },
         });
-      } else if (!brands.length > 0 && !categories.length > 0) {
-        throw new Error('To create a product you must first create a brand and a category');
       } else {
-        const error =
-          brands.length > 0
-            ? 'To create a product you must first create a category'
-            : 'To create a product you must first create a brand';
-        throw new Error(error);
+        throw new Error(
+          'To create a product you must first create a brand, a category and a discount'
+        );
       }
     } catch (e) {
       req.session.errors = [e.message];
