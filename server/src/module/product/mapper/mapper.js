@@ -1,7 +1,4 @@
 const Product = require('../entity/entity');
-const {
-  fromModelToEntity: categoryModelToEntityMapper,
-} = require('../../category/mapper/categoryMapper');
 const { calculatePrice } = require('../../management/utils/calculatePrice');
 
 function fromDataToEntity({ id, name, defaultPrice, imageSrc, description, brand_fk, categories }) {
@@ -28,6 +25,7 @@ function fromModelToEntity(model) {
   );
   modelJson.discounts.sort((a, b) => a.finalPrice - b.finalPrice);
   modelJson.discount = modelJson.discounts[0] || 0;
+  modelJson.brand = modelJson.Brand;
   return new Product(modelJson);
 }
 
