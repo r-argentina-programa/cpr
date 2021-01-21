@@ -8,17 +8,18 @@ const repositoryMock = {
   getAll: jest.fn(),
   getById: jest.fn(),
   delete: jest.fn(),
+  getAllProductsSearch: jest.fn(),
 };
 
 const mockService = new ProductService(repositoryMock);
 
 describe('ProductService methods', () => {
-  test("save calls repository's save method without categories", async () => {
+  test("save calls repository's save method without categories and discounts", async () => {
     const product = ProductTestProduct(1);
     await mockService.save(product);
 
     expect(repositoryMock.save).toHaveBeenCalledTimes(1);
-    expect(repositoryMock.save).toHaveBeenCalledWith(product, undefined);
+    expect(repositoryMock.save).toHaveBeenCalledWith(product, undefined, undefined);
   });
 
   test('save throws an error if param is not instance of Product', async () => {
@@ -52,5 +53,12 @@ describe('ProductService methods', () => {
 
   test('delete throws an error if param is not instance of Product', async () => {
     await expect(mockService.delete({})).rejects.toThrowError(ProductNotDefinedError);
+  });
+
+  test('getAllProductsSearch calls repository getAllProductsSearch method', async () => {
+    const searchTerm = 'Computer';
+    await mockService.getAllProductsSearch(searchTerm);
+    expect(repositoryMock.getAllProductsSearch).toHaveBeenCalledTimes(1);
+    expect(repositoryMock.getAllProductsSearch).toHaveBeenCalledWith(searchTerm);
   });
 });

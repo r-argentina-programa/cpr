@@ -112,7 +112,7 @@ module.exports = class ProductController {
     }
     try {
       const product = await this.ProductService.getById(id);
-      console.log('PRODUCTO', product);
+      // console.log('PRODUCTO', product);
       const brands = await this.BrandService.getAll();
       const categories = await this.CategoryService.getAll();
       const discounts = await this.DiscountService.getAll();
@@ -157,13 +157,13 @@ module.exports = class ProductController {
       const brands = await this.BrandService.getAll();
       const categories = await this.CategoryService.getAll();
       const discounts = await this.DiscountService.getAll();
-      // console.log('descuentos', discounts);
+
       if (brands.length > 0 && categories.length > 0) {
         res.render(`${this.PRODUCT_VIEWS}/form.njk`, {
           brands,
           categories,
           discounts,
-          product: { categories: [] },
+          product: { categories: [], discounts: [] },
         });
       } else if (!brands.length > 0 && !categories.length > 0 && !discounts.length > 0) {
         throw new Error(

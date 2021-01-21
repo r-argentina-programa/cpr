@@ -81,7 +81,6 @@ module.exports = class ProductRepository {
       ],
     });
 
-    // console.log('discounts', productInstance.discounts);
     if (Array.isArray(productInstance.categories)) {
       productInstance.categories.forEach((category) => {
         productInstance.discounts.push(...category.discounts);
@@ -105,21 +104,30 @@ module.exports = class ProductRepository {
 
   async getAll() {
     const productsInstance = await this.productModel.findAll({
-      /* include: {
-        model: CategoryModel,
-        as: 'categories',
-        through: {
-          attributes: [],
-        },
-      }, */
       include: [
-        { model: BrandModel, as: 'brand', paranoid: false },
-        { model: CategoryModel, as: 'categories', paranoid: false },
-        { model: DiscountModel, as: 'discounts', paranoid: false },
+        {
+          model: CategoryModel,
+          as: 'categories',
+          include: {
+            model: DiscountModel,
+            as: 'discounts',
+          },
+        },
+        {
+          model: DiscountModel,
+          as: 'discounts',
+        },
       ],
     });
-    console.log(productsInstance)
-    return productsInstance.map((product) => fromModelToEntity(product));
+
+    return productsInstance.map((product) => {
+      if (Array.isArray(product.categories)) {
+        product.categories.forEach((category) => {
+          product.discounts.push(...category.discounts);
+        });
+      }
+      return fromModelToEntity(product);
+    });
   }
 
   /**

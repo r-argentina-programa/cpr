@@ -38,7 +38,6 @@ export default function Header() {
         <Navbar.Brand href="/">Market</Navbar.Brand>
         <Nav className="mr-auto">
           <Nav.Link href="/brands">Brands</Nav.Link>
-          <Nav.Link href="/categories">Categories</Nav.Link>
         </Nav>
 
         <ContainerSearch>

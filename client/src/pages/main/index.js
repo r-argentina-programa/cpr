@@ -10,6 +10,7 @@ import { CategoryContext } from "../../store/category/categoryContext";
 const ListContainer = styled.div`
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
 `;
 
 const NavContainer = styled.div`
@@ -26,6 +27,10 @@ const NavContainer = styled.div`
     &:hover {
       color: #e6e6e6;
     }
+  }
+  span {
+    color: antiquewhite;
+    margin-right: 1.2rem;
   }
 `;
 
@@ -54,6 +59,7 @@ export default function Main() {
     <>
       <Header />
       <NavContainer>
+        <span>Brands:</span>
         {brands.map((brand) => (
           <Link
             key={brand.id}
@@ -68,6 +74,7 @@ export default function Main() {
         ))}
       </NavContainer>
       <NavContainer>
+        <span>Categories:</span>
         {categories.map((category) => (
           <Link
             key={category.id}

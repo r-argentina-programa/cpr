@@ -1,11 +1,11 @@
-const CategoryController = require('../categoryController');
-const CategoryIdNotDefinedError = require('../../error/CategoryIdNotDefinedError');
-const createTestCategory = require('./categories.fixture');
+const DiscountController = require('../discountController');
+const DiscountIdNotDefinedError = require('../../error/DiscountIdNotDefinedError');
+const createTestDiscount = require('./discounts.fixture');
 
 const serviceMock = {
-  save: jest.fn((category) => createTestCategory(category.id)),
-  getAll: jest.fn(() => Array.from({ length: 3 }, (id) => createTestCategory(id + 1))),
-  getById: jest.fn((id) => createTestCategory(id)),
+  getAll: jest.fn(() => Array.from({ length: 3 }, (id) => createTestDiscount(id + 1))),
+  save: jest.fn((discount) => createTestDiscount(discount.id)),
+  getById: jest.fn((id) => createTestDiscount(id)),
   delete: jest.fn(),
 };
 
@@ -18,26 +18,25 @@ const reqMock = {
     admin: true,
   },
 };
-
 const resMock = {
   render: jest.fn(),
   redirect: jest.fn(),
 };
 
+const mockController = new DiscountController(serviceMock);
+
 const nextMock = jest.fn();
 
-const mockController = new CategoryController(serviceMock);
-
-describe('CategoryController methods', () => {
+describe('DiscountController methods', () => {
   afterEach(() => {
     Object.values(serviceMock).forEach((mockFn) => mockFn.mockClear());
     Object.values(resMock).forEach((mockFn) => mockFn.mockClear());
-    nextMock.mockClear();
     reqMock.session.errors = [];
     reqMock.session.messages = [];
+    nextMock.mockClear();
   });
 
-  test('configures routes', () => {
+  test('configure routes', () => {
     const app = {
       get: jest.fn(),
       post: jest.fn(),
@@ -62,29 +61,61 @@ describe('CategoryController methods', () => {
     expect(resMock.redirect).toHaveBeenCalled();
   });
 
-  test('index renders index.njk with a list of categories', async () => {
-    const categoriesList = serviceMock.getAll();
+  test('index renders index.njk with a list of discounts', async () => {
+    const discountsList = serviceMock.getAll();
     await mockController.index(reqMock, resMock);
 
     const { errors, messages } = reqMock.session;
     expect(serviceMock.getAll).toHaveBeenCalledTimes(2);
     expect(resMock.render).toHaveBeenCalledTimes(1);
-    expect(resMock.render).toHaveBeenCalledWith('category/view/index.njk', {
-      categoriesList,
+    expect(resMock.render).toHaveBeenCalledWith('discount/view/index.njk', {
+      discountsList,
       errors,
       messages,
     });
   });
 
-  test('view renders view.njk with one category', async () => {
+  test('edit renders a form to edit a discount', async () => {
+    const discount = serviceMock.getById(1);
+    await mockController.edit(reqMock, resMock);
+
+    expect(serviceMock.getById).toHaveBeenCalledTimes(2);
+    expect(resMock.render).toHaveBeenCalledTimes(1);
+
+    expect(resMock.render).toHaveBeenCalledWith('discount/view/form.njk', {
+      discount,
+    });
+    expect(reqMock.session.errors.length).toBe(0);
+  });
+
+  test('edit throws an error if id is not passed as parameter', async () => {
+    const reqMockWithoutDiscountId = {
+      params: {},
+    };
+
+    await expect(mockController.edit(reqMockWithoutDiscountId, resMock)).rejects.toThrowError(
+      DiscountIdNotDefinedError
+    );
+  });
+
+  test('edit loads errors and redirect if service throws error', async () => {
+    serviceMock.getById.mockImplementationOnce(() => {
+      throw new Error();
+    });
+    await mockController.edit(reqMock, resMock);
+    expect(reqMock.session.errors).not.toHaveLength(0);
+    expect(resMock.redirect).toHaveBeenCalledTimes(1);
+  });
+
+  test('view renders view.njk with one discount', async () => {
     await mockController.view(reqMock, resMock, nextMock);
-    const category = serviceMock.getById(1);
+    const discount = serviceMock.getById(1);
 
     const { errors } = reqMock.session;
     expect(serviceMock.getById).toHaveBeenCalledTimes(2);
     expect(resMock.render).toHaveBeenCalledTimes(1);
-    expect(resMock.render).toHaveBeenCalledWith('category/view/view.njk', {
-      category,
+    expect(resMock.render).toHaveBeenCalledWith('discount/view/view.njk', {
+      discount,
     });
     expect(errors).toHaveLength(0);
   });
@@ -99,61 +130,19 @@ describe('CategoryController methods', () => {
     expect(errors).not.toHaveLength(0);
   });
 
-  test('view set errors and redirects because category is not found', async () => {
-    serviceMock.getById.mockImplementationOnce(() => {
-      throw new Error();
-    });
-    await mockController.view(reqMock, resMock, nextMock);
-    const { errors } = reqMock.session;
-
-    expect(resMock.render).toHaveBeenCalledTimes(0);
-    expect(resMock.redirect).toHaveBeenCalled();
-    expect(errors).not.toHaveLength(0);
-  });
-
-  test('edit renders a form to edit a category', async () => {
-    const category = serviceMock.getById(1);
-    await mockController.edit(reqMock, resMock);
-
-    expect(serviceMock.getById).toHaveBeenCalledTimes(2);
-    expect(resMock.render).toHaveBeenCalledTimes(1);
-
-    expect(resMock.render).toHaveBeenCalledWith('category/view/form.njk', {
-      category,
-    });
-    expect(reqMock.session.errors.length).toBe(0);
-  });
-
-  test('edit throws an error if id is not passed as parameter', async () => {
-    const reqMockWithoutProductId = {
-      params: {},
-    };
-
-    await expect(mockController.edit(reqMockWithoutProductId, resMock)).rejects.toThrowError(
-      CategoryIdNotDefinedError
-    );
-  });
-
-  test('edit loads errors and redirect if service throws error', async () => {
-    serviceMock.getById.mockImplementationOnce(() => {
-      throw new Error();
-    });
-    await mockController.edit(reqMock, resMock);
-    expect(reqMock.session.errors.length).not.toBe(0);
-    expect(resMock.redirect).toHaveBeenCalledTimes(1);
-  });
-
-  test('create renders form to add a new category', async () => {
+  test('create renders a form to add a new discount', async () => {
     await mockController.create(reqMock, resMock);
+
     expect(resMock.render).toHaveBeenCalledTimes(1);
-    expect(resMock.render).toHaveBeenCalledWith('category/view/form.njk');
+    expect(resMock.render).toHaveBeenCalledWith('discount/view/form.njk');
   });
 
-  test('save, saves a new category', async () => {
+  test('save, saves a new discount', async () => {
     const reqSaveMock = {
       body: {
         id: 0,
-        name: 'electronics',
+        type: 'fixed',
+        value: '50',
       },
       session: {
         errors: [],
@@ -163,16 +152,17 @@ describe('CategoryController methods', () => {
 
     await mockController.save(reqSaveMock, resMock);
     expect(serviceMock.save).toHaveBeenCalledTimes(1);
-    expect(serviceMock.save).toHaveBeenCalledWith(createTestCategory(0));
+    expect(serviceMock.save).toHaveBeenCalledWith(createTestDiscount(0));
     expect(resMock.redirect).toHaveBeenCalledTimes(1);
     expect(reqSaveMock.session.errors).toHaveLength(0);
   });
 
-  test('save, updates a category', async () => {
+  test('save, updates a discount', async () => {
     const reqSaveMock = {
       body: {
         id: 1,
-        name: 'electronics',
+        type: 'fixed',
+        value: '50',
       },
       session: {
         errors: [],
@@ -182,7 +172,7 @@ describe('CategoryController methods', () => {
 
     await mockController.save(reqSaveMock, resMock);
     expect(serviceMock.save).toHaveBeenCalledTimes(1);
-    expect(serviceMock.save).toHaveBeenCalledWith(createTestCategory(1));
+    expect(serviceMock.save).toHaveBeenCalledWith(createTestDiscount(1));
     expect(resMock.redirect).toHaveBeenCalledTimes(1);
     expect(reqSaveMock.session.errors).toHaveLength(0);
   });
@@ -206,7 +196,8 @@ describe('CategoryController methods', () => {
     const reqSaveMock = {
       body: {
         id: 1,
-        name: 'electronics',
+        type: 'fixed',
+        value: '50',
       },
       session: {
         errors: [],
@@ -222,7 +213,7 @@ describe('CategoryController methods', () => {
     expect(reqSaveMock.session.errors).not.toHaveLength(0);
   });
 
-  test('deletes an existing category', async () => {
+  test('deletes an existing discount', async () => {
     await mockController.delete(reqMock, resMock);
 
     expect(serviceMock.delete).toHaveBeenCalledTimes(1);
@@ -232,7 +223,7 @@ describe('CategoryController methods', () => {
   });
 
   test('deletes throws an error if id is not passed as parameter', async () => {
-    const reqMockWithoutProductId = {
+    const reqMockWithoutDiscountId = {
       params: {},
       session: {
         errors: [],
@@ -240,8 +231,8 @@ describe('CategoryController methods', () => {
       },
     };
 
-    await expect(mockController.delete(reqMockWithoutProductId, resMock)).rejects.toThrowError(
-      CategoryIdNotDefinedError
+    await expect(mockController.delete(reqMockWithoutDiscountId, resMock)).rejects.toThrowError(
+      DiscountIdNotDefinedError
     );
   });
 
