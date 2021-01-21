@@ -22,9 +22,7 @@ module.exports = class DiscountController {
     app.get(`${ROUTE}/view/:id`, this.auth.bind(this), this.view.bind(this));
     app.get(`${ROUTE}/edit/:id`, this.auth.bind(this), this.edit.bind(this));
     app.get(`${ROUTE}/create`, this.auth.bind(this), this.create.bind(this));
-    app.get(`${ROUTE}/create/type`, this.auth.bind(this), this.createDiscountType.bind(this));
     app.post(`${ROUTE}/save`, this.auth.bind(this), this.save.bind(this));
-    app.post(`${ROUTE}/type/save`, this.auth.bind(this), this.saveType.bind(this));
     app.get(`${ROUTE}/delete/:id`, this.auth.bind(this), this.delete.bind(this));
   }
 
@@ -107,10 +105,6 @@ module.exports = class DiscountController {
     res.render(`${this.DISCOUNT_VIEWS}/form.njk`);
   }
 
-  createDiscountType(req, res) {
-    res.render(`${this.DISCOUNT_VIEWS}/formDiscountType.njk`);
-  }
-
   /**
    * @param  {import("express".Request)} req
    * @param  {import("express").Response} res
@@ -121,11 +115,11 @@ module.exports = class DiscountController {
       const savedDiscount = await this.discountService.save(discountData);
       if (discountData.id) {
         req.session.messages = [
-          `The Discount with id ${savedDiscount.id} was updated correctly (${savedDiscount.name})`,
+          `The discount type: ${savedDiscount.type} with value: ${savedDiscount.value} was updated correctly (ID: ${savedDiscount.id})`,
         ];
       } else {
         req.session.messages = [
-          `The Discount with id ${savedDiscount.id} was created correctly (${savedDiscount.name})`,
+          `The discount type: ${savedDiscount.type} with value: ${savedDiscount.value} was created correctly (ID: ${savedDiscount.id})`,
         ];
       }
     } catch (e) {
@@ -133,8 +127,6 @@ module.exports = class DiscountController {
     }
     res.redirect(this.ROUTE_BASE);
   }
-
-  saveType(req, rest) {}
 
   /**
    * @param {import('express').Request} req
@@ -148,7 +140,9 @@ module.exports = class DiscountController {
     try {
       const discount = await this.discountService.getById(id);
       await this.discountService.delete(discount);
-      req.session.messages = [`The Discount with ID: ${id} was removed (${discount.name})`];
+      req.session.messages = [
+        `The discount type: ${discount.type} with value: ${discount.value} was removed (ID: ${id})`,
+      ];
     } catch (e) {
       req.session.errors = [e.message, e.stack];
     }
