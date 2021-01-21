@@ -19,14 +19,23 @@ const TimeStyle = styled.span`
 
 export default function CardsList({ item, imageSrc, link }) {
   const [image, setImage] = useState("");
+  const [isPercentage, setIsPercentage] = useState(false);
   useEffect(() => {
     const uint8 = new Uint8Array(imageSrc);
     setImage(ab2str(uint8));
   }, [imageSrc]);
 
+  useEffect(() => {
+    if (item.discount) {
+      if (item.discount.type === "Percentage") {
+        setIsPercentage(true);
+      }
+    }
+  }, [item.discount]);
+
   return (
     <>
-      <Card style={{ width: "15rem", height: "19rem" }}>
+      <Card style={{ width: "15rem", height: "23rem" }}>
         <Card.Body>
           <Card.Title style={{ textAlign: "center" }}>{item.name}</Card.Title>
           <Card.Img
@@ -35,9 +44,55 @@ export default function CardsList({ item, imageSrc, link }) {
             style={{ height: "9rem", width: "10rem" }}
           />
           {item.defaultPrice ? (
-            <Card.Subtitle style={{ margin: ".3rem 0", color: "grey" }}>
-              ${item.defaultPrice}
-            </Card.Subtitle>
+            item.discount.length === 0 ? (
+              <Card.Subtitle
+                style={{
+                  margin: ".3rem 0",
+                  color: "grey",
+                }}
+              >
+                ${item.defaultPrice}
+              </Card.Subtitle>
+            ) : (
+              <Card.Subtitle
+                style={{
+                  margin: ".3rem 0",
+                  color: "grey",
+                  textDecoration: "line-through",
+                }}
+              >
+                ${item.defaultPrice}
+              </Card.Subtitle>
+            )
+          ) : null}
+          {item.discount ? (
+            isPercentage ? (
+              <Card.Subtitle style={{ margin: ".3rem 0", color: "red" }}>
+                -%{item.discount.value}
+                <span
+                  style={{
+                    display: "block",
+                    textAlign: "right",
+                    fontWeight: "800",
+                  }}
+                >
+                  ${item.discount.finalPrice}
+                </span>
+              </Card.Subtitle>
+            ) : (
+              <Card.Subtitle style={{ margin: ".3rem 0", color: "red" }}>
+                -${item.discount.value}
+                <span
+                  style={{
+                    display: "block",
+                    textAlign: "right",
+                    fontWeight: "800",
+                  }}
+                >
+                  ${item.discount.finalPrice}
+                </span>
+              </Card.Subtitle>
+            )
           ) : null}
           <TimeStyle>
             <TimeAgo date={`${item.createdAt}`} formatter={formatter} />
