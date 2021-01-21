@@ -82,7 +82,6 @@ module.exports = class ProductRepository {
       ],
     });
 
-    console.log(productInstance.getGetBrand());
     if (Array.isArray(productInstance.categories)) {
       productInstance.categories.forEach((category) => {
         productInstance.discounts.push(...category.discounts);
