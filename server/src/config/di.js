@@ -181,7 +181,7 @@ function setupAssociations(container) {
   const categoryModel = container.get('CategoryModel');
   const brandModel = container.get('BrandModel');
   const discountModel = container.get('DiscountModel');
-  productModel.setupAssociation(categoryModel, discountModel);
+  productModel.setupAssociation(categoryModel, brandModel, discountModel);
   brandModel.setupAssociation(productModel, discountModel);
   categoryModel.setupAssociation(productModel, discountModel);
   discountModel.setupAssociation(productModel, categoryModel, brandModel);
