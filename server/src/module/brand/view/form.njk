@@ -9,7 +9,7 @@
         </div>
         <div class="level-item">
             <span>
-                <a class="button is-link" href="/admin/brand">Cancel</a>
+                <a class="button is-link is-light" href="/admin/brand">Cancel</a>
             </span>
         </div>
     </div>
@@ -30,10 +30,10 @@
         </div>
 
         <div class="field">
+            <label class="label">Logo</label>
             {% if brand.logo %}
                 <img src="data:image/png;base64, {{ brand.logo }}" width="128" height="128" alt="Brand Logo"/>
             {% endif %}
-            <label class="label">Logo</label>
             <div class="control has-icons-left">
                 <input class="input" type="file" name="file" {{"" if brand.logo else "required"}}/>
                 <span class=" icon is-small is-left">
@@ -42,7 +42,7 @@
             </div>
         </div>
 
-        <input type="submit" class="button is-primary is-large" value="Save"/>
+        <input type="submit" class="button is-success" value="Save changes"/>
 
         <hr/>
     </form>

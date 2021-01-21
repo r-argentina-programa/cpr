@@ -15,7 +15,7 @@
 
 <nav class="level-right">
   <div class="level-item">
-    <a href="/admin/category/create" class="button is-primary is-large">
+    <a href="/admin/category/create" class="button is-primary is-medium is-light">
       <span class="icon"><i class="fas fa-plus"></i></span>
       <span>Add new Category</span>
     </a>
@@ -26,8 +26,10 @@
   <table class="table is-striped is-narrow is-hoverable is-fullwidth">
     <thead>
       <tr>
-        <th>Id:</th>
-        <th>Name:</th>
+        <th>Id</th>
+        <th>Name</th>
+        <th></th>
+        <th></th>
       </tr>
     </thead>
 
@@ -37,12 +39,12 @@
         <td>{{ category.id }}</td>
         <td>{{ category.name }}</td>
         <td>
-          <a href="/admin/category/edit/{{ category.id }}" class="button is-info is-fullwidth"
+          <a href="/admin/category/edit/{{ category.id }}" class="button is-info is-fullwidth is-light"
             >Edit</a
           >
         </td>
         <td>
-          <a href="/admin/category/delete/{{ category.id }}" class="button is-danger is-fullwidth"
+          <a href="/admin/category/delete/{{ category.id }}" class="button is-danger is-fullwidth is-light"
             >Delete</a
           >
         </td>
