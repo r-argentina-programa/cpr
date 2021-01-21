@@ -115,11 +115,13 @@ module.exports = class ProductController {
       console.log('PRODUCTO', product);
       const brands = await this.BrandService.getAll();
       const categories = await this.CategoryService.getAll();
+      const discounts = await this.DiscountService.getAll();
 
       res.render(`${this.PRODUCT_VIEWS}/form.njk`, {
         product,
         brands,
         categories,
+        discounts,
       });
     } catch (e) {
       req.session.errors = [e.message, e.stack];

@@ -187,11 +187,12 @@
               },
 
               dropdownItem: function (tagData) {
+                const valueText = tagData.type === 'Fixed' ? `$${tagData.value}` : `${tagData.value}%`
                 try {
                   return `<div class='tagify__dropdown__item ${tagData.class
                     ? tagData.class
                     : ""}' tagifySuggestionIdx="${tagData.tagifySuggestionIdx}">
-                            <span>${tagData.value}</span><span>${tagData.type}</span>
+                            <span>${valueText} Off</span>
                         </div>`
                 } catch (err) {}
               }
