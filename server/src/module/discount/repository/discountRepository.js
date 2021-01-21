@@ -27,7 +27,7 @@ module.exports = class DiscountRepository {
     const buildOptions = { isNewRecord: !discount.id };
     discountModel = this.discountModel.build(discount, buildOptions);
     discountModel = await discountModel.save();
-    await discountModel.addProduct(1); // await discountModel.addCategory(1);
+
     return fromModelToEntity(discountModel);
   }
 
