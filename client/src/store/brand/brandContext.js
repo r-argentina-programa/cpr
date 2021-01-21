@@ -4,13 +4,14 @@ import api from "../../services/api";
 
 import productReducer from "./brandReducer";
 
-import { GET_ALL_BRANDS } from "./brandTypes";
+import { GET_ALL_BRANDS, GET_BRAND_ID } from "./brandTypes";
 
 export const BrandContext = createContext();
 
 const BrandContextProvider = ({ children }) => {
   const initialState = {
     brands: [],
+    brand: {},
   };
 
   const [state, dispatch] = useReducer(productReducer, initialState);
@@ -26,8 +27,24 @@ const BrandContextProvider = ({ children }) => {
     }
   };
 
+  const getBrandById = async (id) => {
+    try {
+      const res = await api.get(`/api/brand/${id}`);
+      dispatch({ type: GET_BRAND_ID, payload: res.data });
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
   return (
-    <BrandContext.Provider value={{ getAllBrands, brands: state.brands }}>
+    <BrandContext.Provider
+      value={{
+        brands: state.brands,
+        brand: state.brand,
+        getAllBrands,
+        getBrandById,
+      }}
+    >
       {children}
     </BrandContext.Provider>
   );

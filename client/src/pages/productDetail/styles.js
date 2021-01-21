@@ -38,6 +38,11 @@ export const ProductDescription = styled.div`
     margin-right: 0.9rem;
   }
 
+  .brand {
+    margin-left: 0.5rem;
+    font-weight: 600;
+  }
+
   h1 {
     font-weight: 300;
     font-size: 52px;
@@ -61,5 +66,18 @@ export const ProductPrice = styled.div`
     font-weight: 300;
     color: #43474d;
     margin-right: 20px;
+  }
+  a {
+    display: inline-block;
+    background-color: #7dc855;
+    border-radius: 6px;
+    font-size: 16px;
+    color: #ffffff;
+    text-decoration: none;
+    padding: 12px 30px;
+    transition: all 0.5s;
+    &:hover {
+      background-color: #64af3d;
+    }
   }
 `;
