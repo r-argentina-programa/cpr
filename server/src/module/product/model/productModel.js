@@ -59,7 +59,11 @@ module.exports = class ProductModel extends Model {
     return ProductModel;
   }
 
-  static setupAssociation(CategoryModel, DiscountModel) {
+  static setupAssociation(BrandModel, CategoryModel, DiscountModel) {
+    ProductModel.belongsTo(BrandModel, {
+      foreignKey: 'brandFk',
+      as: 'brand',
+    });
     ProductModel.belongsToMany(CategoryModel, {
       through: 'category_products',
       foreignKey: 'product_id',

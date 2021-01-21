@@ -53,6 +53,7 @@ module.exports = class ProductController {
    */
   async index(req, res) {
     const productsList = await this.ProductService.getAll();
+    console.log(productsList)
     const { errors, messages } = req.session;
     res.render(`${this.PRODUCT_VIEWS}/index.njk`, {
       productsList,
@@ -162,14 +163,10 @@ module.exports = class ProductController {
           discounts,
           product: { categories: [] },
         });
-      } else if (!brands.length > 0 && !categories.length > 0) {
-        throw new Error('To create a product you must first create a brand and a category');
-      } else {
-        const error =
-          brands.length > 0
-            ? 'To create a product you must first create a category'
-            : 'To create a product you must first create a brand';
-        throw new Error(error);
+      } else if (!brands.length > 0 && !categories.length > 0 && !discounts.length > 0) {
+        throw new Error(
+          'To create a product you must first create a brand, a category and a discount'
+        );
       }
     } catch (e) {
       req.session.errors = [e.message];

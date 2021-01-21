@@ -4,6 +4,7 @@ const ProductNotDefinedError = require('../error/ProductNotDefinedError');
 const ProductIdNotDefinedError = require('../error/ProductIdNotDefinedError');
 const ProductNotFoundError = require('../error/ProductNotFoundError');
 const Product = require('../entity/entity');
+const BrandModel = require('../../brand/model/brandModel');
 const CategoryModel = require('../../category/model/categoryModel');
 const DiscountModel = require('../../discount/model/discountModel');
 
@@ -64,6 +65,7 @@ module.exports = class ProductRepository {
     }
     const productInstance = await this.productModel.findByPk(id, {
       include: [
+        { model: BrandModel, as: 'brand', paranoid: false },
         {
           model: CategoryModel,
           as: 'categories',
@@ -103,14 +105,20 @@ module.exports = class ProductRepository {
 
   async getAll() {
     const productsInstance = await this.productModel.findAll({
-      include: {
+      /* include: {
         model: CategoryModel,
         as: 'categories',
         through: {
           attributes: [],
         },
-      },
+      }, */
+      include: [
+        { model: BrandModel, as: 'brand', paranoid: false },
+        { model: CategoryModel, as: 'categories', paranoid: false },
+        { model: DiscountModel, as: 'discounts', paranoid: false },
+      ],
     });
+    console.log(productsInstance)
     return productsInstance.map((product) => fromModelToEntity(product));
   }
 
