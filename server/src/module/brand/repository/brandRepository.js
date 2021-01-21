@@ -4,6 +4,8 @@ const BrandNotDefinedError = require('../error/BrandNotDefinedError');
 const BrandIdNotDefinedError = require('../error/BrandIdNotDefinedError');
 const BrandNotFoundError = require('../error/BrandNotFoundError');
 const Brand = require('../entity/Brand');
+const DiscountModel = require('../../discount/model/discountModel');
+const CategoryModel = require('../../category/model/categoryModel');
 
 module.exports = class BrandRepository {
   /**
@@ -67,7 +69,30 @@ module.exports = class BrandRepository {
    * @param {number} brandId
    */
   async viewProducts(brandId) {
-    const products = await this.ProductModel.findAll({ where: { brand_fk: brandId } });
-    return products.map((product) => fromModelToProductEntity(product));
+    const products = await this.ProductModel.findAll({
+      where: { brand_fk: brandId },
+      include: [
+        {
+          model: CategoryModel,
+          as: 'categories',
+          include: {
+            model: DiscountModel,
+            as: 'discounts',
+          },
+        },
+        {
+          model: DiscountModel,
+          as: 'discounts',
+        },
+      ],
+    });
+    return products.map((product) => {
+      if (Array.isArray(product.categories)) {
+        product.categories.forEach((category) => {
+          product.discounts.push(...category.discounts);
+        });
+      }
+      return fromModelToProductEntity(product);
+    });
   }
 };

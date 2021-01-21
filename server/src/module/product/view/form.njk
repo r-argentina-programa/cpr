@@ -156,7 +156,6 @@
   </script>
   <script>
   const currentDiscounts = {{ product.discounts | dump | safe }};
-  console.log(currentDiscounts)
   const discounts = {{ discounts | dump | safe }};
 
   const cleanDiscounts = discounts.map((discount)=>({id:discount.id,value:discount.value, type:discount.type}))

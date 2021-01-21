@@ -81,7 +81,6 @@ module.exports = class ProductController {
       if (req.file) {
         product.imageSrc = req.file.buffer.toString('base64');
       }
-      console.log('Discounts en el controlador', discounts);
 
       const savedProduct = await this.ProductService.save(product, categories, discounts);
 
@@ -111,7 +110,6 @@ module.exports = class ProductController {
     }
     try {
       const product = await this.ProductService.getById(id);
-      // console.log('PRODUCTO', product);
       const brands = await this.BrandService.getAll();
       const categories = await this.CategoryService.getAll();
       const discounts = await this.DiscountService.getAll();

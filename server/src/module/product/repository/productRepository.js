@@ -46,7 +46,6 @@ module.exports = class ProductRepository {
       const discountsId = currentDiscounts.map((discount) => discount.id);
       await productModel.removeDiscount(discountsId);
     }
-    console.log('Discounts en el repositorio', discounts);
 
     discounts.map(async (id) => {
       await productModel.addDiscount(id);

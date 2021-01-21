@@ -15,7 +15,6 @@ export default function BrandDetail() {
   const { id } = useParams();
   const [image, setImage] = useState("");
   const { products, getProductsByBrand } = useContext(ProductContext);
-  console.log(products);
 
   useEffect(() => {
     getProductsByBrand(id);
