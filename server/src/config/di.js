@@ -112,7 +112,11 @@ function addProductModuleDefinitions(container) {
       get('Multer')
     ),
     ProductService: object(ProductService).construct(get('ProductRepository')),
-    ProductRepository: object(ProductRepository).construct(get('ProductModel')),
+    ProductRepository: object(ProductRepository).construct(
+      get('ProductModel'),
+      get('CategoryModel'),
+      get('DiscountModel')
+    ),
     ProductModel: factory(configureProductModel),
   });
 }
@@ -121,7 +125,12 @@ function addBrandModuleDefinitions(container) {
   container.addDefinitions({
     BrandController: object(BrandController).construct(get('BrandService'), get('Multer')),
     BrandService: object(BrandService).construct(get('BrandRepository')),
-    BrandRepository: object(BrandRepository).construct(get('BrandModel'), get('ProductModel')),
+    BrandRepository: object(BrandRepository).construct(
+      get('BrandModel'),
+      get('ProductModel'),
+      get('CategoryModel'),
+      get('DiscountModel')
+    ),
     BrandModel: factory(configureBrandModel),
   });
 }
@@ -132,7 +141,8 @@ function addCategoryModuleDefinitions(container) {
     CategoryService: object(CategoryService).construct(get('CategoryRepository')),
     CategoryRepository: object(CategoryRepository).construct(
       get('CategoryModel'),
-      get('ProductModel')
+      get('ProductModel'),
+      get('DiscountModel')
     ),
     CategoryModel: factory(configureCategoryModel),
   });
@@ -167,7 +177,6 @@ function setupAssociations(container) {
   const categoryModel = container.get('CategoryModel');
   const brandModel = container.get('BrandModel');
   const discountModel = container.get('DiscountModel');
-  const discountTypeModel = container.get('DiscountTypeModel');
   productModel.setupAssociation(categoryModel, discountModel);
   brandModel.setupAssociation(productModel, discountModel);
   categoryModel.setupAssociation(productModel, discountModel);

@@ -4,15 +4,17 @@ const CategoryNotDefinedError = require('../error/CategoryNotDefinedError');
 const CategoryIdNotDefinedError = require('../error/CategoryIdNotDefinedError');
 const CategoryNotFoundError = require('../error/CategoryNotFoundError');
 const Category = require('../entity/Category');
-const DiscountModel = require('../../discount/model/discountModel');
 
 module.exports = class CategoryRepository {
   /**
    * @param {typeof import('../model/categoryModel')} categoryModel
+   * @param {typeof import('../../product/model/productModel')} productModel
+   * @param {typeof import('../../discount/model/discountModel')} discountModel
    */
-  constructor(categoryModel, productModel) {
+  constructor(categoryModel, productModel, discountModel) {
     this.categoryModel = categoryModel;
     this.productModel = productModel;
+    this.discountModel = discountModel;
   }
 
   /**
@@ -74,13 +76,13 @@ module.exports = class CategoryRepository {
           as: 'products',
           include: [
             {
-              model: DiscountModel,
+              model: this.discountModel,
               as: 'discounts',
             },
           ],
         },
         {
-          model: DiscountModel,
+          model: this.discountModel,
           as: 'discounts',
         },
       ],

@@ -4,15 +4,17 @@ const ProductNotDefinedError = require('../error/ProductNotDefinedError');
 const ProductIdNotDefinedError = require('../error/ProductIdNotDefinedError');
 const ProductNotFoundError = require('../error/ProductNotFoundError');
 const Product = require('../entity/entity');
-const CategoryModel = require('../../category/model/categoryModel');
-const DiscountModel = require('../../discount/model/discountModel');
 
 module.exports = class ProductRepository {
   /**
    * @param  {import("../model/productModel")} productModel
+   * @param  {import("../../category/model/categoryModel")} categoryModel
+   * @param  {import("../../discount/model/discountModel")} discountModel
    */
-  constructor(productModel) {
+  constructor(productModel, categoryModel, discountModel) {
     this.productModel = productModel;
+    this.categoryModel = categoryModel;
+    this.discountModel = discountModel;
   }
 
   /**
@@ -64,15 +66,15 @@ module.exports = class ProductRepository {
     const productInstance = await this.productModel.findByPk(id, {
       include: [
         {
-          model: CategoryModel,
+          model: this.categoryModel,
           as: 'categories',
           include: {
-            model: DiscountModel,
+            model: this.discountModel,
             as: 'discounts',
           },
         },
         {
-          model: DiscountModel,
+          model: this.discountModel,
           as: 'discounts',
         },
       ],
@@ -103,15 +105,15 @@ module.exports = class ProductRepository {
     const productsInstance = await this.productModel.findAll({
       include: [
         {
-          model: CategoryModel,
+          model: this.categoryModel,
           as: 'categories',
           include: {
-            model: DiscountModel,
+            model: this.discountModel,
             as: 'discounts',
           },
         },
         {
-          model: DiscountModel,
+          model: this.discountModel,
           as: 'discounts',
         },
       ],

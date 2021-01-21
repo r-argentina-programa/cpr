@@ -4,17 +4,19 @@ const BrandNotDefinedError = require('../error/BrandNotDefinedError');
 const BrandIdNotDefinedError = require('../error/BrandIdNotDefinedError');
 const BrandNotFoundError = require('../error/BrandNotFoundError');
 const Brand = require('../entity/Brand');
-const DiscountModel = require('../../discount/model/discountModel');
-const CategoryModel = require('../../category/model/categoryModel');
 
 module.exports = class BrandRepository {
   /**
    * @param {typeof import('../model/BrandModel')} BrandModel
    * @param {typeof import('../../product/model/productModel')} ProductModel
+   * @param {typeof import('../../category/model/categoryModel')} categoryModel
+   * @param {typeof import('../../discount/model/discountModel')} discountModel
    */
-  constructor(BrandModel, ProductModel) {
+  constructor(BrandModel, ProductModel, categoryModel, discountModel) {
     this.BrandModel = BrandModel;
     this.ProductModel = ProductModel;
+    this.categoryModel = categoryModel;
+    this.discountModel = discountModel;
   }
 
   /**
@@ -73,15 +75,15 @@ module.exports = class BrandRepository {
       where: { brand_fk: brandId },
       include: [
         {
-          model: CategoryModel,
+          model: this.categoryModel,
           as: 'categories',
           include: {
-            model: DiscountModel,
+            model: this.discountModel,
             as: 'discounts',
           },
         },
         {
-          model: DiscountModel,
+          model: this.discountModel,
           as: 'discounts',
         },
       ],
