@@ -1,9 +1,9 @@
 import Header from "../../components/header";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
-import Card from "react-bootstrap/Card";
 import ab2str from "arraybuffer-to-string";
 import { ProductContext } from "../../store/products/productContext";
+import { BrandContext } from "../../store/brand/brandContext";
 import {
   Container,
   ImageContainer,
@@ -14,11 +14,13 @@ import {
 export default function ProductDetail() {
   const { id } = useParams();
   const [image, setImage] = useState("");
+  const [brandLogo, setBrandLogo] = useState("");
   const { product, getProductDetails } = useContext(ProductContext);
+  const { getBrandById, brand } = useContext(BrandContext);
 
   useEffect(() => {
     getProductDetails(id);
-  }, []);
+  }, [id]);
 
   useEffect(() => {
     let uint8;
@@ -26,9 +28,9 @@ export default function ProductDetail() {
       uint8 = new Uint8Array(product.imageSrc.data);
     }
     setImage(ab2str(uint8));
+    getBrandById(product.brandFk);
   }, [product]);
 
-  console.log(product);
   return (
     <>
       <Header />
@@ -37,17 +39,25 @@ export default function ProductDetail() {
       ) : (
         <Container>
           <ImageContainer>
-            <img src={`data:image/png;base64, ${image}`} />
+            <img src={`data:image/png;base64, ${image}`} alt="Product" />
           </ImageContainer>
 
           <RightColumnContainer>
             <ProductDescription>
               {product.categories &&
                 product.categories.map((category) => (
-                  <span>{category.name}</span>
+                  <span key={category.id}>{category.name}</span>
                 ))}
               <h1>{product.name}</h1>
               <p>{product.description}</p>
+              <div className="brandContainer">
+                <p>
+                  Made by
+                  <Link to={`/brand/${brand.id}`} className="brand">
+                    {brand.name}
+                  </Link>
+                </p>
+              </div>
             </ProductDescription>
 
             <ProductPrice>
