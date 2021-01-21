@@ -8,6 +8,7 @@ const repositoryMock = {
   getAll: jest.fn(),
   getById: jest.fn(),
   delete: jest.fn(),
+  getAllProductsSearch: jest.fn(),
 };
 
 const mockService = new ProductService(repositoryMock);
@@ -52,5 +53,12 @@ describe('ProductService methods', () => {
 
   test('delete throws an error if param is not instance of Product', async () => {
     await expect(mockService.delete({})).rejects.toThrowError(ProductNotDefinedError);
+  });
+
+  test('getAllProductsSearch calls repository getAllProductsSearch method', async () => {
+    const searchTerm = 'Computer';
+    await mockService.getAllProductsSearch(searchTerm);
+    expect(repositoryMock.getAllProductsSearch).toHaveBeenCalledTimes(1);
+    expect(repositoryMock.getAllProductsSearch).toHaveBeenCalledWith(searchTerm);
   });
 });

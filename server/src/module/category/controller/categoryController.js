@@ -58,7 +58,7 @@ module.exports = class CategoryController {
    * @param {import('express').Request} req
    * @param {import('express').Response} res
    */
-  async view(req, res, next) {
+  async view(req, res) {
     try {
       const { id } = req.params;
       if (!Number(id)) {
@@ -70,7 +70,8 @@ module.exports = class CategoryController {
         category,
       });
     } catch (e) {
-      next(e);
+      req.session.errors = [e.message, e.stack];
+      res.redirect(this.ROUTE_BASE);
     }
   }
 
