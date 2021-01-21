@@ -44,7 +44,7 @@ export default function CardsList({ item, imageSrc, link }) {
             style={{ height: "9rem", width: "10rem" }}
           />
           {item.defaultPrice ? (
-            item.discount.length === 0 ? (
+            !item.discount ? (
               <Card.Subtitle
                 style={{
                   margin: ".3rem 0",
