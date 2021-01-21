@@ -11,7 +11,7 @@ const BrandNotFoundError = require('../../error/BrandNotFoundError');
 describe('BrandRepository methods', () => {
   let sequelize, BrandModel, ProductModel, brandRepository;
   beforeEach(async (done) => {
-    sequelize = new Sequelize('sqlite::memory');
+    sequelize = new Sequelize('sqlite::memory', { logging: false });
     BrandModel = brandModel.setup(sequelize);
     ProductModel = productModel.setup(sequelize);
     BrandModel.hasMany(ProductModel, { foreignKey: 'brandFk', as: 'getBrand' });
@@ -108,19 +108,5 @@ describe('BrandRepository methods', () => {
 
   test('delete throws error because brandId is not defined', async () => {
     await expect(brandRepository.delete({})).rejects.toThrowError(BrandIdNotDefinedError);
-  });
-
-  test('viewProducts returns all products', async () => {
-    const brand = createTestBrand();
-    const savedBrand = await brandRepository.save(brand);
-    const brandInstance = await brandRepository.BrandModel.findByPk(savedBrand.id);
-
-    const product = createTestProduct(0, savedBrand.id);
-    await brandInstance.createGetBrand(product);
-    await brandInstance.createGetBrand(product);
-    await brandInstance.createGetBrand(product);
-
-    const products = await brandRepository.viewProducts(savedBrand.id);
-    expect(products).toHaveLength(3);
   });
 });

@@ -10,7 +10,7 @@ const CategoryNotFoundError = require('../../error/CategoryNotFoundError');
 describe('categoryRepository methods', () => {
   let sequelize, CategoryModel, ProductModel, categoryRepository;
   beforeEach(async (done) => {
-    sequelize = new Sequelize('sqlite::memory');
+    sequelize = new Sequelize('sqlite::memory', { logging: false });
     CategoryModel = categoryModel.setup(sequelize);
     ProductModel = productModel.setup(sequelize);
     CategoryModel.belongsToMany(ProductModel, {
