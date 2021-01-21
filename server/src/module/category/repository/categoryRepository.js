@@ -4,6 +4,7 @@ const CategoryNotDefinedError = require('../error/CategoryNotDefinedError');
 const CategoryIdNotDefinedError = require('../error/CategoryIdNotDefinedError');
 const CategoryNotFoundError = require('../error/CategoryNotFoundError');
 const Category = require('../entity/Category');
+const DiscountModel = require('../../discount/model/discountModel');
 
 module.exports = class CategoryRepository {
   /**
@@ -67,8 +68,29 @@ module.exports = class CategoryRepository {
    */
   async viewProducts(categoryId) {
     const products = await this.categoryModel.findByPk(categoryId, {
-      include: { model: this.productModel, as: 'products' },
+      include: [
+        {
+          model: this.productModel,
+          as: 'products',
+          include: [
+            {
+              model: DiscountModel,
+              as: 'discounts',
+            },
+          ],
+        },
+        {
+          model: DiscountModel,
+          as: 'discounts',
+        },
+      ],
     });
+
+    return products.products.map((product) => {
+      product.discounts.push(...products.discounts);
+      return fromModelToProductEntity(product);
+    });
+
     return products.products.map((product) => fromModelToProductEntity(product));
   }
 };
