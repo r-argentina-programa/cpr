@@ -156,13 +156,13 @@ module.exports = class ProductController {
       const brands = await this.BrandService.getAll();
       const categories = await this.CategoryService.getAll();
       const discounts = await this.DiscountService.getAll();
-      // console.log('descuentos', discounts);
+
       if (brands.length > 0 && categories.length > 0) {
         res.render(`${this.PRODUCT_VIEWS}/form.njk`, {
           brands,
           categories,
           discounts,
-          product: { categories: [] },
+          product: { categories: [], discounts: [] },
         });
       } else if (!brands.length > 0 && !categories.length > 0) {
         throw new Error('To create a product you must first create a brand and a category');
