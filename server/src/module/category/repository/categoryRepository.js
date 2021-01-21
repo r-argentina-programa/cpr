@@ -46,7 +46,7 @@ module.exports = class CategoryRepository {
   async getAll() {
     const categoryInstances = await this.categoryModel.findAll({
       include: {
-        model: DiscountModel,
+        model: this.discountModel,
         as: 'discounts',
       },
     });
@@ -62,7 +62,7 @@ module.exports = class CategoryRepository {
     }
     const categoryInstance = await this.categoryModel.findByPk(categoryId, {
       include: {
-        model: DiscountModel,
+        model: this.discountModel,
         as: 'discounts',
       },
     });
