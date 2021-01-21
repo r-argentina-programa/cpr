@@ -120,7 +120,7 @@
   const cleanCategories = categories.map((category)=>({id:category.id,value:category.name}))
   const cleanCurrentCategories = currentCategories.map((category)=>({id:category.id,value:category.name}))
   const input = document.querySelector('input[name=categories]'),
-    tagify = new Tagify(input, {
+    categoriesTagify = new Tagify(input, {
         enforceWhitelist : true,
         delimiters       : null,
         templates : {
@@ -152,12 +152,12 @@
     } // map tags' values to this property name, so this property will be the actual value and not the printed value on the screen
     });
     
-    tagify.addTags(cleanCurrentCategories);
+    categoriesTagify.addTags(cleanCurrentCategories);
   </script>
   <script>
-  const currentDiscounts = {{ discounts | dump | safe }};
+  const currentDiscounts = {{ product.discounts | dump | safe }};
+  console.log(currentDiscounts)
   const discounts = {{ discounts | dump | safe }};
-  console.log(discounts)
 
   const cleanDiscounts = discounts.map((discount)=>({id:discount.id,value:discount.value, type:discount.type}))
   const cleanCurrentDiscounts = currentDiscounts.map((discount)=>({id:discount.id,value:discount.value, type:discount.type}))
@@ -194,7 +194,7 @@
     } // map tags' values to this property name, so this property will be the actual value and not the printed value on the screen
     });
     
-    tagify.addTags(cleanCurrentDiscounts);
+    discountsTagify.addTags(cleanCurrentDiscounts);
 
 
 </script>

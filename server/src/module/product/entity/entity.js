@@ -7,6 +7,7 @@ module.exports = class Product {
     description,
     brandFk,
     categories = [],
+    discount,
     discounts,
     updatedAt,
     createdAt,
@@ -14,6 +15,7 @@ module.exports = class Product {
     this.id = id;
     this.name = name;
     this.defaultPrice = defaultPrice;
+    this.discount = discount;
     this.imageSrc = imageSrc;
     this.description = description;
     this.brandFk = brandFk;
