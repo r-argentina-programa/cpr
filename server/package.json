@@ -4,7 +4,7 @@
   "description": "Cart Price Rules",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/app.js",
+    "dev": "nodemon src/app.js -e js,html,njk",
     "test:watch": "jest --watch --rootDir=src",
     "test:coverage": "jest --coverage",
     "test": "jest"
