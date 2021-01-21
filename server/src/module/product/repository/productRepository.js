@@ -79,6 +79,9 @@ module.exports = class ProductRepository {
           model: this.discountModel,
           as: 'discounts',
         },
+        {
+          model: this.brandModel,
+        },
       ],
     });
 
