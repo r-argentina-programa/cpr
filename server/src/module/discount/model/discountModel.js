@@ -1,12 +1,12 @@
 const { Sequelize, Model, DataTypes } = require('sequelize');
 
-module.exports = class BrandModel extends Model {
+module.exports = class DiscountModel extends Model {
   /**
    * @param {import('sequelize').Sequelize} sequelizeInstance
-   * @returns {typeof BrandModel}
+   * @returns {typeof DiscountModel}
    */
   static setup(sequelizeInstance) {
-    BrandModel.init(
+    DiscountModel.init(
       {
         id: {
           type: DataTypes.INTEGER,
@@ -15,12 +15,12 @@ module.exports = class BrandModel extends Model {
           autoIncrement: true,
           unique: true,
         },
-        name: {
+        type: {
           type: DataTypes.STRING,
           allowNull: false,
         },
-        logo: {
-          type: DataTypes.BLOB,
+        value: {
+          type: DataTypes.INTEGER,
           allowNull: false,
         },
         updatedAt: {
@@ -34,26 +34,19 @@ module.exports = class BrandModel extends Model {
       },
       {
         sequelize: sequelizeInstance,
-        modelName: 'Brand',
-        tableName: 'brands',
+        modelName: 'Discount',
         underscored: true,
         paranoid: true,
         timestamps: false,
       }
     );
 
-    return BrandModel;
+    return DiscountModel;
   }
 
-  static setupAssociation(ProductModel, DiscountModel) {
-    BrandModel.hasMany(ProductModel, {
-      foreignKey: 'brandFk',
-      as: 'getBrand',
-    });
-    BrandModel.belongsToMany(DiscountModel, {
-      through: 'discount_brand',
-      foreignKey: 'brand_id',
-      as: 'discounts',
-    });
+  static setupAssociation(ProductModel, CategoryModel, BrandModel) {
+    DiscountModel.belongsToMany(ProductModel, { through: 'discount_products' });
+    DiscountModel.belongsToMany(CategoryModel, { through: 'discount_category' });
+    DiscountModel.belongsToMany(BrandModel, { through: 'discount_brand' });
   }
 };

@@ -1,7 +1,11 @@
 const { Op } = require('sequelize');
 const { fromModelToEntity } = require('../mapper/mapper');
+const ProductNotDefinedError = require('../error/ProductNotDefinedError');
+const ProductIdNotDefinedError = require('../error/ProductIdNotDefinedError');
+const ProductNotFoundError = require('../error/ProductNotFoundError');
 const Product = require('../entity/entity');
 const CategoryModel = require('../../category/model/categoryModel');
+const DiscountModel = require('../../discount/model/discountModel');
 
 module.exports = class ProductRepository {
   /**
@@ -14,9 +18,9 @@ module.exports = class ProductRepository {
   /**
    * @param {Product} product
    */
-  async save(product, categories = []) {
+  async save(product, categories = [], discounts = []) {
     if (!(product instanceof Product)) {
-      throw new Error('Product not Defined');
+      throw new ProductNotDefinedError();
     }
     let productModel;
 
@@ -37,6 +41,16 @@ module.exports = class ProductRepository {
       await productModel.addCategory(id);
     });
 
+    if (!buildOptions.isNewRecord) {
+      const currentDiscounts = await productModel.getDiscounts();
+      const discountsId = currentDiscounts.map((discount) => discount.id);
+      await productModel.removeDiscount(discountsId);
+    }
+
+    discounts.map(async (id) => {
+      await productModel.addDiscount(id);
+    });
+
     return fromModelToEntity(productModel);
   }
 
@@ -45,16 +59,32 @@ module.exports = class ProductRepository {
    */
   async getById(id) {
     if (!id) {
-      throw new Error('Id not defined');
+      throw new ProductIdNotDefinedError();
     }
     const productInstance = await this.productModel.findByPk(id, {
-      include: {
-        model: CategoryModel,
-        as: 'categories',
-      },
+      include: [
+        {
+          model: CategoryModel,
+          as: 'categories',
+          include: {
+            model: DiscountModel,
+            as: 'discounts',
+          },
+        },
+        {
+          model: DiscountModel,
+          as: 'discounts',
+        },
+      ],
     });
+
+    if (Array.isArray(productInstance.categories)) {
+      productInstance.categories.forEach((category) => {
+        productInstance.discounts.push(...category.discounts);
+      });
+    }
     if (!productInstance) {
-      throw new Error(`Product with ID ${id} was not found`);
+      throw new ProductNotFoundError(`There is not existing product with ID ${id}`);
     }
     return fromModelToEntity(productInstance);
   }
@@ -64,22 +94,37 @@ module.exports = class ProductRepository {
    */
   async delete(product) {
     if (!product) {
-      throw new Error('Product Not Found');
+      throw new ProductNotFoundError();
     }
     return this.productModel.destroy({ where: { id: product.id } });
   }
 
   async getAll() {
     const productsInstance = await this.productModel.findAll({
-      include: {
-        model: CategoryModel,
-        as: 'categories',
-        through: {
-          attributes: [],
+      include: [
+        {
+          model: CategoryModel,
+          as: 'categories',
+          include: {
+            model: DiscountModel,
+            as: 'discounts',
+          },
         },
-      },
+        {
+          model: DiscountModel,
+          as: 'discounts',
+        },
+      ],
     });
-    return productsInstance.map((product) => fromModelToEntity(product));
+
+    return productsInstance.map((product) => {
+      if (Array.isArray(product.categories)) {
+        product.categories.forEach((category) => {
+          product.discounts.push(...category.discounts);
+        });
+      }
+      return fromModelToEntity(product);
+    });
   }
 
   /**

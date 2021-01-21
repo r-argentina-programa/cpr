@@ -26,6 +26,14 @@ const {
   CategoryService,
 } = require('../module/category/module');
 
+const {
+  DiscountController,
+  DiscountModel,
+  DiscountRepository,
+  DiscountService,
+  DiscountTypeModel,
+} = require('../module/discount/module');
+
 const { ManagementController } = require('../module/management/module');
 
 function configureSequelizeDatabase() {
@@ -86,12 +94,21 @@ function configureCategoryModel(container) {
   return CategoryModel.setup(container.get('Sequelize'));
 }
 
+function configureDiscountModel(container) {
+  return DiscountModel.setup(container.get('Sequelize'));
+}
+
+function configureDiscountTypeModel(container) {
+  return DiscountTypeModel.setup(container.get('Sequelize'));
+}
+
 function addProductModuleDefinitions(container) {
   container.addDefinitions({
     ProductController: object(ProductController).construct(
       get('BrandService'),
       get('CategoryService'),
       get('ProductService'),
+      get('DiscountService'),
       get('Multer')
     ),
     ProductService: object(ProductService).construct(get('ProductRepository')),
@@ -121,12 +138,26 @@ function addCategoryModuleDefinitions(container) {
   });
 }
 
+function addDiscountModuleDefinitions(container) {
+  container.addDefinitions({
+    DiscountController: object(DiscountController).construct(get('DiscountService')),
+    DiscountService: object(DiscountService).construct(get('DiscountRepository')),
+    DiscountRepository: object(DiscountRepository).construct(
+      get('DiscountModel'),
+      get('DiscountTypeModel')
+    ),
+    DiscountModel: factory(configureDiscountModel),
+    DiscountTypeModel: factory(configureDiscountTypeModel),
+  });
+}
+
 function addManagementModuleDefinitions(container) {
   container.addDefinitions({
     ManagementController: object(ManagementController).construct(
       get('BrandService'),
       get('CategoryService'),
-      get('ProductService')
+      get('ProductService'),
+      get('DiscountService')
     ),
   });
 }
@@ -134,8 +165,13 @@ function addManagementModuleDefinitions(container) {
 function setupAssociations(container) {
   const productModel = container.get('ProductModel');
   const categoryModel = container.get('CategoryModel');
-  productModel.setupAssociation(categoryModel);
-  categoryModel.setupAssociation(productModel);
+  const brandModel = container.get('BrandModel');
+  const discountModel = container.get('DiscountModel');
+  const discountTypeModel = container.get('DiscountTypeModel');
+  productModel.setupAssociation(categoryModel, discountModel);
+  brandModel.setupAssociation(productModel, discountModel);
+  categoryModel.setupAssociation(productModel, discountModel);
+  discountModel.setupAssociation(productModel, categoryModel, brandModel);
 }
 
 module.exports = function configureDI() {
@@ -145,6 +181,7 @@ module.exports = function configureDI() {
   addBrandModuleDefinitions(container);
   addCategoryModuleDefinitions(container);
   addManagementModuleDefinitions(container);
+  addDiscountModuleDefinitions(container);
   setupAssociations(container);
   return container;
 };

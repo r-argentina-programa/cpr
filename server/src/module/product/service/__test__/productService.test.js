@@ -14,12 +14,12 @@ const repositoryMock = {
 const mockService = new ProductService(repositoryMock);
 
 describe('ProductService methods', () => {
-  test("save calls repository's save method without categories", async () => {
+  test("save calls repository's save method without categories and discounts", async () => {
     const product = ProductTestProduct(1);
     await mockService.save(product);
 
     expect(repositoryMock.save).toHaveBeenCalledTimes(1);
-    expect(repositoryMock.save).toHaveBeenCalledWith(product, undefined);
+    expect(repositoryMock.save).toHaveBeenCalledWith(product, undefined, undefined);
   });
 
   test('save throws an error if param is not instance of Product', async () => {

@@ -1,0 +1,54 @@
+{% extends 'management/view/layout/base.njk' %} {% block body %} {% set discount = data.discount %}
+
+<div class="level-left">
+  <div class="level-item">
+    <h1 class="title is-1">
+      {{"Editing Discount with ID: " + discount.id if discount.id else "New Discount"}}
+    </h1>
+  </div>
+  <div class="level-item">
+    <span>
+      <a class="button is-link" href="/admin/discount">Cancel</a>
+    </span>
+  </div>
+</div>
+
+<hr />
+
+<form action="/admin/discount/save" method="POST" >
+  <input type="hidden" name="id" value="{{ discount.id }}" readonly />
+
+  <div class="field">
+    <label class="label">Value</label>
+    <div class="control has-icons-left">
+      <input
+        class="input"
+        type="number"
+        name="value"
+        placeholder="Type"
+        required
+      />
+      <span class="icon is-small is-left">
+        <i class="fas fa-user"></i>
+      </span>
+    </div>
+  </div>
+
+    <div class="field">
+    <label class="label">Type</label>
+    <div class="control has-icons-left">
+        <select name="type">
+          <option value="Fixed">FIXED</option>
+          <option value="Percentage">PERCENTAGE</option>
+        </select>
+      <span class="icon is-small is-left">
+        <i class="fas fa-user"></i>
+      </span>
+    </div>
+  </div>
+
+  <input type="submit" class="button is-primary is-large" value="Save" />
+
+  <hr />
+</form>
+{% endblock %}
