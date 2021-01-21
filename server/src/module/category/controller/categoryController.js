@@ -5,9 +5,10 @@ module.exports = class CategoryController {
   /**
    * @param  {import("../service/categoryService")} categoryService
    */
-  constructor(categoryService) {
+  constructor(categoryService, discountService) {
     this.ADMIN_ROUTE = '/admin';
     this.categoryService = categoryService;
+    this.discountService = discountService;
     this.CATEGORY_VIEWS = 'category/view';
     this.ROUTE_BASE = '/admin/category';
   }
@@ -44,6 +45,7 @@ module.exports = class CategoryController {
    */
   async index(req, res) {
     const categoriesList = await this.categoryService.getAll();
+    console.log(categoriesList)
     const { errors, messages } = req.session;
     res.render(`${this.CATEGORY_VIEWS}/index.njk`, {
       categoriesList,
@@ -87,8 +89,11 @@ module.exports = class CategoryController {
 
     try {
       const category = await this.categoryService.getById(id);
+      const discounts = await this.discountService.getAll();
+
       res.render(`${this.CATEGORY_VIEWS}/form.njk`, {
         category,
+        discounts,
       });
     } catch (e) {
       req.session.errors = [e.message, e.stack];
@@ -100,8 +105,20 @@ module.exports = class CategoryController {
    * @param {import('express').Request} req
    * @param {import('express').Response} res
    */
-  create(req, res) {
-    res.render(`${this.CATEGORY_VIEWS}/form.njk`);
+  async create(req, res) {
+    try {
+      const discounts = await this.discountService.getAll();
+      if (discounts.length > 0) {
+        res.render(`${this.CATEGORY_VIEWS}/form.njk`, {
+          discounts,
+        });
+      } else {
+        throw new Error('To create a category you must first create a discount');
+      }
+    } catch (e) {
+      req.session.errors = [e.message];
+      res.redirect(this.ROUTE_BASE);
+    }
   }
 
   /**
@@ -111,15 +128,21 @@ module.exports = class CategoryController {
   async save(req, res) {
     try {
       const categoryData = fromDataToEntity(req.body);
-      const savedCategory = await this.categoryService.save(categoryData);
+
+      let discounts = [];
+      if (req.body.discounts) {
+        discounts = JSON.parse(req.body.discounts).map((e) => e.id);
+      }
+
+      const savedCategory = await this.categoryService.save(categoryData, discounts);
 
       if (categoryData.id) {
         req.session.messages = [
-          `The Category with id ${savedCategory.id} was updated correctly (${savedCategory.name})`,
+          `The category ${savedCategory.name} was updated correctly (ID: ${savedCategory.id})`,
         ];
       } else {
         req.session.messages = [
-          `The Category with id ${savedCategory.id} was created correctly (${savedCategory.name})`,
+          `The category ${savedCategory.name} was created correctly (ID: ${savedCategory.id})`,
         ];
       }
     } catch (e) {
