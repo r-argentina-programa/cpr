@@ -9,11 +9,13 @@ module.exports = class ProductRepository {
   /**
    * @param  {import("../model/productModel")} productModel
    * @param  {import("../../category/model/categoryModel")} categoryModel
+   * @param  {import("../../brand/model/brandModel")} brandModel
    * @param  {import("../../discount/model/discountModel")} discountModel
    */
-  constructor(productModel, categoryModel, discountModel) {
+  constructor(productModel, categoryModel, brandModel, discountModel) {
     this.productModel = productModel;
     this.categoryModel = categoryModel;
+    this.brandModel = brandModel;
     this.discountModel = discountModel;
   }
 
@@ -80,6 +82,7 @@ module.exports = class ProductRepository {
       ],
     });
 
+    console.log(productInstance.getGetBrand());
     if (Array.isArray(productInstance.categories)) {
       productInstance.categories.forEach((category) => {
         productInstance.discounts.push(...category.discounts);

@@ -115,6 +115,7 @@ function addProductModuleDefinitions(container) {
     ProductRepository: object(ProductRepository).construct(
       get('ProductModel'),
       get('CategoryModel'),
+      get('BrandModel'),
       get('DiscountModel')
     ),
     ProductModel: factory(configureProductModel),
