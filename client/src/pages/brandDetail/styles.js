@@ -1,4 +1,4 @@
-import styled from "styled-components/macro";
+import styled from 'styled-components/macro';
 
 export const Container = styled.div`
   max-width: 1200px;
@@ -61,8 +61,12 @@ export const ProductsContainer = styled.div`
   border-top: 0.2rem dotted cadetblue;
   p {
     font-size: 3rem;
-    font-weight: 400;
     color: cadetblue;
+    text-align: center;
+    font-weight: 250;
+    span {
+      font-weight: 400;
+    }
   }
 `;
 
