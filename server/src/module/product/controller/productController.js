@@ -86,11 +86,11 @@ module.exports = class ProductController {
 
       if (product.id) {
         req.session.messages = [
-          `The brand ${savedProduct.name} was updated correctly (ID: ${savedProduct.id})`,
+          `The product ${savedProduct.name} was updated correctly (ID: ${savedProduct.id})`,
         ];
       } else {
         req.session.messages = [
-          `The brand ${savedProduct.name} was created correctly (ID: ${savedProduct.id})`,
+          `The product ${savedProduct.name} was created correctly (ID: ${savedProduct.id})`,
         ];
       }
     } catch (e) {
