@@ -99,4 +99,8 @@ export const ListContainer = styled.div`
   span {
     border: 1px solid red;
   }
+
+  tbody tr:nth-child(1) {
+    background-color: mediumaquamarine;
+  }
 `;
