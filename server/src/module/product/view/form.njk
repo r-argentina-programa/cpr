@@ -110,6 +110,7 @@
         <input name='discounts' placeholder='discounts'/>
       </div>
     </div>
+    <div id="discount-errors"></div>
 
     <input type="submit" class="button is-success" value="Save changes"/>
 
@@ -162,47 +163,98 @@
         tagify.addTags(cleanCurrentCategories);
   </script>
   <script>
-    const currentDiscounts = {{ product.discounts | dump | safe }};
-    const discounts = {{ discounts | dump | safe }};
+function calculatePrice(discount, defaultPrice) {
+  let finalPrice = defaultPrice;
+  const { type, value } = discount;
+  switch (type) {
+    case 'Fixed': {
+      finalPrice = defaultPrice - value;
+      break;
+    }
+    case 'Percentage': {
+      finalPrice = defaultPrice - defaultPrice * (value / 100);
+      break;
+    }
+    default:
+      break;
+  }
+  return { ...discount, finalPrice };
+}  
+</script>
+<script>
+  const currentDiscounts = {{ product.discounts | dump | safe }};
+  const discounts = {{ discounts | dump | safe }};
 
-    const cleanDiscounts = discounts.map((discount) => ({id: discount.id, value: discount.value, type: discount.type}))
-      const cleanCurrentDiscounts = currentDiscounts.map((discount) => ({id: discount.id, value: discount.value, type: discount.type}))
-        const input2 = document.querySelector('input[name=discounts]'),
-          discountsTagify = new Tagify(input2, {
-            enforceWhitelist: true,
-            delimiters: null,
-            templates: {
-              tag: function (tagData) {
-                try {
-                  return `<tag title='${tagData.id}' contenteditable='false' spellcheck="false" class='tagify__tag ${tagData.class
-                    ? tagData.class
-                    : ""}' ${this.getAttributes(tagData)}>
-                        <x title='remove tag' class='tagify__tag__removeBtn'></x>
-                        <div>
-                            <span class='tagify__tag-text'>${tagData.value}</span><span>${tagData.type}</span>
-                        </div>
-                    </tag>`
-                } catch (err) {}
-              },
+  const cleanDiscounts = discounts.map(({ id, value, type }) => ({ id, value:id, discountValue:value,type }));
+  const cleanCurrentDiscounts = currentDiscounts.map(({ id, value, type }) => ({ id, value:id,discountValue:value, type }));
+  
+  const input2 = document.querySelector('input[name=discounts]'),
+    discountsTagify = new Tagify(input2, {
+      enforceWhitelist: true,
+      delimiters: null,
 
-              dropdownItem: function (tagData) {
-                const valueText = tagData.type === 'Fixed' ? `$${tagData.value}` : `${tagData.value}%`
-                try {
-                  return `<div class='tagify__dropdown__item ${tagData.class
-                    ? tagData.class
-                    : ""}' tagifySuggestionIdx="${tagData.tagifySuggestionIdx}">
-                            <span>${valueText} Off</span>
-                        </div>`
-                } catch (err) {}
-              }
-            },
-            whitelist: cleanDiscounts,
-            dropdown: {
-              enabled: 1, // suggest tags after a single character input
-              classname: 'extra-properties' // custom class for the suggestions dropdown
-            } // map tags' values to this property name, so this property will be the actual value and not the printed value on the screen
-          });
+      templates: {
+        tag: function (tagData) {
+          try {
+            return `<tag title='${
+              tagData.id
+            }' contenteditable='false' spellcheck="false" class='tagify__tag ${
+              tagData.class ? tagData.class : ''
+            }' ${this.getAttributes(tagData)}>
+                      <x title='remove tag' class='tagify__tag__removeBtn'></x>
+                      <div>
+                          <span class='tagify__tag-text'>${tagData.discountValue}</span><span>${
+              tagData.type
+            }</span>
+                      </div>
+                  </tag>`;
+          } catch (err) {}
+        },
 
-        discountsTagify.addTags(cleanCurrentDiscounts);
-  </script>
+        dropdownItem: function (tagData) {
+          const valueText = tagData.type === 'Fixed' ? `$${tagData.discountValue}` : `${tagData.discountValue}%`;
+          try {
+            return `<div class='tagify__dropdown__item ${
+              tagData.class ? tagData.class : ''
+            }' tagifySuggestionIdx="${tagData.tagifySuggestionIdx}">
+                          <span>${valueText} Off</span>
+                      </div>`;
+          } catch (err) {}
+        },
+      },
+      whitelist: cleanDiscounts,
+      dropdown: {
+        enabled: 1,
+        classname : 'extra-properties',
+        searchKeys: ['value', 'type'],
+      },
+      validate: (e) => {
+        const price = document.querySelector('input[name=defaultPrice]').value;
+        const discount = calculatePrice(e, price);
+        if (discount.finalPrice > 0) {
+          return true;
+        }
+        addErrorMessage();
+        return false;
+      },
+    });
+
+  discountsTagify.addTags(cleanCurrentDiscounts);
+
+  function addErrorMessage(message = 'You cant do that, price will be lower than 0') {
+    const errorsContainer = document.querySelector('#discount-errors');
+    const node = document.createElement('li');
+    const messageNode = document.createTextNode(message);
+    node.appendChild(messageNode);
+    errorsContainer.appendChild(node);
+    removeErrorMessage();
+  }
+
+  function removeErrorMessage() {
+    const errorsContainer = document.querySelector('#discount-errors');
+    setTimeout(() => {
+      errorsContainer.removeChild(errorsContainer.childNodes[0]);
+    }, 2000);
+  }
+</script>
 {% endblock %}
