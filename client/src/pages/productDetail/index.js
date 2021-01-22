@@ -1,7 +1,7 @@
-import Header from '../../components/header';
 import { Link, useParams } from 'react-router-dom';
 import { useContext, useEffect, useState } from 'react';
 import ab2str from 'arraybuffer-to-string';
+import { Table } from 'react-bootstrap';
 import { ProductContext } from '../../store/products/productContext';
 import {
   Container,
@@ -11,7 +11,8 @@ import {
   ProductPrice,
   ListContainer,
 } from './styles';
-import { Table } from 'react-bootstrap';
+import Header from '../../components/header';
+
 export default function ProductDetail() {
   const { id } = useParams();
   const [image, setImage] = useState('');
@@ -28,7 +29,6 @@ export default function ProductDetail() {
     }
     setImage(ab2str(uint8));
   }, [product]);
-  console.log(product);
 
   return (
     <>
@@ -97,9 +97,9 @@ export default function ProductDetail() {
                   </thead>
                   {product.discounts.map((discount) => (
                     <tbody>
-                      {<td>{discount.type}</td>}
-                      {<td>{discount.value}</td>}
-                      {<td>${discount.finalPrice}</td>}
+                      <td>{discount.type}</td>
+                      <td>{discount.value}</td>
+                      <td>${discount.finalPrice}</td>
                     </tbody>
                   ))}
                 </Table>

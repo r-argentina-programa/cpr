@@ -1,8 +1,8 @@
 import styled from 'styled-components/macro';
 import ab2str from 'arraybuffer-to-string';
 import { Link } from 'react-router-dom';
-import { ProductContext } from '../../store/products/productContext';
 import { useContext } from 'react';
+import { ProductContext } from '../../store/products/productContext';
 
 const Container = styled.div`
   &::before {

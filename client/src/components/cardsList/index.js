@@ -1,3 +1,5 @@
+/* eslint-disable no-nested-ternary */
+/* eslint-disable react/prop-types */
 import styled from 'styled-components';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';

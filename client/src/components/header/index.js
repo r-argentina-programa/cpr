@@ -3,8 +3,8 @@ import Nav from 'react-bootstrap/Nav';
 import Form from 'react-bootstrap/Form';
 import FormControl from 'react-bootstrap/FormControl';
 import { useContext, useEffect, useState } from 'react';
-import SearchContainer from '../search';
 import styled from 'styled-components/macro';
+import SearchContainer from '../search';
 import { ProductContext } from '../../store/products/productContext';
 
 const ContainerSearch = styled.div`

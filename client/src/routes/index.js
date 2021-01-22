@@ -1,8 +1,9 @@
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Brands from '../pages/brands';
-import Main from '../pages/main/';
+import Main from '../pages/main';
 import ProductDetail from '../pages/productDetail';
 import BrandDetail from '../pages/brandDetail/index';
+
 export default function Routes() {
   return (
     <>

@@ -1,8 +1,8 @@
-import Header from '../../components/header';
 import styled from 'styled-components/macro';
-import CardsList from '../../components/cardsList';
 import { Link } from 'react-router-dom';
 import { useContext, useEffect } from 'react';
+import CardsList from '../../components/cardsList';
+import Header from '../../components/header';
 import { ProductContext } from '../../store/products/productContext';
 import { BrandContext } from '../../store/brand/brandContext';
 import { CategoryContext } from '../../store/category/categoryContext';
