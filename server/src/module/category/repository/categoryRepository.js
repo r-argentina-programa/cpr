@@ -1,8 +1,10 @@
 const { fromModelToEntity } = require('../mapper/categoryMapper');
 const { fromModelToEntity: fromModelToProductEntity } = require('../../product/mapper/mapper');
 const CategoryNotDefinedError = require('../error/CategoryNotDefinedError');
+const CategoriesIdsNotDefinedError = require('../error/CategoriesIdsNotDefinedError');
 const CategoryIdNotDefinedError = require('../error/CategoryIdNotDefinedError');
 const CategoryNotFoundError = require('../error/CategoryNotFoundError');
+const CategoriesIdsNotFoundError = require('../error/CategoriesIdsNotFoundError');
 const Category = require('../entity/Category');
 
 module.exports = class CategoryRepository {
@@ -71,6 +73,30 @@ module.exports = class CategoryRepository {
     }
 
     return fromModelToEntity(categoryInstance);
+  }
+
+  /**
+   * @param {Array} categoriesIds
+   */
+  async getByIds(categoriesIds) {
+    if (!Array(categoriesIds)) {
+      throw new CategoriesIdsNotDefinedError();
+    }
+    const categoriesInstance = await this.categoryModel.findAll({
+      where: {
+        id: categoriesIds,
+      },
+      include: {
+        model: this.discountModel,
+        as: 'discounts',
+      },
+    });
+    if (!categoriesInstance) {
+      throw new CategoriesIdsNotFoundError(
+        `There is no existing categories with IDs ${categoriesIds}`
+      );
+    }
+    return categoriesInstance.map(fromModelToEntity);
   }
 
   /**
