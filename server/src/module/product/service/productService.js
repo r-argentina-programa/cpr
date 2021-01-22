@@ -44,7 +44,7 @@ module.exports = class ProductService {
 
   async validateProductsDiscounts(product, discountsIds) {
     const discounts = await this.DiscountService.getByIds(discountsIds);
-    discounts.map((discount) => {
+    discounts.forEach((discount) => {
       const price = calculatePrice(discount, product.defaultPrice);
       if (price.finalPrice <= 0) {
         throw new Error(
