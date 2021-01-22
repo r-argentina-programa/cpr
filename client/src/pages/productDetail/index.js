@@ -87,7 +87,7 @@ export default function ProductDetail() {
               <>
                 <h2>Another Discounts for this Product:</h2>
 
-                <Table striped bordered condensed hover>
+                <Table striped bordered hover>
                   <thead>
                     <tr>
                       <th>Discount Type</th>
@@ -95,13 +95,15 @@ export default function ProductDetail() {
                       <th>Final Price</th>
                     </tr>
                   </thead>
-                  {product.discounts.map((discount) => (
-                    <tbody>
-                      <td>{discount.type}</td>
-                      <td>{discount.value}</td>
-                      <td>${discount.finalPrice}</td>
-                    </tbody>
-                  ))}
+                  <tbody>
+                    {product.discounts.map((discount) => (
+                      <tr>
+                        <td>{discount.type}</td>
+                        <td>{discount.value}</td>
+                        <td>${discount.finalPrice}</td>
+                      </tr>
+                    ))}
+                  </tbody>
                 </Table>
               </>
             ) : (
