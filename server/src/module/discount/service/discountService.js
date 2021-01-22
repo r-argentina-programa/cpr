@@ -1,5 +1,6 @@
 const DiscountIdNotDefinedError = require('../error/DiscountIdNotDefinedError');
 const DiscountNotDefinedError = require('../error/DiscountNotDefinedError');
+const DiscountsIdsNotDefinedError = require('../error/DiscountsIdsNotDefinedError');
 const Discount = require('../entity/Discount');
 
 module.exports = class DiscountService {
@@ -32,6 +33,16 @@ module.exports = class DiscountService {
       throw new DiscountIdNotDefinedError();
     }
     return this.DiscountRepository.getById(discountId);
+  }
+
+  /**
+   * @param {Array} discountsIds
+   */
+  async getByIds(discountsIds) {
+    if (!Array(discountsIds)) {
+      throw new DiscountsIdsNotDefinedError();
+    }
+    return this.DiscountRepository.getByIds(discountsIds);
   }
 
   /**
