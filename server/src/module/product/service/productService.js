@@ -50,4 +50,8 @@ module.exports = class ProductService {
   async getAllProductsSearch(term) {
     return this.ProductRepository.getAllProductsSearch(term);
   }
+
+  async getAllByCategoryAndBrand(categories, brands) {
+    return this.ProductRepository.getAllByCategoryAndBrand(categories, brands);
+  }
 };
