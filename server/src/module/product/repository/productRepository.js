@@ -109,6 +109,7 @@ module.exports = class ProductRepository {
   async getAll() {
     const productsInstance = await this.productModel.findAll({
       include: [
+        { model: this.brandModel },
         {
           model: this.categoryModel,
           as: 'categories',
