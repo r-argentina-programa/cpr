@@ -78,7 +78,7 @@ export default function ProductDetail() {
                   <span>${product.defaultPrice}</span>
                 )}
                 <br />
-                <a href="#">Add to Cart</a>
+                <a href="/cart">Add to Cart</a>
               </ProductPrice>
             </RightColumnContainer>
           </Container>

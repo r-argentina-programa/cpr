@@ -40,7 +40,9 @@ const ProductContextProvider = ({ children }) => {
       if (res.status === 200) {
         dispatch({ type: GET_PRODUCT_DETAILS, payload: res.data });
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log(error.message);
+    }
   };
 
   const getProductsByBrand = async (brandId) => {
