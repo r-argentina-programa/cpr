@@ -90,8 +90,6 @@ const ProductContextProvider = ({ children }) => {
         categories = 0;
       }
       const res = await api.get(`/api/products/all/${brands}/${categories}`);
-      console.log(res);
-
       dispatch({ type: GET_PRODUCTS_FILTERED, payload: res.data });
     } catch (error) {
       console.warn(error.message);

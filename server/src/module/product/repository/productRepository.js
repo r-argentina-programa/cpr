@@ -149,24 +149,12 @@ module.exports = class ProductRepository {
   }
 
   async getAllByCategoryAndBrand(categories = [], brands = []) {
-    // const productListByBrand = await this.productModel.findAll({
-    //   where: {
-    //     brand_fk: brands,
-    //   },
-    // });
-    // const productListByCategory = await this.productModel.findAll({
-    //   include: {
-    //     model: CategoryModel,
-    //     as: 'categories',
-    //     where: {
-    //       id: [1, 2],
-    //     },
-    //   },
-    // });
-    const productList = await this.productModel.findAll({
+    const productListByBrand = await this.productModel.findAll({
       where: {
         brand_fk: brands,
       },
+    });
+    const productListByCategory = await this.productModel.findAll({
       include: {
         model: CategoryModel,
         as: 'categories',
@@ -175,10 +163,7 @@ module.exports = class ProductRepository {
         },
       },
     });
-    // console.log(
-    //   '=======PRODUCTO=======',
-    //   productList.map((product) => fromModelToEntity(product))
-    // );
-    return productList.map((product) => fromModelToEntity(product));
+    const totalProducts = productListByBrand.concat(productListByCategory);
+    return totalProducts.map((product) => fromModelToEntity(product));
   }
 };

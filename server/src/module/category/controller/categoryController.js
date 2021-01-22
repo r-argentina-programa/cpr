@@ -45,7 +45,6 @@ module.exports = class CategoryController {
    */
   async index(req, res) {
     const categoriesList = await this.categoryService.getAll();
-    console.log(categoriesList)
     const { errors, messages } = req.session;
     res.render(`${this.CATEGORY_VIEWS}/index.njk`, {
       categoriesList,

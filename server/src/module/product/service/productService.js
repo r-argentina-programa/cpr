@@ -52,6 +52,8 @@ module.exports = class ProductService {
   }
 
   async getAllByCategoryAndBrand(categories, brands) {
-    return this.ProductRepository.getAllByCategoryAndBrand(categories, brands);
+    const data = await this.ProductRepository.getAllByCategoryAndBrand(categories, brands);
+    const products = data.filter((v, i, a) => a.findIndex((t) => t.id === v.id) === i);
+    return products;
   }
 };
