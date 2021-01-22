@@ -9,7 +9,9 @@ import {
   ProductDescription,
   RightColumnContainer,
   ProductPrice,
+  ListContainer,
 } from './styles';
+import { Table } from 'react-bootstrap';
 export default function ProductDetail() {
   const { id } = useParams();
   const [image, setImage] = useState('');
@@ -26,6 +28,7 @@ export default function ProductDetail() {
     }
     setImage(ab2str(uint8));
   }, [product]);
+  console.log(product);
 
   return (
     <>
@@ -33,51 +36,79 @@ export default function ProductDetail() {
       {!product.brand ? (
         <p>Loading.. Please wait</p>
       ) : (
-        <Container>
-          <ImageContainer>
-            <img src={`data:image/png;base64, ${image}`} alt="Product" />
-          </ImageContainer>
+        <>
+          <Container>
+            <ImageContainer>
+              <img src={`data:image/png;base64, ${image}`} alt="Product" />
+            </ImageContainer>
 
-          <RightColumnContainer>
-            <ProductDescription>
-              {product.categories &&
-                product.categories.map((category) => (
-                  <span key={category.id}>{category.name}</span>
-                ))}
-              <h1>{product.name}</h1>
-              <p>{product.description}</p>
-              <div className="brandContainer">
-                <p>
-                  Made by
-                  <Link to={`/brand/${product.brand.id}`} className="brand">
-                    {product.brand.name}
-                  </Link>
-                </p>
-              </div>
-            </ProductDescription>
+            <RightColumnContainer>
+              <ProductDescription>
+                {product.categories &&
+                  product.categories.map((category) => (
+                    <span key={category.id}>{category.name}</span>
+                  ))}
+                <h1>{product.name}</h1>
+                <p>{product.description}</p>
+                <div className="brandContainer">
+                  <p>
+                    Made by
+                    <Link to={`/brand/${product.brand.id}`} className="brand">
+                      {product.brand.name}
+                    </Link>
+                  </p>
+                </div>
+              </ProductDescription>
 
-            <ProductPrice>
-              {product.discount ? (
-                <>
-                  <span style={{ textDecoration: 'line-through' }}>${product.defaultPrice}</span>
-                  <span
-                    style={{
-                      color: 'red',
-                      border: '1px solid red',
-                      padding: '.4rem',
-                    }}
-                  >
-                    ${product.discount.finalPrice}
-                  </span>
-                </>
-              ) : (
-                <span>${product.defaultPrice}</span>
-              )}
-              <br />
-              <a href="#">Add to Cart</a>
-            </ProductPrice>
-          </RightColumnContainer>
-        </Container>
+              <ProductPrice>
+                {product.discount ? (
+                  <>
+                    <span style={{ textDecoration: 'line-through' }}>${product.defaultPrice}</span>
+                    <span
+                      style={{
+                        color: 'red',
+                        border: '1px solid red',
+                        padding: '.4rem',
+                      }}
+                    >
+                      ${product.discount.finalPrice}
+                    </span>
+                  </>
+                ) : (
+                  <span>${product.defaultPrice}</span>
+                )}
+                <br />
+                <a href="#">Add to Cart</a>
+              </ProductPrice>
+            </RightColumnContainer>
+          </Container>
+          <ListContainer>
+            {product.discounts.length !== 0 ? (
+              <>
+                <h2>Another Discounts for this Product:</h2>
+
+                <Table striped bordered condensed hover>
+                  <thead>
+                    <tr>
+                      <th>Discount Type</th>
+                      <th>Discount Value</th>
+                      <th>Final Price</th>
+                    </tr>
+                  </thead>
+                  {product.discounts.map((discount) => (
+                    <tbody>
+                      {<td>{discount.type}</td>}
+                      {<td>{discount.value}</td>}
+                      {<td>${discount.finalPrice}</td>}
+                    </tbody>
+                  ))}
+                </Table>
+              </>
+            ) : (
+              <h2>There are no discounts in this product</h2>
+            )}
+          </ListContainer>
+        </>
       )}
     </>
   );
