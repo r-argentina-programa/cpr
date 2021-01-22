@@ -3,7 +3,6 @@ import { Link, useParams } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import ab2str from "arraybuffer-to-string";
 import { ProductContext } from "../../store/products/productContext";
-import { BrandContext } from "../../store/brand/brandContext";
 import {
   Container,
   ImageContainer,
@@ -15,7 +14,6 @@ export default function ProductDetail() {
   const { id } = useParams();
   const [image, setImage] = useState("");
   const { product, getProductDetails } = useContext(ProductContext);
-  const { getBrandById, brand } = useContext(BrandContext);
 
   useEffect(() => {
     getProductDetails(id);
@@ -27,13 +25,12 @@ export default function ProductDetail() {
       uint8 = new Uint8Array(product.imageSrc.data);
     }
     setImage(ab2str(uint8));
-    getBrandById(product.brandFk);
   }, [product]);
 
   return (
     <>
       <Header />
-      {!product ? (
+      {!product.brand ? (
         <p>Loading.. Please wait</p>
       ) : (
         <Container>
@@ -52,8 +49,8 @@ export default function ProductDetail() {
               <div className="brandContainer">
                 <p>
                   Made by
-                  <Link to={`/brand/${brand.id}`} className="brand">
-                    {brand.name}
+                  <Link to={`/brand/${product.brand.id}`} className="brand">
+                    {product.brand.name}
                   </Link>
                 </p>
               </div>
