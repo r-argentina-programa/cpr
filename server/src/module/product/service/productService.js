@@ -23,6 +23,7 @@ module.exports = class ProductService {
     }
 
     await this.validateCategoriesDiscounts(product, categoriesIds);
+    await this.validateProductsDiscounts(product, discountsIds);
 
     return this.ProductRepository.save(product, categoriesIds, discountsIds);
   }
@@ -34,7 +35,7 @@ module.exports = class ProductService {
         const price = calculatePrice(discount, product.defaultPrice);
         if (price.finalPrice <= 0) {
           throw new Error(
-            `No se puede guardar el producto porque al aplicarle el/los descuento de la/s categorias su precio final es ${price.finalPrice}`
+            `The product cannot be saved because when the discount of categories is applied its final price is ${price.finalPrice}`
           );
         }
       });
@@ -47,7 +48,7 @@ module.exports = class ProductService {
       const price = calculatePrice(discount, product.defaultPrice);
       if (price.finalPrice <= 0) {
         throw new Error(
-          `No se puede guardar el producto porque al aplicarle el/los descuentos del producto su precio final es ${price.finalPrice}`
+          `The product cannot be saved because when the discount is applied its final price is ${price.finalPrice}`
         );
       }
     });
