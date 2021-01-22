@@ -1,4 +1,4 @@
-import { GET_ALL_BRANDS, GET_BRAND_ID } from "./brandTypes";
+import { GET_ALL_BRANDS, GET_BRAND_ID } from './brandTypes';
 
 export default function productReducer(state, action) {
   switch (action.type) {

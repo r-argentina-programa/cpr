@@ -1,10 +1,10 @@
-import React, { createContext, useReducer } from "react";
+import React, { createContext, useReducer } from 'react';
 
-import api from "../../services/api";
+import api from '../../services/api';
 
-import productReducer from "./brandReducer";
+import productReducer from './brandReducer';
 
-import { GET_ALL_BRANDS, GET_BRAND_ID } from "./brandTypes";
+import { GET_ALL_BRANDS, GET_BRAND_ID } from './brandTypes';
 
 export const BrandContext = createContext();
 
@@ -18,7 +18,7 @@ const BrandContextProvider = ({ children }) => {
 
   const getAllBrands = async () => {
     try {
-      const res = await api.get("/api/brands/all");
+      const res = await api.get('/api/brands/all');
       if (res.status === 200) {
         dispatch({ type: GET_ALL_BRANDS, payload: res.data });
       }

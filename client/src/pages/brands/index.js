@@ -1,8 +1,9 @@
-import { useContext, useEffect } from "react";
-import styled from "styled-components";
-import CardsList from "../../components/cardsList";
-import Header from "../../components/header";
-import { BrandContext } from "../../store/brand/brandContext";
+import { useContext, useEffect } from 'react';
+import styled from 'styled-components';
+import CardsList from '../../components/cardsList';
+import Header from '../../components/header';
+import { BrandContext } from '../../store/brand/brandContext';
+
 const Title = styled.h1`
   margin: 1rem 0;
   text-align: center;

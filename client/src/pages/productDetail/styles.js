@@ -1,4 +1,4 @@
-import styled from "styled-components/macro";
+import styled from 'styled-components/macro';
 
 export const Container = styled.div`
   max-width: 1200px;
@@ -79,5 +79,24 @@ export const ProductPrice = styled.div`
     &:hover {
       background-color: #64af3d;
     }
+  }
+`;
+
+export const ListContainer = styled.div`
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 12rem;
+  h2 {
+    font-size: 3rem;
+    width: 100%;
+    color: cadetblue;
+    text-align: center;
+    font-weight: 250;
+    margin-bottom: 3rem;
+  }
+
+  span {
+    border: 1px solid red;
   }
 `;

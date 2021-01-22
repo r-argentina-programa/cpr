@@ -1,10 +1,10 @@
-import React, { createContext, useReducer } from "react";
+import React, { createContext, useReducer } from 'react';
 
-import api from "../../services/api";
+import api from '../../services/api';
 
-import categoryReducer from "./categoryReducer";
+import categoryReducer from './categoryReducer';
 
-import { GET_ALL_CATEGORIES } from "./categoryTypes";
+import { GET_ALL_CATEGORIES } from './categoryTypes';
 
 export const CategoryContext = createContext();
 
@@ -17,7 +17,7 @@ const CategoryContextProvider = ({ children }) => {
 
   const getAllCategories = async () => {
     try {
-      const res = await api.get("/api/categories/all");
+      const res = await api.get('/api/categories/all');
       if (res.status === 200) {
         dispatch({ type: GET_ALL_CATEGORIES, payload: res.data });
       }
@@ -27,9 +27,7 @@ const CategoryContextProvider = ({ children }) => {
   };
 
   return (
-    <CategoryContext.Provider
-      value={{ getAllCategories, categories: state.categories }}
-    >
+    <CategoryContext.Provider value={{ getAllCategories, categories: state.categories }}>
       {children}
     </CategoryContext.Provider>
   );
