@@ -1,5 +1,6 @@
 const CategoryIdNotDefinedError = require('../error/CategoryIdNotDefinedError');
 const CategoryNotDefinedError = require('../error/CategoryNotDefinedError');
+const CategoriesIdsNotDefinedError = require('../error/CategoriesIdsNotDefinedError');
 const Category = require('../entity/Category');
 
 module.exports = class CategoryService {
@@ -32,6 +33,13 @@ module.exports = class CategoryService {
       throw new CategoryIdNotDefinedError();
     }
     return this.CategoryRepository.getById(categoryId);
+  }
+
+  async getByIds(categoriesIds) {
+    if (!Array(categoriesIds)) {
+      throw new CategoriesIdsNotDefinedError();
+    }
+    return this.CategoryRepository.getByIds(categoriesIds);
   }
 
   /**

@@ -141,7 +141,7 @@ describe('DiscountController methods', () => {
     const reqSaveMock = {
       body: {
         id: 0,
-        type: 'fixed',
+        type: 'Fixed',
         value: '50',
       },
       session: {
@@ -161,7 +161,7 @@ describe('DiscountController methods', () => {
     const reqSaveMock = {
       body: {
         id: 1,
-        type: 'fixed',
+        type: 'Fixed',
         value: '50',
       },
       session: {

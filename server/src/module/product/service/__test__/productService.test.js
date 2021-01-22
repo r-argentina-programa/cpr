@@ -2,6 +2,8 @@ const ProductService = require('../productService');
 const ProductNotDefinedError = require('../../error/ProductNotDefinedError');
 const ProductIdNotDefinedError = require('../../error/ProductIdNotDefinedError');
 const ProductTestProduct = require('../../controller/__test__/products.fixture');
+const createTestDiscount = require('../../../discount/controller/__test__/discount.fixture');
+const createTestCategory = require('../../../category/controller/__test__/categories.fixture');
 
 const repositoryMock = {
   save: jest.fn(),
@@ -11,7 +13,15 @@ const repositoryMock = {
   getAllProductsSearch: jest.fn(),
 };
 
-const mockService = new ProductService(repositoryMock);
+const categoryServiceMock = {
+  getByIds: jest.fn(() => Array.from({ length: 3 }, (id) => createTestCategory(id + 1))),
+};
+
+const discountServiceMock = {
+  getByIds: jest.fn(() => Array.from({ length: 3 }, (id) => createTestDiscount(id + 1))),
+};
+
+const mockService = new ProductService(repositoryMock, categoryServiceMock, discountServiceMock);
 
 describe('ProductService methods', () => {
   test("save calls repository's save method without categories and discounts", async () => {

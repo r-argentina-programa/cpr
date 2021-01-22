@@ -1,10 +1,10 @@
 const { fromModelToEntity } = require('../mapper/discountMapper');
 const DiscountNotDefinedError = require('../error/DiscountNotDefinedError');
+const DiscountsIdsNotDefinedError = require('../error/DiscountsIdsNotDefinedError');
 const DiscountIdNotDefinedError = require('../error/DiscountIdNotDefinedError');
 const DiscountNotFoundError = require('../error/DiscountNotFoundError');
+const DiscountsIdsNotFoundError = require('../error/DiscountsIdsNotFoundError');
 const Discount = require('../entity/Discount');
-//const DiscountType = require('../entity/discountType');
-// const { fromModelToEntity: fromModelToTypeEntity } = require('../mapper/discountTypeMapper');
 
 module.exports = class DiscountRepository {
   /**
@@ -31,15 +31,6 @@ module.exports = class DiscountRepository {
     return fromModelToEntity(discountModel);
   }
 
-  async saveType(type) {
-    let newType;
-    const buildOptions = { isNewRecord: !type.id };
-    newType = this.discountTypeModel.build(type, buildOptions);
-    newType = await this.discountTypeModel.save();
-
-    // return fromModelToEntity(newType);
-  }
-
   async getAll() {
     const discountInstances = await this.discountModel.findAll();
     return discountInstances.map(fromModelToEntity);
@@ -58,6 +49,26 @@ module.exports = class DiscountRepository {
     }
 
     return fromModelToEntity(discountInstance);
+  }
+
+  /**
+   * @param {Array} categoriesIds
+   */
+  async getByIds(discountsIds) {
+    if (!Array(discountsIds)) {
+      throw new DiscountsIdsNotDefinedError();
+    }
+    const discountsInstance = await this.discountModel.findAll({
+      where: {
+        id: discountsIds,
+      },
+    });
+    if (!discountsInstance) {
+      throw new DiscountsIdsNotFoundError(
+        `There is no existing discounts with IDs ${discountsIds}`
+      );
+    }
+    return discountsInstance.map(fromModelToEntity);
   }
 
   /**

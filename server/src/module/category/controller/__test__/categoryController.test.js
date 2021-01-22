@@ -165,6 +165,7 @@ describe('CategoryController methods', () => {
       body: {
         id: 0,
         name: 'electronics',
+        discounts: '',
       },
       session: {
         errors: [],
@@ -173,10 +174,12 @@ describe('CategoryController methods', () => {
     };
 
     const discounts = [];
+    const productMock = createTestCategory(0);
+    productMock.discounts = undefined;
 
     await mockController.save(reqSaveMock, resMock);
     expect(serviceMock.save).toHaveBeenCalledTimes(1);
-    expect(serviceMock.save).toHaveBeenCalledWith(createTestCategory(0), discounts);
+    expect(serviceMock.save).toHaveBeenCalledWith(productMock, discounts);
     expect(resMock.redirect).toHaveBeenCalledTimes(1);
     expect(reqSaveMock.session.errors).toHaveLength(0);
   });
@@ -186,6 +189,7 @@ describe('CategoryController methods', () => {
       body: {
         id: 1,
         name: 'electronics',
+        discounts: '',
       },
       session: {
         errors: [],
@@ -193,10 +197,12 @@ describe('CategoryController methods', () => {
       },
     };
     const discounts = [];
+    const productMock = createTestCategory(1);
+    productMock.discounts = undefined;
 
     await mockController.save(reqSaveMock, resMock);
     expect(serviceMock.save).toHaveBeenCalledTimes(1);
-    expect(serviceMock.save).toHaveBeenCalledWith(createTestCategory(1), discounts);
+    expect(serviceMock.save).toHaveBeenCalledWith(productMock, discounts);
     expect(resMock.redirect).toHaveBeenCalledTimes(1);
     expect(reqSaveMock.session.errors).toHaveLength(0);
   });
