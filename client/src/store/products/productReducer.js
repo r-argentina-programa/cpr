@@ -4,11 +4,13 @@ import {
   PRODUCTS_BY_BRAND,
   PRODUCTS_BY_CATEGORY,
   GET_PRODUCT_SEARCH,
+  GET_PRODUCTS_FILTERED,
 } from './productTypes';
 
 export default function productReducer(state, action) {
   switch (action.type) {
     case GET_ALL_PRODUCTS:
+    case GET_PRODUCTS_FILTERED:
     case PRODUCTS_BY_BRAND:
     case PRODUCTS_BY_CATEGORY:
       return {
@@ -25,6 +27,7 @@ export default function productReducer(state, action) {
         ...state,
         search: [...action.payload],
       };
+
     default:
       return state;
   }

@@ -34,6 +34,7 @@ const NavContainer = styled.div`
   }
 
   .item {
+    display: flex;
     align-items: center;
     margin-right: 1rem;
   }
@@ -46,7 +47,7 @@ const Title = styled.h1`
 `;
 
 export default function Main() {
-  const { getAllProducts, products } = useContext(ProductContext);
+  const { getAllProducts, products, getFilteredProducts } = useContext(ProductContext);
   const { getAllBrands, brands } = useContext(BrandContext);
   const { getAllCategories, categories } = useContext(CategoryContext);
   const [activeBrands, setActiveBrands] = useState([]);
@@ -57,9 +58,10 @@ export default function Main() {
     getAllCategories();
   }, []);
 
-  console.log('brands', activeBrands);
-  console.log('categories', activeCategories);
-
+  useEffect(() => {
+    getFilteredProducts(activeBrands, activeCategories);
+  }, [activeBrands, activeCategories]);
+  console.log(products);
   return (
     <>
       <Header />

@@ -1,5 +1,5 @@
+/* eslint-disable class-methods-use-this */
 const { fromDataToEntity } = require('../mapper/adminMapper');
-
 module.exports = class ManagementController {
   /**
    * @param  {import("../../brand/service/brandService")} BrandService
@@ -33,6 +33,7 @@ module.exports = class ManagementController {
     app.get(`${ROUTE}/search/:term`, this.search.bind(this));
     app.get(`${ROUTE}/brand/:id/viewProducts`, this.viewProductsByBrand.bind(this));
     app.get(`${ROUTE}/category/:id/viewProducts`, this.viewProductsByCategory.bind(this));
+    app.get(`${ROUTE}/products/all/:brands/:categories`, this.getAllByCategoryAndBrand.bind(this));
   }
 
   /**
@@ -210,5 +211,17 @@ module.exports = class ManagementController {
     const { term } = req.params;
     const products = await this.ProductService.getAllProductsSearch(term);
     res.status(200).json(products);
+  }
+
+  async getAllByCategoryAndBrand(req, res) {
+    try {
+      let { brands, categories } = req.params;
+      brands = brands.split(',');
+      categories = categories.split(',');
+      const products = await this.ProductService.getAllByCategoryAndBrand(categories, brands);
+      res.status(200).json(products);
+    } catch (error) {
+      console.log(error.message);
+    }
   }
 };
