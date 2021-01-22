@@ -1,11 +1,11 @@
-import Header from "../../components/header";
-import styled from "styled-components/macro";
-import CardsList from "../../components/cardsList";
-import { Link } from "react-router-dom";
-import { useContext, useEffect } from "react";
-import { ProductContext } from "../../store/products/productContext";
-import { BrandContext } from "../../store/brand/brandContext";
-import { CategoryContext } from "../../store/category/categoryContext";
+import Header from '../../components/header';
+import styled from 'styled-components/macro';
+import CardsList from '../../components/cardsList';
+import { Link } from 'react-router-dom';
+import { useContext, useEffect } from 'react';
+import { ProductContext } from '../../store/products/productContext';
+import { BrandContext } from '../../store/brand/brandContext';
+import { CategoryContext } from '../../store/category/categoryContext';
 
 const ListContainer = styled.div`
   display: flex;
@@ -41,12 +41,9 @@ const Title = styled.h1`
 `;
 
 export default function Main() {
-  const {
-    getAllProducts,
-    products,
-    getProductsByBrand,
-    getProductsByCategory,
-  } = useContext(ProductContext);
+  const { getAllProducts, products, getProductsByBrand, getProductsByCategory } = useContext(
+    ProductContext
+  );
   const { getAllBrands, brands } = useContext(BrandContext);
   const { getAllCategories, categories } = useContext(CategoryContext);
 
@@ -65,9 +62,7 @@ export default function Main() {
             key={brand.id}
             to="#"
             brand-id={brand.id}
-            onClick={(e) =>
-              getProductsByBrand(e.target.getAttribute("brand-id"))
-            }
+            onClick={(e) => getProductsByBrand(e.target.getAttribute('brand-id'))}
           >
             {brand.name}
           </Link>
@@ -80,9 +75,7 @@ export default function Main() {
             key={category.id}
             to="#"
             category-id={category.id}
-            onClick={(e) =>
-              getProductsByCategory(e.target.getAttribute("category-id"))
-            }
+            onClick={(e) => getProductsByCategory(e.target.getAttribute('category-id'))}
           >
             {category.name}
           </Link>

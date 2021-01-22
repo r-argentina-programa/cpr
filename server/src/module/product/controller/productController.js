@@ -39,6 +39,7 @@ module.exports = class ProductController {
    * @param {import('express').Response} res
    * @param {import('express').NextFunction} next
    */
+  // eslint-disable-next-line consistent-return
   async auth(req, res, next) {
     if (req.session.username === process.env.ADMIN_USERNAME && req.session.admin) {
       return next();

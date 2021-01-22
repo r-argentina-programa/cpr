@@ -1,18 +1,18 @@
-import Header from "../../components/header";
-import { Link, useParams } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
-import ab2str from "arraybuffer-to-string";
-import { ProductContext } from "../../store/products/productContext";
+import Header from '../../components/header';
+import { Link, useParams } from 'react-router-dom';
+import { useContext, useEffect, useState } from 'react';
+import ab2str from 'arraybuffer-to-string';
+import { ProductContext } from '../../store/products/productContext';
 import {
   Container,
   ImageContainer,
   ProductDescription,
   RightColumnContainer,
   ProductPrice,
-} from "./styles";
+} from './styles';
 export default function ProductDetail() {
   const { id } = useParams();
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState('');
   const { product, getProductDetails } = useContext(ProductContext);
 
   useEffect(() => {
@@ -59,14 +59,12 @@ export default function ProductDetail() {
             <ProductPrice>
               {product.discount ? (
                 <>
-                  <span style={{ textDecoration: "line-through" }}>
-                    ${product.defaultPrice}
-                  </span>
+                  <span style={{ textDecoration: 'line-through' }}>${product.defaultPrice}</span>
                   <span
                     style={{
-                      color: "red",
-                      border: "1px solid red",
-                      padding: ".4rem",
+                      color: 'red',
+                      border: '1px solid red',
+                      padding: '.4rem',
                     }}
                   >
                     ${product.discount.finalPrice}

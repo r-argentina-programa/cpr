@@ -1,11 +1,12 @@
-import Navbar from "react-bootstrap/Navbar";
-import Nav from "react-bootstrap/Nav";
-import Form from "react-bootstrap/Form";
-import FormControl from "react-bootstrap/FormControl";
-import { useContext, useEffect, useState } from "react";
-import SearchContainer from "../search";
-import styled from "styled-components/macro";
-import { ProductContext } from "../../store/products/productContext";
+import Navbar from 'react-bootstrap/Navbar';
+import Nav from 'react-bootstrap/Nav';
+import Form from 'react-bootstrap/Form';
+import FormControl from 'react-bootstrap/FormControl';
+import { useContext, useEffect, useState } from 'react';
+import SearchContainer from '../search';
+import styled from 'styled-components/macro';
+import { ProductContext } from '../../store/products/productContext';
+
 const ContainerSearch = styled.div`
   display: flex;
   align-items: center;
@@ -18,7 +19,7 @@ const ContainerSearch = styled.div`
 `;
 
 export default function Header() {
-  const [term, setTerm] = useState("");
+  const [term, setTerm] = useState('');
   const { getProductBySearch } = useContext(ProductContext);
   let time = null;
 

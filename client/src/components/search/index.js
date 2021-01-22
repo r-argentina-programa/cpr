@@ -1,12 +1,12 @@
-import styled from "styled-components/macro";
-import ab2str from "arraybuffer-to-string";
-import { Link } from "react-router-dom";
-import { ProductContext } from "../../store/products/productContext";
-import { useContext } from "react";
+import styled from 'styled-components/macro';
+import ab2str from 'arraybuffer-to-string';
+import { Link } from 'react-router-dom';
+import { ProductContext } from '../../store/products/productContext';
+import { useContext } from 'react';
 
 const Container = styled.div`
   &::before {
-    content: "";
+    content: '';
     width: 15px;
     height: 15px;
     transform: rotate(45deg);
@@ -17,7 +17,7 @@ const Container = styled.div`
     right: 50%;
   }
   &::after {
-    content: "";
+    content: '';
     width: 30px;
     height: 15px;
     background: red;
@@ -74,11 +74,9 @@ export default function SearchContainer() {
           products.map((product) => (
             <ContainerProduct>
               <Link to={`/product/${product.id}`}>
-                <span>{product.name}</span>{" "}
+                <span>{product.name}</span>{' '}
                 <img
-                  src={`data:image/png;base64, ${ab2str(
-                    new Uint8Array(product.imageSrc.data)
-                  )}`}
+                  src={`data:image/png;base64, ${ab2str(new Uint8Array(product.imageSrc.data))}`}
                   alt="img"
                 />
               </Link>

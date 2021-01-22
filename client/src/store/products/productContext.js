@@ -1,8 +1,8 @@
-import React, { createContext, useReducer } from "react";
+import React, { createContext, useReducer } from 'react';
 
-import api from "../../services/api";
+import api from '../../services/api';
 
-import productReducer from "./productReducer";
+import productReducer from './productReducer';
 
 import {
   GET_ALL_PRODUCTS,
@@ -10,7 +10,7 @@ import {
   PRODUCTS_BY_BRAND,
   PRODUCTS_BY_CATEGORY,
   GET_PRODUCT_SEARCH,
-} from "./productTypes";
+} from './productTypes';
 
 export const ProductContext = createContext();
 
@@ -25,7 +25,7 @@ const ProductContextProvider = ({ children }) => {
 
   const getAllProducts = async () => {
     try {
-      const res = await api.get("/api/products/all");
+      const res = await api.get('/api/products/all');
       if (res.status === 200) {
         dispatch({ type: GET_ALL_PRODUCTS, payload: res.data });
       }

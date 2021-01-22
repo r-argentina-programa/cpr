@@ -4,7 +4,7 @@ import {
   PRODUCTS_BY_BRAND,
   PRODUCTS_BY_CATEGORY,
   GET_PRODUCT_SEARCH,
-} from "./productTypes";
+} from './productTypes';
 
 export default function productReducer(state, action) {
   switch (action.type) {
