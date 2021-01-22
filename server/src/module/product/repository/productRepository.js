@@ -4,6 +4,7 @@ const ProductNotDefinedError = require('../error/ProductNotDefinedError');
 const ProductIdNotDefinedError = require('../error/ProductIdNotDefinedError');
 const ProductNotFoundError = require('../error/ProductNotFoundError');
 const Product = require('../entity/entity');
+const CategoryModel = require('../../category/model/categoryModel');
 
 module.exports = class ProductRepository {
   /**
@@ -145,5 +146,24 @@ module.exports = class ProductRepository {
       },
     });
     return products;
+  }
+
+  async getAllByCategoryAndBrand(categories = [], brands = []) {
+    const productListByBrand = await this.productModel.findAll({
+      where: {
+        brand_fk: brands,
+      },
+    });
+    const productListByCategory = await this.productModel.findAll({
+      include: {
+        model: CategoryModel,
+        as: 'categories',
+        where: {
+          id: categories,
+        },
+      },
+    });
+    const totalProducts = productListByBrand.concat(productListByCategory);
+    return totalProducts.map((product) => fromModelToEntity(product));
   }
 };

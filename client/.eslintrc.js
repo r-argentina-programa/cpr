@@ -11,6 +11,7 @@ module.exports = {
       'error',
       {
         endOfLine: 'auto',
+        singleQuote: true,
       },
     ],
     'react/react-in-jsx-scope': 'off',

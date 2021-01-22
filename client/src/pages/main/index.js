@@ -1,7 +1,5 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
 import styled from 'styled-components/macro';
-import { Link } from 'react-router-dom';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import CardsList from '../../components/cardsList';
 import Header from '../../components/header';
 import { ProductContext } from '../../store/products/productContext';
@@ -29,9 +27,16 @@ const NavContainer = styled.div`
       color: #e6e6e6;
     }
   }
-  span {
+  span,
+  label {
     color: antiquewhite;
     margin-right: 1.2rem;
+  }
+
+  .item {
+    display: flex;
+    align-items: center;
+    margin-right: 1rem;
   }
 `;
 
@@ -42,44 +47,66 @@ const Title = styled.h1`
 `;
 
 export default function Main() {
-  const { getAllProducts, products, getProductsByBrand, getProductsByCategory } = useContext(
-    ProductContext
-  );
+  const { getAllProducts, products, getFilteredProducts } = useContext(ProductContext);
   const { getAllBrands, brands } = useContext(BrandContext);
   const { getAllCategories, categories } = useContext(CategoryContext);
-
+  const [activeBrands, setActiveBrands] = useState([]);
+  const [activeCategories, setActiveCategories] = useState([]);
   useEffect(() => {
     getAllProducts();
     getAllBrands();
     getAllCategories();
   }, []);
+
+  useEffect(() => {
+    getFilteredProducts(activeBrands, activeCategories);
+
+    if (activeBrands.length === 0 && activeCategories.length === 0) {
+      getAllProducts();
+    }
+  }, [activeBrands, activeCategories]);
+
   return (
     <>
       <Header />
       <NavContainer>
         <span>Brands:</span>
         {brands.map((brand) => (
-          <Link
-            key={brand.id}
-            to="#"
-            brand-id={brand.id}
-            onClick={(e) => getProductsByBrand(e.target.getAttribute('brand-id'))}
-          >
-            {brand.name}
-          </Link>
+          <div className="item" key={brand.id}>
+            <label htmlFor={brand.id}>{brand.name}</label>
+            <input
+              type="checkbox"
+              id={brand.id}
+              value={brand.id}
+              onClick={(e) => {
+                if (activeBrands.includes(e.target.id)) {
+                  setActiveBrands(activeBrands.filter((id) => id !== e.target.id));
+                } else {
+                  setActiveBrands([...activeBrands, e.target.id]);
+                }
+              }}
+            />
+          </div>
         ))}
       </NavContainer>
       <NavContainer>
         <span>Categories:</span>
         {categories.map((category) => (
-          <Link
-            key={category.id}
-            to="#"
-            category-id={category.id}
-            onClick={(e) => getProductsByCategory(e.target.getAttribute('category-id'))}
-          >
-            {category.name}
-          </Link>
+          <div className="item" key={category.id}>
+            <label htmlFor={category.id}>{category.name}</label>
+            <input
+              type="checkbox"
+              id={category.id}
+              value={category.id}
+              onClick={(e) => {
+                if (activeCategories.includes(e.target.id)) {
+                  setActiveCategories(activeCategories.filter((id) => id !== e.target.id));
+                } else {
+                  setActiveCategories([...activeCategories, e.target.id]);
+                }
+              }}
+            />
+          </div>
         ))}
       </NavContainer>
       <Title>See all the products Here!</Title>

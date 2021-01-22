@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-param-reassign */
 import React, { createContext, useReducer } from 'react';
 
 import api from '../../services/api';
@@ -10,6 +12,7 @@ import {
   PRODUCTS_BY_BRAND,
   PRODUCTS_BY_CATEGORY,
   GET_PRODUCT_SEARCH,
+  GET_PRODUCTS_FILTERED,
 } from './productTypes';
 
 export const ProductContext = createContext();
@@ -77,6 +80,21 @@ const ProductContextProvider = ({ children }) => {
       console.log(error.message);
     }
   };
+
+  const getFilteredProducts = async (brands, categories) => {
+    try {
+      if (brands.length === 0) {
+        brands = 0;
+      }
+      if (categories.length === 0) {
+        categories = 0;
+      }
+      const res = await api.get(`/api/products/all/${brands}/${categories}`);
+      dispatch({ type: GET_PRODUCTS_FILTERED, payload: res.data });
+    } catch (error) {
+      console.warn(error.message);
+    }
+  };
   return (
     <ProductContext.Provider
       value={{
@@ -88,6 +106,7 @@ const ProductContextProvider = ({ children }) => {
         getProductsByBrand,
         getProductsByCategory,
         getProductBySearch,
+        getFilteredProducts,
       }}
     >
       {children}
