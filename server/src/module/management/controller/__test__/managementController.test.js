@@ -196,8 +196,10 @@ describe('ManagementController methods', () => {
       redirect: jest.fn(),
     };
     controller.logout(reqMockWithErrors, resMock);
-    expect(reqMockWithErrors.session.errors.length).toBe(2);
     expect(resMock.redirect).toHaveBeenCalledWith('/admin');
+    expect(reqMockWithErrors.session.messages).toEqual([
+      'You cannot log out because you have not logged in',
+    ]);
   });
 
   test('search fetches and sends the corresponding products successfully', async () => {

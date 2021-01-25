@@ -69,10 +69,15 @@ module.exports = class ManagementController {
    * @param {import('express').Response} res
    */
   async loginForm(req, res) {
-    const { errors, messages } = req.session;
-    res.render(`${this.MANAGEMENT_VIEW_DIR}/login.njk`, { messages, errors });
-    req.session.errors = [];
-    req.session.messages = [];
+    if (!(req.session.username === process.env.ADMIN_USERNAME && req.session.admin)) {
+      const { errors, messages } = req.session;
+      res.render(`${this.MANAGEMENT_VIEW_DIR}/login.njk`, { messages, errors });
+      req.session.errors = [];
+      req.session.messages = [];
+    } else {
+      req.session.messages = [`You are already logged in as ${req.session.username}!`];
+      res.redirect(`${this.ADMIN_ROUTE}/product`);
+    }
   }
 
   /**
@@ -108,13 +113,14 @@ module.exports = class ManagementController {
    */
   async logout(req, res) {
     try {
-      if (req.session.admin) {
+      if (req.session.username === process.env.ADMIN_USERNAME && req.session.admin) {
         req.session.username = [];
         req.session.admin = [];
         req.session.messages = ['Administrator has been logged out'];
         res.redirect(`${this.ADMIN_ROUTE}`);
       } else {
-        throw new Error();
+        req.session.messages = ['You cannot log out because you have not logged in'];
+        res.redirect(`${this.ADMIN_ROUTE}`);
       }
     } catch (e) {
       req.session.errors = [e.message, e.stack];
