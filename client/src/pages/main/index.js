@@ -60,10 +60,6 @@ export default function Main() {
 
   useEffect(() => {
     getFilteredProducts(activeBrands, activeCategories);
-
-    if (activeBrands.length === 0 && activeCategories.length === 0) {
-      getAllProducts();
-    }
   }, [activeBrands, activeCategories]);
 
   return (
