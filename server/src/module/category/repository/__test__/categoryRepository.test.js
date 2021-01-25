@@ -108,6 +108,19 @@ describe('categoryRepository methods', () => {
     await expect(categoryRepository.getById(3)).rejects.toThrowError(CategoryNotFoundError);
   });
 
+  test('getByIds fetches categories by ids', async () => {
+    const category1 = createTestCategory();
+    const category2 = createTestCategory();
+    const category3 = createTestCategory();
+    await categoryRepository.save(category1);
+    await categoryRepository.save(category2);
+    await categoryRepository.save(category3);
+
+    const categoriesIds = [1, 2, 3];
+    const fetchedCategories = await categoryRepository.getByIds(categoriesIds);
+    expect(fetchedCategories).toHaveLength(3);
+  });
+
   test('deletes an existing category in DB and returns true', async () => {
     const category = createTestCategory();
     await categoryRepository.save(category);
