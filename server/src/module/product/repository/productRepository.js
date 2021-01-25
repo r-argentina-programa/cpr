@@ -191,7 +191,7 @@ module.exports = class ProductRepository {
           product.discounts.push(...category.discounts);
         });
       }
-      const brandDiscounts = product.brand?.discount;
+      const brandDiscounts = product.Brand.discount;
       if (Array.isArray(brandDiscounts)) {
         product.discounts.push(...brandDiscounts);
       }
