@@ -22,7 +22,7 @@ module.exports = class CategoryRepository {
   /**
    * @param {import('../entity/Category')} category
    */
-  async save(category, discounts = []) {
+  async save(category, discountsIds = []) {
     if (!(category instanceof Category)) {
       throw new CategoryNotDefinedError();
     }
@@ -38,7 +38,7 @@ module.exports = class CategoryRepository {
       await categoryModel.removeDiscount(discountsId);
     }
 
-    discounts.map(async (id) => {
+    discountsIds.map(async (id) => {
       await categoryModel.addDiscount(id);
     });
 
@@ -52,6 +52,7 @@ module.exports = class CategoryRepository {
         as: 'discounts',
       },
     });
+    console.log(categoryInstances.map(fromModelToEntity))
     return categoryInstances.map(fromModelToEntity);
   }
 

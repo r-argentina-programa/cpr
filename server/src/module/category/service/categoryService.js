@@ -14,11 +14,11 @@ module.exports = class CategoryService {
   /**
    * @param {Category} category
    */
-  async save(category, discounts) {
+  async save(category, discountsIds) {
     if (!(category instanceof Category)) {
       throw new CategoryNotDefinedError();
     }
-    return this.CategoryRepository.save(category, discounts);
+    return this.CategoryRepository.save(category, discountsIds);
   }
 
   async getAll() {
