@@ -150,8 +150,8 @@ module.exports = class ProductRepository {
 
   async getAllByCategoryAndBrand(categories = [], brands = []) {
     const conditions = {};
-    let categoriesConditions = {};
-    if (brands[0] !== '0') {
+    let categoriesConditions;
+    if (brands[0] != '0') {
       conditions.brand_fk = brands;
     }
     if (categories[0] !== '0') {
@@ -166,9 +166,7 @@ module.exports = class ProductRepository {
         {
           model: this.categoryModel,
           as: 'categories',
-          where: {
-            ...categoriesConditions,
-          },
+          where: categoriesConditions,
           include: {
             model: this.discountModel,
             as: 'discounts',
