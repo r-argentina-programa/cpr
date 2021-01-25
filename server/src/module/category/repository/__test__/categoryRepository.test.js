@@ -6,6 +6,7 @@ const discountModel = require('../../../discount/model/discountModel');
 const createTestCategory = require('../../controller/__test__/categories.fixture');
 const CategoryNotDefinedError = require('../../error/CategoryNotDefinedError');
 const CategoryIdNotDefinedError = require('../../error/CategoryIdNotDefinedError');
+const CategoryIdsNotDefinedError = require('../../error/CategoriesIdsNotDefinedError');
 const CategoryNotFoundError = require('../../error/CategoryNotFoundError');
 
 describe('categoryRepository methods', () => {
@@ -119,6 +120,13 @@ describe('categoryRepository methods', () => {
     const categoriesIds = [1, 2, 3];
     const fetchedCategories = await categoryRepository.getByIds(categoriesIds);
     expect(fetchedCategories).toHaveLength(3);
+  });
+
+  test('getByIds throws error if parameter is not defined', async () => {
+    const categoriesIds = '';
+    await expect(categoryRepository.getByIds(categoriesIds)).rejects.toThrowError(
+      CategoryIdsNotDefinedError
+    );
   });
 
   test('deletes an existing category in DB and returns true', async () => {

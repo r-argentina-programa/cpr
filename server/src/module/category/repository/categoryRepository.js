@@ -80,6 +80,7 @@ module.exports = class CategoryRepository {
    */
   async getByIds(categoriesIds) {
     if (!Array(categoriesIds)) {
+    if (!Array.isArray(categoriesIds)) {
       throw new CategoriesIdsNotDefinedError();
     }
     const categoriesInstance = await this.categoryModel.findAll({
