@@ -42,8 +42,74 @@
             </div>
         </div>
 
+        <label class="label">Discounts</label>
+        <div class="field">
+            <div class="control">
+            <input name='discounts' placeholder='discounts'/>
+            </div>
+        </div>
+
         <input type="submit" class="button is-success" value="Save changes"/>
 
         <hr/>
     </form>
 {% endblock %}
+
+{% block footerScripts%}
+  <script>
+    const currentDiscounts = {{ brand.discounts | dump | safe }};
+    const discounts = {{ discounts | dump | safe }};
+
+    const cleanDiscounts = discounts.map(({ id, value, type }) => ({
+      id,
+      value: id,
+      discountValue: value,
+      type,
+    }));
+    const cleanCurrentDiscounts = currentDiscounts.map(({ id, value, type }) => ({
+      id,
+      value: id,
+      discountValue: value,
+      type,
+    }));
+
+    const input2 = document.querySelector('input[name=discounts]'),
+      discountsTagify = new Tagify(input2, {
+        enforceWhitelist: true,
+        delimiters: null,
+        templates: {
+          tag: function (tagData) {
+            const valueText =
+              tagData.type === 'Fixed' ? `$${tagData.discountValue}` : `${tagData.discountValue}%`;
+            try {
+              return `<tag title='${tagData.id}' contenteditable='false' spellcheck="false" class='tagify__tag ${tagData.class ? tagData.class : ''}' ${this.getAttributes(tagData)}>
+                        <x title='remove tag' class='tagify__tag__removeBtn'></x>
+                        <div>
+                          <span class='tagify__tag-text'>${valueText} Off</span>
+                        </div>
+                      </tag>`;
+            } catch (err) {}
+          },
+
+          dropdownItem: function (tagData) {
+            const valueText =
+              tagData.type === 'Fixed' ? `$${tagData.discountValue}` : `${tagData.discountValue}%`;
+            try {
+              return `<div class='tagify__dropdown__item ${tagData.class ? tagData.class : ''}' tagifySuggestionIdx="${tagData.tagifySuggestionIdx}">
+                        <span>${valueText} Off</span>
+                      </div>`;
+            } catch (err) {}
+          },
+        },
+        whitelist: cleanDiscounts,
+        dropdown: {
+          enabled: 1,
+          classname: 'extra-properties',
+          searchKeys: ['value', 'type'],
+        },
+      });
+
+    discountsTagify.addTags(cleanCurrentDiscounts);
+  </script>
+{% endblock %}
+

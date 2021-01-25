@@ -7,14 +7,14 @@ const Brand = require('../entity/Brand');
 
 module.exports = class BrandRepository {
   /**
-   * @param {typeof import('../model/BrandModel')} BrandModel
+   * @param {typeof import('../model/brandModel')} brandModel
    * @param {typeof import('../../product/model/productModel')} ProductModel
    * @param {typeof import('../../category/model/categoryModel')} categoryModel
    * @param {typeof import('../../discount/model/discountModel')} discountModel
    */
-  constructor(BrandModel, ProductModel, categoryModel, discountModel) {
-    this.BrandModel = BrandModel;
-    this.ProductModel = ProductModel;
+  constructor(brandModel, productModel, categoryModel, discountModel) {
+    this.brandModel = brandModel;
+    this.productModel = productModel;
     this.categoryModel = categoryModel;
     this.discountModel = discountModel;
   }
@@ -22,16 +22,27 @@ module.exports = class BrandRepository {
   /**
    * @param {Brand} brand
    */
-  async save(brand) {
+  async save(brand, discountsIds = []) {
     if (!(brand instanceof Brand)) {
       throw new BrandNotDefinedError();
     }
 
-    const brandInstance = this.BrandModel.build(brand, {
-      isNewRecord: !brand.id,
+    let brandModel;
+    const buildOptions = { isNewRecord: !brand.id };
+    brandModel = this.brandModel.build(brand, buildOptions);
+    brandModel = await brandModel.save();
+
+    if (!buildOptions.isNewRecord) {
+      const currentDiscounts = await brandModel.getDiscounts();
+      const discountsId = currentDiscounts.map((discount) => discount.id);
+      await brandModel.removeDiscount(discountsId);
+    }
+
+    discountsIds.map(async (id) => {
+      await brandModel.addDiscount(id);
     });
-    await brandInstance.save();
-    return fromModelToEntity(brandInstance);
+
+    return fromModelToEntity(brandModel);
   }
 
   /**
@@ -43,11 +54,17 @@ module.exports = class BrandRepository {
       throw new BrandIdNotDefinedError('El ID de la marca no está definido');
     }
 
-    return Boolean(await this.BrandModel.destroy({ where: { id: brand.id } }));
+    return Boolean(await this.brandModel.destroy({ where: { id: brand.id } }));
   }
 
   async getAll() {
-    const brandInstances = await this.BrandModel.findAll();
+    const brandInstances = await this.brandModel.findAll({
+      include: {
+        model: this.discountModel,
+        as: 'discounts',
+      },
+    });
+    console.log(brandInstances.map(fromModelToEntity))
     return brandInstances.map(fromModelToEntity);
   }
 
@@ -58,8 +75,12 @@ module.exports = class BrandRepository {
     if (!Number(brandId)) {
       throw new BrandIdNotDefinedError();
     }
-    //const brandInstance = await this.BrandModel.findByPk(brandId, { include: ProductModel });
-    const brandInstance = await this.BrandModel.findByPk(brandId);
+    const brandInstance = await this.brandModel.findByPk(brandId, {
+      include: {
+        model: this.discountModel,
+        as: 'discounts',
+      },
+    });
     if (!brandInstance) {
       throw new BrandNotFoundError(`There is no existing brand with ID ${brandId}`);
     }
@@ -71,7 +92,7 @@ module.exports = class BrandRepository {
    * @param {number} brandId
    */
   async viewProducts(brandId) {
-    const products = await this.ProductModel.findAll({
+    const products = await this.productModel.findAll({
       where: { brand_fk: brandId },
       include: [
         {

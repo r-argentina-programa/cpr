@@ -2,11 +2,12 @@ const { fromDataToEntity } = require('../mapper/brandMapper');
 const BrandIdNotDefinedError = require('../error/BrandIdNotDefinedError');
 
 module.exports = class BrandController {
-  constructor(brandService, uploadMiddleware) {
+  constructor(brandService, discountService, uploadMiddleware) {
     this.ADMIN_ROUTE = '/admin';
     this.ROUTE_BASE = '/admin/brand';
     this.BRAND_VIEW_DIR = 'brand/view';
     this.BrandService = brandService;
+    this.discountService = discountService;
     this.uploadMiddleware = uploadMiddleware;
   }
 
@@ -56,7 +57,19 @@ module.exports = class BrandController {
    * @param {import('express').Response} res
    */
   async createBrand(req, res) {
-    res.render(`${this.BRAND_VIEW_DIR}/form.njk`);
+    try {
+      const discounts = await this.discountService.getAll();
+      if (discounts.length > 0) {
+        res.render(`${this.BRAND_VIEW_DIR}/form.njk`, {
+          discounts,
+        });
+      } else {
+        throw new Error('To create a brand you must first create a discount');
+      }
+    } catch (e) {
+      req.session.errors = [e.message];
+      res.redirect(this.ROUTE_BASE);
+    }
   }
 
   /**
@@ -65,13 +78,18 @@ module.exports = class BrandController {
    */
   async editBrand(req, res) {
     const { id } = req.params;
-    if (!id) {
+    if (!Number(id)) {
       throw new BrandIdNotDefinedError();
     }
 
     try {
       const brand = await this.BrandService.getById(id);
-      res.render(`${this.BRAND_VIEW_DIR}/form.njk`, { brand });
+      const discounts = await this.discountService.getAll();
+
+      res.render(`${this.BRAND_VIEW_DIR}/form.njk`, {
+        brand,
+        discounts,
+      });
     } catch (e) {
       req.session.errors = [e.message, e.stack];
       res.redirect(this.ROUTE_BASE);
@@ -84,12 +102,19 @@ module.exports = class BrandController {
    */
   async saveBrand(req, res) {
     try {
-      const brand = fromDataToEntity(req.body);
-      if (req.file) {
-        brand.logo = req.file.buffer.toString('base64');
+      const brandData = fromDataToEntity(req.body);
+
+      let discountsIds = [];
+      if (req.body.discounts) {
+        discountsIds = JSON.parse(req.body.discounts).map((e) => e.id);
       }
-      const savedBrand = await this.BrandService.save(brand);
-      if (brand.id) {
+
+      if (req.file) {
+        brandData.logo = req.file.buffer.toString('base64');
+      }
+      const savedBrand = await this.BrandService.save(brandData, discountsIds);
+
+      if (brandData.id) {
         req.session.messages = [
           `The brand ${savedBrand.name} was updated correctly (ID: ${savedBrand.id})`,
         ];

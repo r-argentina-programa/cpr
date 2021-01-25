@@ -13,11 +13,12 @@ module.exports = class BrandService {
   /**
    * @param {Brand} brand
    */
-  async save(brand) {
+  async save(brand, discountsIds) {
     if (!(brand instanceof Brand)) {
       throw new BrandNotDefinedError();
     }
-    return this.BrandRepository.save(brand);
+    console.log(discountsIds)
+    return this.BrandRepository.save(brand, discountsIds);
   }
 
   /**

@@ -29,6 +29,7 @@
         <th>Id</th>
         <th>Brand</th>
         <th>Logo</th>
+        <th>Discounts</th>
         <th></th>
         <th></th>
         <th></th>
@@ -45,6 +46,11 @@
           <figure class="image is-128x128">
             <img src="data:image/png;base64, {{ brand.logo }}" width="128" height="128" alt="Brand Logo"/>
           </figure>
+        </td>
+        <td>
+          {% for discount in brand.discounts %}
+            {{ discount.value + '%' if discount.type === 'Percentage' else '$' + discount.value}}
+          {% endfor %}
         </td>
         <td>
           <a class="button is-link is-fullwidth is-light" href="/admin/brand/edit/{{ brand.id }}">

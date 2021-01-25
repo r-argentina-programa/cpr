@@ -128,7 +128,11 @@ function addProductModuleDefinitions(container) {
 
 function addBrandModuleDefinitions(container) {
   container.addDefinitions({
-    BrandController: object(BrandController).construct(get('BrandService'), get('Multer')),
+    BrandController: object(BrandController).construct(
+      get('BrandService'),
+      get('DiscountService'),
+      get('Multer')
+    ),
     BrandService: object(BrandService).construct(get('BrandRepository')),
     BrandRepository: object(BrandRepository).construct(
       get('BrandModel'),
