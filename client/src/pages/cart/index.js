@@ -26,7 +26,7 @@ export default function ProductDetail() {
     <>
       <Header />
 
-      {products.length === 0 ? (
+      {!products || products.length === 0 ? (
         <h1
           style={{ textAlign: 'center', color: 'steelblue', marginTop: '3rem' }}
           className="no-items"
