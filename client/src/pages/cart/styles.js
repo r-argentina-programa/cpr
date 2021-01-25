@@ -91,6 +91,26 @@ export const Footer = styled.footer`
     margin: 0;
     padding: 0 30px;
   }
+  .default-price {
+    background: #e6e6e6;
+    color: #fff;
+    float: right;
+    font-size: 22px;
+    font-weight: 300;
+    line-height: 49px;
+    margin: 0;
+    padding: 0 30px;
+  }
+  .discount {
+    color: #fff;
+    float: right;
+    font-size: 22px;
+    font-weight: 300;
+    line-height: 49px;
+    margin: 0;
+    padding: 0 30px;
+    background-color: indianred;
+  }
   .qt,
   .qt-plus,
   .qt-minus {

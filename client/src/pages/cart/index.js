@@ -1,64 +1,96 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable prefer-const */
 /* eslint-disable no-const-assign */
 /* eslint-disable no-unused-vars */
 import { useEffect, useState } from 'react';
+
+import { Link } from 'react-router-dom';
+
 import ab2str from 'arraybuffer-to-string';
 
 import Header from '../../components/header';
 import { Cart, Product, Name, Content, Footer } from './styles';
 
 export default function ProductDetail() {
-  let [amount, setAmount] = useState(0);
+  let [amount, setAmount] = useState(1);
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    const localCart = localStorage.getItem('cart');
+    setProducts(JSON.parse(localCart));
+  }, []);
+
   function changeValue(e) {
     const operator = e.target.innerText;
-    if (operator === '+') {
-      setAmount((amount += 1));
-    } else {
-      setAmount((amount -= 1));
+
+    if (amount >= 0) {
+      if (operator === '+') {
+        setAmount((amount += 1));
+      } else {
+        setAmount((amount -= 1));
+      }
     }
+  }
+  function configureImage(imageSrc) {
+    const uint8 = new Uint8Array(imageSrc);
+    return ab2str(uint8);
   }
   return (
     <>
       <Header />
-      <Cart className="cart">
-        <Product className="product">
-          <header>
-            <img
-              src="http://www.astudio.si/preview/blockedwp/wp-content/uploads/2012/08/1.jpg"
-              alt=""
-            />
-            <h3>Remove product</h3>
-          </header>
 
-          <Content className="content">
-            <Name>Lorem ipsum</Name>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Soluta, numquam quis
-            perspiciatis ea ad omnis provident laborum dolore in atque.
-            <div
-              title="You have selected this product to be shipped in the color yellow."
-              style={{ top: 0 }}
-              className="color yellow"
-            />
-            <div style={{ top: '43px' }} className="type small">
-              XXL
-            </div>
-          </Content>
+      {products ? (
+        products.map((product) => (
+          <Cart className="cart" key={product.id}>
+            <Product className="product">
+              <header>
+                <img
+                  alt="product"
+                  src={`data:image/png;base64, ${configureImage(product.imageSrc.data)}`}
+                />
+              </header>
 
-          <Footer className="content">
-            <button type="button" className="qt-minus" onClick={changeValue}>
-              -
-            </button>
-            <span className="qt">{amount}</span>
-            <button type="button" className="qt-plus" onClick={changeValue}>
-              +
-            </button>
+              <Content className="content">
+                <Name>{product.name}</Name>
+                {product.description}
+                <div style={{ top: '43px' }} className="type small">
+                  <Link to={`/brand/${product.brand.id}`}>{product.brand.name}</Link>
+                </div>
+              </Content>
 
-            <h2 className="full-price">29.98€</h2>
+              <Footer className="content">
+                <button type="button" className="qt-minus" onClick={changeValue}>
+                  -
+                </button>
+                <span className="qt">{amount}</span>
+                <button type="button" className="qt-plus" onClick={changeValue}>
+                  +
+                </button>
 
-            <h2 className="price">14.99€</h2>
-          </Footer>
-        </Product>
-      </Cart>
+                {product.discount.finalPrice ? (
+                  product.discount.type === 'Fixed' ? (
+                    <>
+                      <h2 className="full-price">${product.discount.finalPrice}</h2>
+                      <span className="discount">-${product.discount.value} OFF</span>
+                    </>
+                  ) : (
+                    <>
+                      <h2 className="full-price">${product.discount.finalPrice}</h2>
+                      <span className="discount">-%{product.discount.value} OFF</span>
+                    </>
+                  )
+                ) : (
+                  <h2 className="default-price">${product.defaultPrice}</h2>
+                )}
+
+                <h2 className="price">${product.defaultPrice}</h2>
+              </Footer>
+            </Product>
+          </Cart>
+        ))
+      ) : (
+        <p>Loading... please wait</p>
+      )}
     </>
   );
 }
