@@ -7,64 +7,43 @@ import { Link } from 'react-router-dom';
 import { Table } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 import ab2str from 'arraybuffer-to-string';
-import styled from 'styled-components/macro';
 
 import Header from '../../components/header';
+import { Container } from './styles';
 
 export default function ProductDetail() {
-  let [amount, setAmount] = useState(1);
   const [products, setProducts] = useState([]);
 
+  let [amount, setAmount] = useState(0);
   useEffect(() => {
     const localCart = localStorage.getItem('cart');
     setProducts(JSON.parse(localCart));
   }, []);
 
-  function changeValue(e) {
-    const operator = e.target.innerText;
+  function removeProduct(productId) {
+    let productsCopy = [...products];
 
-    if (amount >= 0) {
-      if (operator === '+') {
-        setAmount((amount += 1));
-      } else {
-        setAmount((amount -= 1));
-      }
-    }
+    productsCopy = productsCopy.filter((item) => item.id !== productId);
+    setProducts(productsCopy);
+    let cartString = JSON.stringify(productsCopy);
+    localStorage.setItem('cart', cartString);
   }
   function configureImage(imageSrc) {
     const uint8 = new Uint8Array(imageSrc);
     return ab2str(uint8);
   }
 
-  const Container = styled.div`
-    img {
-      max-width: 100%;
-      max-height: 10rem;
-    }
-    .price {
-      font-size: 1.5rem;
-      text-align: center;
-    }
-    .price-discount {
-      color: lightsalmon;
-    }
-    .brand {
-      font-size: 0.8rem;
-      color: #358ed7;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      text-decoration: none;
-      margin-right: 0.9rem;
-    }
-  `;
-
-  console.log(products);
   return (
     <>
       <Header />
 
       {products.length === 0 ? (
-        <h1>You do not have any products added to the cart!</h1>
+        <h1
+          style={{ textAlign: 'center', color: 'steelblue', marginTop: '3rem' }}
+          className="no-items"
+        >
+          You do not have any products added to the cart!
+        </h1>
       ) : (
         <Container>
           <Table striped hover>
@@ -74,7 +53,7 @@ export default function ProductDetail() {
                 <th>Name</th>
                 <th>Brand</th>
                 <th>Categories</th>
-                <th>Description</th>
+
                 <th>Default Price</th>
                 <th>Final Price (with Discount)</th>
                 <th>Actions</th>
@@ -90,15 +69,17 @@ export default function ProductDetail() {
                     />
                   </td>
                   <td>{product.name}</td>
-                  <Link to={`/brand/${product.brand.id}`} className="brand">
-                    <td>{product.brand.name}</td>
-                  </Link>
+                  <td>
+                    <Link to={`/brand/${product.brand.id}`} className="brand">
+                      {product.brand.name}
+                    </Link>
+                  </td>
                   {product.categories.length !== 0 ? (
                     product.categories.map((category) => <td key={category.id}>{category.name}</td>)
                   ) : (
                     <td>No categories in this product</td>
                   )}
-                  <td>{product.description}</td>
+
                   <td className="price">${product.defaultPrice}</td>
                   {product.discount ? (
                     product.discount.type === 'Fixed' ? (
@@ -114,9 +95,18 @@ export default function ProductDetail() {
                     <td>This product has no discount.</td>
                   )}
                   <td>
-                    <Button variant="danger" type="button" className="button">
+                    <Button
+                      variant="danger"
+                      type="button"
+                      className="button"
+                      onClick={() => removeProduct(product.id)}
+                    >
                       Delete
                     </Button>
+                    <label htmlFor="amount">
+                      Amount
+                      <input type="number" id="amount" className="amount" name="amount" />
+                    </label>
                   </td>
                 </tr>
               ))}

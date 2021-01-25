@@ -120,7 +120,7 @@ export default function ProductDetail() {
                   </thead>
                   <tbody>
                     {product.discounts.map((discount) => (
-                      <tr>
+                      <tr key={discount.id}>
                         <td>{discount.type}</td>
                         <td>{discount.value}</td>
                         <td>${discount.finalPrice}</td>
