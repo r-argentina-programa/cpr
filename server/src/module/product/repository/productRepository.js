@@ -149,21 +149,53 @@ module.exports = class ProductRepository {
   }
 
   async getAllByCategoryAndBrand(categories = [], brands = []) {
-    const productListByBrand = await this.productModel.findAll({
-      where: {
-        brand_fk: brands,
-      },
-    });
-    const productListByCategory = await this.productModel.findAll({
-      include: {
-        model: CategoryModel,
-        as: 'categories',
-        where: {
-          id: categories,
+    const conditions = {};
+    let categoriesConditions = {};
+    if (brands[0] !== '0') {
+      conditions.brand_fk = brands;
+    }
+    if (categories[0] !== '0') {
+      categoriesConditions = {
+        id: categories,
+      };
+    }
+
+    const products = await this.productModel.findAll({
+      where: conditions,
+      include: [
+        {
+          model: this.categoryModel,
+          as: 'categories',
+          where: {
+            ...categoriesConditions,
+          },
+          include: {
+            model: this.discountModel,
+            as: 'discounts',
+          },
         },
-      },
+        { model: this.discountModel, as: 'discounts' },
+        {
+          model: this.brandModel,
+          include: {
+            model: this.discountModel,
+            as: 'discounts',
+          },
+        },
+      ],
     });
-    const totalProducts = productListByBrand.concat(productListByCategory);
-    return totalProducts.map((product) => fromModelToEntity(product));
+
+    return products.map((product) => {
+      if (Array.isArray(product.categories)) {
+        product.categories.forEach((category) => {
+          product.discounts.push(...category.discounts);
+        });
+      }
+      const brandDiscounts = product.brand?.discount;
+      if (Array.isArray(brandDiscounts)) {
+        product.discounts.push(...brandDiscounts);
+      }
+      return fromModelToEntity(product);
+    });
   }
 };
