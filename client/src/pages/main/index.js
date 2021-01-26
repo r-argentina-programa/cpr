@@ -16,14 +16,15 @@ export default function Main() {
   const { getAllCategories, categories } = useContext(CategoryContext);
   const [activeBrands, setActiveBrands] = useState([]);
   const [activeCategories, setActiveCategories] = useState([]);
+  const [priceRange, setPriceRange] = useState({});
   const [price, setPrice] = useState({
     minPrice: 0,
     maxPrice: 0,
   });
 
   useEffect(() => {
-    getFilteredProducts(activeBrands, activeCategories, price);
-  }, [activeBrands, activeCategories]);
+    getFilteredProducts(activeBrands, activeCategories, priceRange);
+  }, [activeBrands, activeCategories, priceRange]);
 
   useEffect(() => {
     getAllProducts();
@@ -32,7 +33,7 @@ export default function Main() {
   }, []);
 
   function handleFilter() {
-    getFilteredProducts(activeBrands, activeCategories, price);
+    setPriceRange(price);
   }
 
   return (
