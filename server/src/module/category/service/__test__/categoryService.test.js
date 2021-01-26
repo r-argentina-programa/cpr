@@ -1,12 +1,14 @@
 const CategoryService = require('../categoryService');
 const CategoryNotDefinedError = require('../../error/CategoryNotDefinedError');
 const CategoryIdNotDefinedError = require('../../error/CategoryIdNotDefinedError');
+const CategoriesIdsNotDefinedError = require('../../error/CategoriesIdsNotDefinedError');
 const createTestCategory = require('../../controller/__test__/categories.fixture');
 
 const repositoryMock = {
   save: jest.fn(),
   getAll: jest.fn(),
   getById: jest.fn(),
+  getByIds: jest.fn(),
   delete: jest.fn(),
   viewProducts: jest.fn(),
 };
@@ -42,6 +44,18 @@ describe('CategoryService methods', () => {
 
   test('getById throws error if param is not a number', async () => {
     await expect(mockService.getById()).rejects.toThrowError(CategoryIdNotDefinedError);
+  });
+
+  test("getByIds calls repository's getByIds method", async () => {
+    const categoriesIdsMock = [1, 2, 3];
+    await mockService.getByIds(categoriesIdsMock);
+
+    expect(repositoryMock.getByIds).toHaveBeenCalledTimes(1);
+    expect(repositoryMock.getByIds).toHaveBeenCalledWith(categoriesIdsMock);
+  });
+
+  test('getByIds throws error if param is not an array', async () => {
+    await expect(mockService.getByIds('')).rejects.toThrowError(CategoriesIdsNotDefinedError);
   });
 
   test("delete calls repository's delete method", async () => {
