@@ -243,6 +243,7 @@ module.exports = class ManagementController {
     productsId.forEach((id, i) =>
       productsIdsAndQuantity.push({ id: Number(id), quantity: Number(productsAmount[i]) })
     );
+
     const productIds = productsIdsAndQuantity.map((e) => e.id);
     try {
       const products = await this.ProductService.getByIds(productIds);

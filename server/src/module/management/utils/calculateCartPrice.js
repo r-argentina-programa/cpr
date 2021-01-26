@@ -1,6 +1,7 @@
 const idsQuantityMap = new Map();
 function calculateCartPrice(idsAndQuantity, products) {
   const usedDiscounts = new Map();
+  const bestDiscountPrice = new Map();
   idsAndQuantity.forEach(({ id, quantity }) => {
     idsQuantityMap.set(id, quantity);
   });
@@ -9,7 +10,7 @@ function calculateCartPrice(idsAndQuantity, products) {
     const quantity = idsQuantityMap.get(current.id);
     const currentDiscounts = [];
     for (let i = 0; i < quantity; i++) {
-      currentDiscounts.push(current.discount);
+      currentDiscounts.push(current.discount || { finalPrice: current.defaultPrice });
     }
     usedDiscounts.set(current.id, currentDiscounts);
     let price;
@@ -31,6 +32,7 @@ function calculateCartPrice(idsAndQuantity, products) {
   console.log(bestPrice);
   products.forEach((product) => {
     let currentDiscounts = [...usedDiscounts.get(product.id)];
+    const bestCurrentPrice = currentDiscounts.reduce((acum, curr) => acum + curr.finalPrice, 0);
     let i = 0;
     product.discounts.forEach((discount) => {
       const replacedDiscounts = replaceDiscounts(discount, currentDiscounts, i, product.id);
@@ -38,7 +40,8 @@ function calculateCartPrice(idsAndQuantity, products) {
       i = replacedDiscounts.i;
     });
     const currentPrice = currentDiscounts.reduce((acum, curr) => acum + curr.finalPrice, 0);
-    if (currentPrice < bestPrice) {
+    console.log(currentPrice, bestCurrentPrice);
+    if (currentPrice < bestCurrentPrice) {
       usedDiscounts.set(product.id, currentDiscounts);
     }
   });
