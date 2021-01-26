@@ -1,2 +1,2 @@
-/* eslint-disable import/prefer-default-export */
 export const GET_ALL_CATEGORIES = 'GET_ALL_CATEGORIES';
+export const GET_CATEGORIES_ERROR = 'GET_CATEGORIES_ERROR';

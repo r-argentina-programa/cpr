@@ -57,7 +57,7 @@ export default function Item({ product, cart, setProducts }) {
           <td className="price price-discount">
             ${product.discount.finalPrice} (-${product.discount.value} OFF)
             <b className="discount-title"> Another Discounts:</b>
-            {product.discounts.length > 2 ? (
+            {product.discounts.length > 1 ? (
               product.discounts.map((discount) => (
                 <p className="discounts" key={discount.id}>
                   Type: {discount.type}, value:{discount.value}, finalPrice: {discount.finalPrice}
@@ -71,7 +71,7 @@ export default function Item({ product, cart, setProducts }) {
           <td className="price price-discount">
             ${product.discount.finalPrice} (-%{product.discount.value} OFF)
             <b className="discount-title"> Another Discounts:</b>
-            {product.discounts.length > 2 ? (
+            {product.discounts.length > 1 ? (
               product.discounts.map((discount) => (
                 <p className="discounts" key={discount.id}>
                   Type: {discount.type}, value:{discount.value}, finalPrice: {discount.finalPrice}
