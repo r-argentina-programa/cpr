@@ -37,7 +37,7 @@ export default function ProductDetail() {
           You do not have any products added to the cart!
         </h1>
       ) : (
-        <Container>
+        <Container className="table-responsive">
           <h1 className="title">Manage your cart and let us calculate the Final Price</h1>
           <Table striped hover>
             <thead>
