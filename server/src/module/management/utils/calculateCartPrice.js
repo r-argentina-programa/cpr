@@ -22,8 +22,6 @@ function calculateCartPrice(idsAndQuantity, products) {
     return acum + price * quantity;
   }, 0);
 
-  console.log('Initial Best Price', bestPrice);
-
   products.forEach((product) => {
     product.discounts = getProfit(product);
     product.discounts = product.discounts.sort((a, b) => a.profit - b.profit);
@@ -56,8 +54,6 @@ function calculateCartPrice(idsAndQuantity, products) {
     }
   });
 
-  console.log('Final Best Price', bestPrice);
-  console.log('Discounts Used', finalDiscounts);
   return bestPrice;
 }
 
