@@ -35,11 +35,11 @@ module.exports = class ManagementController {
     app.get(`${ROUTE}/search/:term`, this.search.bind(this));
     app.get(`${ROUTE}/brand/:id/viewProducts`, this.viewProductsByBrand.bind(this));
     app.get(`${ROUTE}/category/:id/viewProducts`, this.viewProductsByCategory.bind(this));
-    app.get(`${ROUTE}/getCartPrice/:productsId/:productsAmount`, this.getCartPrice.bind(this));
     app.get(
       `${ROUTE}/products/all/:brandsIds/:categoriesIds`,
       this.getAllByCategoryAndBrand.bind(this)
     );
+    app.get(`${ROUTE}/getCartPrice/:productsId/:productsAmount`, this.getCartPrice.bind(this));
   }
 
   /**
