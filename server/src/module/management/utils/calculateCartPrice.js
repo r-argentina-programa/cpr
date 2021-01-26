@@ -98,10 +98,33 @@ function replaceDiscounts(discount, discounts, i, id) {
   switch (type) {
     case 'BuyXpayY': {
       let [x, y] = value.split('x');
-      x = Number(x);
-      y = Number(y);
+      x = Number(x); //3
+      y = Number(y); // 1 /// 3x1
       let productQuantity = idsQuantityMap.get(id);
       const free = parseInt(productQuantity / x);
+      const freeQuantity = x - y;
+      console.log('freee', free);
+      let aux = 0;
+      for (let j = 0; j < x * free; j++) {
+        if (aux < freeQuantity) {
+          discounts[i] = { ...discount, finalPrice: 0 };
+        } else {
+          discounts[i] = discount;
+          aux = -1;
+        }
+        aux++;
+        i++;
+      }
+      idsQuantityMap.set(id, productQuantity - x * free);
+      break;
+    }
+    case 'BuyXgetYthWithZOff': {
+      let [x, y, z] = value.split(/[x=]/gi);
+      x = Number(x);
+      y = Number(y);
+      z = Number(z);
+      let productQuantity = idsQuantityMap.get(id);
+      const free = parseInt(productQuantity / y);
       let aux = 0;
       for (let j = 0; j < x * free; j++) {
         if (aux < y) {
@@ -116,6 +139,7 @@ function replaceDiscounts(discount, discounts, i, id) {
         i++;
       }
       idsQuantityMap.set(id, productQuantity - x * free);
+
       break;
     }
     default:
