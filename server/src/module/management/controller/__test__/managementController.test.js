@@ -43,15 +43,15 @@ const resMock = {
   _status: null,
   _json: null,
   _error: null,
-  status: function (code) {
+  status(code) {
     this._status = code;
     return this;
   },
-  send: function (error) {
+  send(error) {
     this._error = error;
     return this;
   },
-  json: function (json) {
+  json(json) {
     this._json = json;
     return this;
   },
@@ -106,7 +106,7 @@ describe('ManagementController methods', () => {
     );
     expect(appMock.get).toHaveBeenNthCalledWith(
       12,
-      `${ROUTE}/products/all/:brands/:categories`,
+      `${ROUTE}/products/all/:brands/:categories/:price`,
       expect.any(Function)
     );
     expect(appMock.get).toHaveBeenNthCalledWith(
