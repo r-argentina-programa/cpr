@@ -1,6 +1,7 @@
 function calculatePrice(discount, defaultPrice) {
   let finalPrice = defaultPrice;
-  const { type, value } = discount;
+  let { type, value } = discount;
+  value = Number(value);
   switch (type) {
     case 'Fixed': {
       finalPrice = defaultPrice - value;
@@ -8,6 +9,10 @@ function calculatePrice(discount, defaultPrice) {
     }
     case 'Percentage': {
       finalPrice = defaultPrice - defaultPrice * (value / 100);
+      break;
+    }
+    case 'BuyXpayY': {
+      finalPrice = defaultPrice;
       break;
     }
     default:
