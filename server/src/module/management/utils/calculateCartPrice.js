@@ -21,8 +21,6 @@ function calculateCartPrice(idsAndQuantity, products) {
     return acum + price * quantity;
   }, 0);
 
-  console.log('initial Best Price', bestPrice);
-
   products.forEach((product) => {
     product.discounts = getProfit(product);
     product.discounts = product.discounts.sort((a, b) => a.profit - b.profit);
@@ -49,8 +47,6 @@ function calculateCartPrice(idsAndQuantity, products) {
     bestPrice += discounts.reduce((acum, curr) => acum + curr.finalPrice, 0);
   });
 
-  console.log('final Best Price', bestPrice);
-  console.log(usedDiscounts);
   return bestPrice;
 }
 
@@ -86,8 +82,8 @@ function replaceDiscounts(discount, discounts, i, id) {
   switch (type) {
     case 'BuyXpayY': {
       let [x, y] = value.split('x');
-      x = Number(x); // 3
-      y = Number(y); // 1 /// 3x1
+      x = Number(x);
+      y = Number(y);
       const productQuantity = idsQuantityMap.get(id);
       const free = parseInt(productQuantity / x, 10);
       const freeQuantity = x - y;
@@ -99,7 +95,7 @@ function replaceDiscounts(discount, discounts, i, id) {
         } else {
           discounts[i] = discount;
         }
-        if (aux == x) {
+        if (aux === x) {
           aux = 0;
         }
         i++;
