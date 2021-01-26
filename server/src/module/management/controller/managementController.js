@@ -248,7 +248,6 @@ module.exports = class ManagementController {
     try {
       const products = await this.ProductService.getByIds(productIds);
       const cartPrice = calculateCartPrice(productsIdsAndQuantity, products);
-      console.log(cartPrice);
       res.status(200).json(cartPrice);
     } catch (error) {
       console.log(error.message);
