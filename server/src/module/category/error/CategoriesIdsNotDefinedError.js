@@ -1,1 +1,1 @@
-module.exports = class DiscountsIdsNotDefinedError extends Error {};
+module.exports = class CategoriesIdsNotDefinedError extends Error {};
