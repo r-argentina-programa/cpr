@@ -35,7 +35,7 @@ module.exports = class ManagementController {
     app.get(`${ROUTE}/brand/:id/viewProducts`, this.viewProductsByBrand.bind(this));
     app.get(`${ROUTE}/category/:id/viewProducts`, this.viewProductsByCategory.bind(this));
     app.get(`${ROUTE}/products/all/:brands/:categories`, this.getAllByCategoryAndBrand.bind(this));
-    app.get(`${ROUTE}/getCartPrice`, this.getCartPrice.bind(this));
+    app.get(`${ROUTE}/getCartPrice/:productsId/:productsAmount`, this.getCartPrice.bind(this));
   }
 
   /**
@@ -234,14 +234,21 @@ module.exports = class ManagementController {
   }
 
   async getCartPrice(req, res) {
-    const productsIdsAndQuantity = [
-      { id: 1, quantity: 3 },
-      { id: 2, quantity: 3 },
-    ];
+    let { productsId, productsAmount } = req.params;
+
+    productsId = productsId.split(',');
+    productsAmount = productsAmount.split(',');
+
+    const productsIdsAndQuantity = [];
+    productsId.forEach((id, i) =>
+      productsIdsAndQuantity.push({ id: Number(id), quantity: Number(productsAmount[i]) })
+    );
+
     const productIds = productsIdsAndQuantity.map((e) => e.id);
     try {
       const products = await this.ProductService.getByIds(productIds);
-      const cartPrice = console.log(calculateCartPrice(productsIdsAndQuantity, products));
+      const cartPrice = calculateCartPrice(productsIdsAndQuantity, products);
+      console.log(cartPrice);
       res.status(200).json(cartPrice);
     } catch (error) {
       console.log(error.message);
