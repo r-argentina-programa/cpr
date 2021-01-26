@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable prefer-const */
@@ -45,7 +46,7 @@ export default function Item({ product, cart, setProducts }) {
         </Link>
       </td>
       {product.categories.length !== 0 ? (
-        product.categories.map((category) => <td key={category.id}>{category.name}</td>)
+        <td>{product.categories.map((category) => category.name)}</td>
       ) : (
         <td>No categories in this product</td>
       )}
@@ -75,7 +76,14 @@ export default function Item({ product, cart, setProducts }) {
         </Button>
         <label htmlFor="amount">
           Amount
-          <input type="number" id="amount" value={amount} onChange={handleAmount} name="amount" />
+          <input
+            style={{ marginLeft: '1rem', width: '3rem' }}
+            type="number"
+            id="amount"
+            value={amount}
+            onChange={handleAmount}
+            name="amount"
+          />
         </label>
       </td>
     </tr>
