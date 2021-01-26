@@ -1,5 +1,6 @@
 /* eslint-disable class-methods-use-this */
 const { fromDataToEntity } = require('../mapper/adminMapper');
+const { calculateCartPrice } = require('../utils/calculateCartPrice');
 module.exports = class ManagementController {
   /**
    * @param  {import("../../brand/service/brandService")} BrandService
@@ -34,6 +35,7 @@ module.exports = class ManagementController {
     app.get(`${ROUTE}/brand/:id/viewProducts`, this.viewProductsByBrand.bind(this));
     app.get(`${ROUTE}/category/:id/viewProducts`, this.viewProductsByCategory.bind(this));
     app.get(`${ROUTE}/products/all/:brands/:categories`, this.getAllByCategoryAndBrand.bind(this));
+    app.get(`${ROUTE}/getCartPrice/:productsId/:productsAmount`, this.getCartPrice.bind(this));
   }
 
   /**
@@ -226,6 +228,27 @@ module.exports = class ManagementController {
       categories = categories.split(',');
       const products = await this.ProductService.getAllByCategoryAndBrand(categories, brands);
       res.status(200).json(products);
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
+  async getCartPrice(req, res) {
+    let { productsId, productsAmount } = req.params;
+
+    productsId = productsId.split(',');
+    productsAmount = productsAmount.split(',');
+
+    const productsIdsAndQuantity = [];
+    productsId.forEach((id, i) =>
+      productsIdsAndQuantity.push({ id: Number(id), quantity: Number(productsAmount[i]) })
+    );
+
+    const productIds = productsIdsAndQuantity.map((e) => e.id);
+    try {
+      const products = await this.ProductService.getByIds(productIds);
+      const cartPrice = calculateCartPrice(productsIdsAndQuantity, products);
+      res.status(200).json(cartPrice);
     } catch (error) {
       console.log(error.message);
     }

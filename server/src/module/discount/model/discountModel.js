@@ -20,7 +20,7 @@ module.exports = class DiscountModel extends Model {
           allowNull: false,
         },
         value: {
-          type: DataTypes.INTEGER,
+          type: DataTypes.STRING,
           allowNull: false,
         },
         updatedAt: {
