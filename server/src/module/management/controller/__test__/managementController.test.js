@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 const ManagementController = require('../managementController');
 const createTestBrand = require('../../../brand/controller/__test__/brands.fixture');
 const createTestCategory = require('../../../category/controller/__test__/categories.fixture');
@@ -83,7 +84,7 @@ describe('ManagementController methods', () => {
 
     expect(appMock.post).toHaveBeenCalledTimes(1);
     expect(appMock.post).toHaveBeenCalledWith(`${ADMIN_ROUTE}/login`, expect.any(Function));
-    expect(appMock.get).toHaveBeenCalledTimes(12);
+    expect(appMock.get).toHaveBeenCalledTimes(13);
     expect(appMock.get).toHaveBeenNthCalledWith(1, `${ADMIN_ROUTE}`, expect.any(Function));
     expect(appMock.get).toHaveBeenNthCalledWith(2, `${ADMIN_ROUTE}/logout`, expect.any(Function));
     expect(appMock.get).toHaveBeenNthCalledWith(3, `${ROUTE}/brands/all`, expect.any(Function));
@@ -106,6 +107,11 @@ describe('ManagementController methods', () => {
     expect(appMock.get).toHaveBeenNthCalledWith(
       12,
       `${ROUTE}/products/all/:brandsIds/:categoriesIds`,
+      expect.any(Function)
+    );
+    expect(appMock.get).toHaveBeenNthCalledWith(
+      13,
+      `${ROUTE}/getCartPrice/:productsId/:productsAmount`,
       expect.any(Function)
     );
   });

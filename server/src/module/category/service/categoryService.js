@@ -36,7 +36,7 @@ module.exports = class CategoryService {
   }
 
   async getByIds(categoriesIds) {
-    if (!Array(categoriesIds)) {
+    if (!Array.isArray(categoriesIds)) {
       throw new CategoriesIdsNotDefinedError();
     }
     return this.categoryRepository.getByIds(categoriesIds);

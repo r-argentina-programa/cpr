@@ -53,7 +53,7 @@ module.exports = class DiscountRepository {
    * @param {Array} categoriesIds
    */
   async getByIds(discountsIds) {
-    if (!Array(discountsIds)) {
+    if (!Array.isArray(discountsIds)) {
       throw new DiscountsIdsNotDefinedError();
     }
     const discountsInstance = await this.discountModel.findAll({
