@@ -11,11 +11,8 @@ function calculatePrice(discount, defaultPrice) {
       finalPrice = defaultPrice - defaultPrice * (value / 100);
       break;
     }
-    case 'BuyXpayY': {
-      finalPrice = defaultPrice;
-      break;
-    }
     default:
+      finalPrice = defaultPrice;
       break;
   }
   return { ...discount, finalPrice };
