@@ -34,7 +34,10 @@ module.exports = class ManagementController {
     app.get(`${ROUTE}/search/:term`, this.search.bind(this));
     app.get(`${ROUTE}/brand/:id/viewProducts`, this.viewProductsByBrand.bind(this));
     app.get(`${ROUTE}/category/:id/viewProducts`, this.viewProductsByCategory.bind(this));
-    app.get(`${ROUTE}/products/all/:brands/:categories`, this.getAllByCategoryAndBrand.bind(this));
+    app.get(
+      `${ROUTE}/products/all/:brands/:categories/:price`,
+      this.getAllByCategoryAndBrand.bind(this)
+    );
     app.get(`${ROUTE}/getCartPrice/:productsId/:productsAmount`, this.getCartPrice.bind(this));
   }
 
@@ -223,10 +226,15 @@ module.exports = class ManagementController {
 
   async getAllByCategoryAndBrand(req, res) {
     try {
-      let { brands, categories } = req.params;
+      let { brands, categories, price } = req.params;
+      price = price.split('-');
       brands = brands.split(',');
       categories = categories.split(',');
-      const products = await this.ProductService.getAllByCategoryAndBrand(categories, brands);
+      const products = await this.ProductService.getAllByCategoryAndBrand(
+        categories,
+        brands,
+        price
+      );
       res.status(200).json(products);
     } catch (error) {
       console.log(error.message);

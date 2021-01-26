@@ -1,5 +1,8 @@
+/* eslint-disable no-unused-vars */
 import { useContext, useEffect, useState } from 'react';
 import Alert from 'react-bootstrap/Alert';
+import Button from 'react-bootstrap/esm/Button';
+
 import CardsList from '../../components/cardsList';
 import Header from '../../components/header';
 import { ProductContext } from '../../store/products/productContext';
@@ -13,6 +16,15 @@ export default function Main() {
   const { getAllCategories, categories } = useContext(CategoryContext);
   const [activeBrands, setActiveBrands] = useState([]);
   const [activeCategories, setActiveCategories] = useState([]);
+  const [priceRange, setPriceRange] = useState({});
+  const [price, setPrice] = useState({
+    minPrice: 0,
+    maxPrice: 0,
+  });
+
+  useEffect(() => {
+    getFilteredProducts(activeBrands, activeCategories, priceRange);
+  }, [activeBrands, activeCategories, priceRange]);
 
   useEffect(() => {
     getAllProducts();
@@ -20,9 +32,9 @@ export default function Main() {
     getAllCategories();
   }, []);
 
-  useEffect(() => {
-    getFilteredProducts(activeBrands, activeCategories);
-  }, [activeBrands, activeCategories]);
+  function handleFilter() {
+    setPriceRange(price);
+  }
 
   return (
     <>
@@ -66,6 +78,29 @@ export default function Main() {
             />
           </div>
         ))}
+      </NavContainer>
+      <NavContainer>
+        <label htmlFor="price">
+          Min Price:
+          <input
+            type="number"
+            id="price"
+            name="min-price"
+            value={price.minPrice}
+            onChange={(e) => setPrice({ ...price, minPrice: e.target.value })}
+          />
+        </label>
+        <label htmlFor="price">
+          Max Price:
+          <input
+            type="number"
+            id="price"
+            name="max-price"
+            value={price.maxPrice}
+            onChange={(e) => setPrice({ ...price, maxPrice: e.target.value })}
+          />
+        </label>
+        <Button onClick={() => handleFilter()}>Filter Products</Button>
       </NavContainer>
       {error && <Alert variant="danger">{error}</Alert>}
       <Title>See all the products Here!</Title>

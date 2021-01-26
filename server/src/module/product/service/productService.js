@@ -95,9 +95,8 @@ module.exports = class ProductService {
     return this.ProductRepository.getAllProductsSearch(term);
   }
 
-  async getAllByCategoryAndBrand(categories, brands) {
-    const data = await this.ProductRepository.getAllByCategoryAndBrand(categories, brands);
-    const products = data.filter((v, i, a) => a.findIndex((t) => t.id === v.id) === i);
-    return products;
+  async getAllByCategoryAndBrand(categories, brands, price) {
+    const data = await this.ProductRepository.getAllByCategoryAndBrand(categories, brands, price);
+    return data;
   }
 };
