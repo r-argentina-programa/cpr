@@ -3,6 +3,7 @@ const DiscountRepository = require('../discountRepository');
 const createTestDiscount = require('../../controller/__test__/discount.fixture');
 const DiscountNotDefinedError = require('../../error/DiscountNotDefinedError');
 const DiscountIdNotDefinedError = require('../../error/DiscountIdNotDefinedError');
+const DiscountsIdsNotDefinedError = require('../../error/DiscountsIdsNotDefinedError');
 const DiscountNotFoundError = require('../../error/DiscountNotFoundError');
 const discountModel = require('../../model/discountModel');
 const categoryModel = require('../../../category/model/categoryModel');
@@ -123,6 +124,26 @@ describe('discountRepository methods', () => {
 
   test('getById throws error because discount with that id doesnt exist', async () => {
     await expect(discountRepository.getById(3)).rejects.toThrowError(DiscountNotFoundError);
+  });
+
+  test('getByIds returns an array of discounts', async () => {
+    const discount1 = createTestDiscount();
+    const discount2 = createTestDiscount();
+    const discount3 = createTestDiscount();
+    await discountRepository.save(discount1);
+    await discountRepository.save(discount2);
+    await discountRepository.save(discount3);
+
+    const discountsIds = [1, 2, 3];
+    const fetchedDiscounts = await discountRepository.getByIds(discountsIds);
+    expect(fetchedDiscounts).toHaveLength(3);
+  });
+
+  test('getByIds throws error if parameter is not an array', async () => {
+    const discountsIds = '';
+    await expect(discountRepository.getByIds(discountsIds)).rejects.toThrowError(
+      DiscountsIdsNotDefinedError
+    );
   });
 
   test('deletes an existing discount in DB and returns true', async () => {
