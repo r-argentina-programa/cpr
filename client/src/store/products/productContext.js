@@ -103,7 +103,9 @@ const ProductContextProvider = ({ children }) => {
   const getCartFinalDiscounts = async (productsId, productsAmount) => {
     try {
       const res = await api.get(`/api/getCartPrice/${productsId}/${productsAmount}`);
-      dispatch({ type: GET_CART_PRICE, payload: res.data });
+      if (typeof res.data === 'number') {
+        dispatch({ type: GET_CART_PRICE, payload: res.data });
+      }
     } catch (error) {
       dispatch({ type: GET_PRODUCTS_ERROR, payload: error.message });
     }

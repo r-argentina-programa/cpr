@@ -26,6 +26,7 @@ export default function ProductDetail() {
     const productsAmount = products.map((product) => product.amount);
     getCartFinalDiscounts(productsId, productsAmount);
   }
+  console.log(cartPrice);
   return (
     <>
       <Header />
