@@ -1,5 +1,7 @@
 const { fromModelToEntity } = require('../mapper/categoryMapper');
-const { fromModelToEntity: fromModelToProductEntity } = require('../../product/mapper/mapper');
+const {
+  fromModelToEntity: fromModelToProductEntity,
+} = require('../../product/mapper/productMapper');
 const CategoryNotDefinedError = require('../error/CategoryNotDefinedError');
 const CategoriesIdsNotDefinedError = require('../error/CategoriesIdsNotDefinedError');
 const CategoryIdNotDefinedError = require('../error/CategoryIdNotDefinedError');
@@ -21,6 +23,7 @@ module.exports = class CategoryRepository {
 
   /**
    * @param {import('../entity/Category')} category
+   * @param {Array} discountsIds
    */
   async save(category, discountsIds = []) {
     if (!(category instanceof Category)) {
@@ -52,7 +55,7 @@ module.exports = class CategoryRepository {
         as: 'discounts',
       },
     });
-    console.log(categoryInstances.map(fromModelToEntity))
+
     return categoryInstances.map(fromModelToEntity);
   }
 

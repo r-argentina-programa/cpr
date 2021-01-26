@@ -110,6 +110,7 @@ module.exports = class CategoryController {
       if (discounts.length > 0) {
         res.render(`${this.CATEGORY_VIEWS}/form.njk`, {
           discounts,
+          category: { discounts: [] },
         });
       } else {
         throw new Error('To create a category you must first create a discount');

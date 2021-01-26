@@ -5,10 +5,10 @@ const Category = require('../entity/Category');
 
 module.exports = class CategoryService {
   /**
-   * @param  {import("../repository/categoryRepository")} CategoryRepository
+   * @param  {import("../repository/categoryRepository")} categoryRepository
    */
-  constructor(CategoryRepository) {
-    this.CategoryRepository = CategoryRepository;
+  constructor(categoryRepository) {
+    this.categoryRepository = categoryRepository;
   }
 
   /**
@@ -18,11 +18,11 @@ module.exports = class CategoryService {
     if (!(category instanceof Category)) {
       throw new CategoryNotDefinedError();
     }
-    return this.CategoryRepository.save(category, discountsIds);
+    return this.categoryRepository.save(category, discountsIds);
   }
 
   async getAll() {
-    return this.CategoryRepository.getAll();
+    return this.categoryRepository.getAll();
   }
 
   /**
@@ -32,14 +32,14 @@ module.exports = class CategoryService {
     if (!Number(categoryId)) {
       throw new CategoryIdNotDefinedError();
     }
-    return this.CategoryRepository.getById(categoryId);
+    return this.categoryRepository.getById(categoryId);
   }
 
   async getByIds(categoriesIds) {
     if (!Array(categoriesIds)) {
       throw new CategoriesIdsNotDefinedError();
     }
-    return this.CategoryRepository.getByIds(categoriesIds);
+    return this.categoryRepository.getByIds(categoriesIds);
   }
 
   /**
@@ -50,13 +50,13 @@ module.exports = class CategoryService {
       throw new CategoryNotDefinedError();
     }
 
-    return this.CategoryRepository.delete(category);
+    return this.categoryRepository.delete(category);
   }
 
   /**
    * @param {number} categoryId
    */
   async viewProducts(categoryId) {
-    return this.CategoryRepository.viewProducts(categoryId);
+    return this.categoryRepository.viewProducts(categoryId);
   }
 };

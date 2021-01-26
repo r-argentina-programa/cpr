@@ -1,18 +1,19 @@
 /* eslint-disable class-methods-use-this */
 const { fromDataToEntity } = require('../mapper/adminMapper');
+
 module.exports = class ManagementController {
   /**
-   * @param  {import("../../brand/service/brandService")} BrandService
-   * @param  {import("../../category/service/categoryService"} CategoryService
-   * @param  {import("../../product/service/productService"} ProductService
+   * @param  {import("../../brand/service/brandService")} brandService
+   * @param  {import("../../category/service/categoryService"} categoryService
+   * @param  {import("../../product/service/productService"} productService
    */
-  constructor(BrandService, CategoryService, ProductService) {
+  constructor(brandService, categoryService, productService) {
     this.ROUTE_BASE = '/api';
     this.ADMIN_ROUTE = '/admin';
     this.MANAGEMENT_VIEW_DIR = 'management/view';
-    this.BrandService = BrandService;
-    this.CategoryService = CategoryService;
-    this.ProductService = ProductService;
+    this.brandService = brandService;
+    this.categoryService = categoryService;
+    this.productService = productService;
   }
 
   /**
@@ -33,7 +34,10 @@ module.exports = class ManagementController {
     app.get(`${ROUTE}/search/:term`, this.search.bind(this));
     app.get(`${ROUTE}/brand/:id/viewProducts`, this.viewProductsByBrand.bind(this));
     app.get(`${ROUTE}/category/:id/viewProducts`, this.viewProductsByCategory.bind(this));
-    app.get(`${ROUTE}/products/all/:brands/:categories`, this.getAllByCategoryAndBrand.bind(this));
+    app.get(
+      `${ROUTE}/products/all/:brandsIds/:categoriesIds`,
+      this.getAllByCategoryAndBrand.bind(this)
+    );
   }
 
   /**
@@ -43,7 +47,7 @@ module.exports = class ManagementController {
   async viewProductsByBrand(req, res) {
     const { id } = req.params;
     try {
-      const products = await this.BrandService.viewProducts(id);
+      const products = await this.brandService.viewProducts(id);
       res.status(200).json(products);
     } catch (error) {
       res.status(500).send(error);
@@ -57,7 +61,7 @@ module.exports = class ManagementController {
   async viewProductsByCategory(req, res) {
     const { id } = req.params;
     try {
-      const products = await this.CategoryService.viewProducts(id);
+      const products = await this.categoryService.viewProducts(id);
       res.status(200).json(products);
     } catch (error) {
       res.status(500).send(error);
@@ -134,7 +138,7 @@ module.exports = class ManagementController {
    */
   async allBrands(req, res) {
     try {
-      const brands = await this.BrandService.getAll();
+      const brands = await this.brandService.getAll();
       res.status(200).json(brands);
     } catch (e) {
       res.status(500).send(e);
@@ -148,7 +152,7 @@ module.exports = class ManagementController {
   async brand(req, res) {
     try {
       const { id } = req.params;
-      const brand = await this.BrandService.getById(id);
+      const brand = await this.brandService.getById(id);
       res.status(200).json(brand);
     } catch (e) {
       res.status(500).send(e);
@@ -161,7 +165,7 @@ module.exports = class ManagementController {
    */
   async allCategories(req, res) {
     try {
-      const categories = await this.CategoryService.getAll();
+      const categories = await this.categoryService.getAll();
       res.status(200).json(categories);
     } catch (e) {
       res.status(500).send(e);
@@ -175,7 +179,7 @@ module.exports = class ManagementController {
   async category(req, res) {
     try {
       const { id } = req.params;
-      const category = await this.CategoryService.getById(id);
+      const category = await this.categoryService.getById(id);
       res.status(200).json(category);
     } catch (e) {
       res.status(500).send(e);
@@ -188,7 +192,7 @@ module.exports = class ManagementController {
    */
   async allProducts(req, res) {
     try {
-      const products = await this.ProductService.getAll();
+      const products = await this.productService.getAll();
       res.status(200).json(products);
     } catch (e) {
       res.status(500).send(e);
@@ -202,7 +206,7 @@ module.exports = class ManagementController {
   async product(req, res) {
     try {
       const { id } = req.params;
-      const product = await this.ProductService.getById(id);
+      const product = await this.productService.getById(id);
       res.status(200).json(product);
     } catch (e) {
       res.status(500).send(e);
@@ -215,19 +219,19 @@ module.exports = class ManagementController {
    */
   async search(req, res) {
     const { term } = req.params;
-    const products = await this.ProductService.getAllProductsSearch(term);
+    const products = await this.productService.getAllProductsSearch(term);
     res.status(200).json(products);
   }
 
   async getAllByCategoryAndBrand(req, res) {
     try {
-      let { brands, categories } = req.params;
-      brands = brands.split(',');
-      categories = categories.split(',');
-      const products = await this.ProductService.getAllByCategoryAndBrand(categories, brands);
+      let { brandsIds, categoriesIds } = req.params;
+      brandsIds = brandsIds.split(',');
+      categoriesIds = categoriesIds.split(',');
+      const products = await this.productService.getAllByCategoryAndBrand(categoriesIds, brandsIds);
       res.status(200).json(products);
-    } catch (error) {
-      console.log(error.message);
+    } catch (e) {
+      res.status(500).send(e);
     }
   }
 };

@@ -105,7 +105,7 @@ describe('ManagementController methods', () => {
     );
     expect(appMock.get).toHaveBeenNthCalledWith(
       12,
-      `${ROUTE}/products/all/:brands/:categories`,
+      `${ROUTE}/products/all/:brandsIds/:categoriesIds`,
       expect.any(Function)
     );
   });

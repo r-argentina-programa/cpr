@@ -1,10 +1,9 @@
 const { Op } = require('sequelize');
-const { fromModelToEntity } = require('../mapper/mapper');
+const { fromModelToEntity } = require('../mapper/productMapper');
 const ProductNotDefinedError = require('../error/ProductNotDefinedError');
 const ProductIdNotDefinedError = require('../error/ProductIdNotDefinedError');
 const ProductNotFoundError = require('../error/ProductNotFoundError');
-const Product = require('../entity/entity');
-const CategoryModel = require('../../category/model/categoryModel');
+const Product = require('../entity/Product');
 
 module.exports = class ProductRepository {
   /**
@@ -22,8 +21,10 @@ module.exports = class ProductRepository {
 
   /**
    * @param {Product} product
+   * @param {Array} categoriesIds
+   * @param {Array} discountsIds
    */
-  async save(product, categories = [], discounts = []) {
+  async save(product, categoriesIds = [], discountsIds = []) {
     if (!(product instanceof Product)) {
       throw new ProductNotDefinedError();
     }
@@ -42,7 +43,7 @@ module.exports = class ProductRepository {
       await productModel.removeCategory(categoriesId);
     }
 
-    categories.map(async (id) => {
+    categoriesIds.map(async (id) => {
       await productModel.addCategory(id);
     });
 
@@ -52,7 +53,7 @@ module.exports = class ProductRepository {
       await productModel.removeDiscount(discountsId);
     }
 
-    discounts.map(async (id) => {
+    discountsIds.map(async (id) => {
       await productModel.addDiscount(id);
     });
 

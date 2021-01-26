@@ -9,11 +9,9 @@ const Discount = require('../entity/Discount');
 module.exports = class DiscountRepository {
   /**
    * @param {typeof import('../model/discountModel')} discountModel
-   * @param {typeof import('../model/discountTypeModel')} discountTypeModel
    */
-  constructor(discountModel, discountTypeModel) {
+  constructor(discountModel) {
     this.discountModel = discountModel;
-    this.discountTypeModel = discountTypeModel;
   }
 
   /**

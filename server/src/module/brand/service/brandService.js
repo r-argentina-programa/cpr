@@ -4,10 +4,10 @@ const Brand = require('../entity/Brand');
 
 module.exports = class BrandService {
   /**
-   * @param {import('../repository/brandRepository')} BrandRepository
+   * @param {import('../repository/brandRepository')} brandRepository
    */
-  constructor(BrandRepository) {
-    this.BrandRepository = BrandRepository;
+  constructor(brandRepository) {
+    this.brandRepository = brandRepository;
   }
 
   /**
@@ -17,8 +17,7 @@ module.exports = class BrandService {
     if (!(brand instanceof Brand)) {
       throw new BrandNotDefinedError();
     }
-    console.log(discountsIds)
-    return this.BrandRepository.save(brand, discountsIds);
+    return this.brandRepository.save(brand, discountsIds);
   }
 
   /**
@@ -28,12 +27,11 @@ module.exports = class BrandService {
     if (!(brand instanceof Brand)) {
       throw new BrandNotDefinedError();
     }
-
-    return this.BrandRepository.delete(brand);
+    return this.brandRepository.delete(brand);
   }
 
   async getAll() {
-    return this.BrandRepository.getAll();
+    return this.brandRepository.getAll();
   }
 
   /**
@@ -43,7 +41,7 @@ module.exports = class BrandService {
     if (!Number(brandId)) {
       throw new BrandIdNotDefinedError();
     }
-    return this.BrandRepository.getById(brandId);
+    return this.brandRepository.getById(brandId);
   }
 
   /**
@@ -53,6 +51,6 @@ module.exports = class BrandService {
     if (!Number(brandId)) {
       throw new BrandIdNotDefinedError();
     }
-    return this.BrandRepository.viewProducts(brandId);
+    return this.brandRepository.viewProducts(brandId);
   }
 };

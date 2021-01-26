@@ -5,10 +5,10 @@ const Discount = require('../entity/Discount');
 
 module.exports = class DiscountService {
   /**
-   * @param  {import("../repository/discountRepository")} DiscountRepository
+   * @param  {import("../repository/discountRepository")} discountRepository
    */
-  constructor(DiscountRepository) {
-    this.DiscountRepository = DiscountRepository;
+  constructor(discountRepository) {
+    this.discountRepository = discountRepository;
   }
 
   /**
@@ -18,11 +18,11 @@ module.exports = class DiscountService {
     if (!(discount instanceof Discount)) {
       throw new DiscountNotDefinedError();
     }
-    return this.DiscountRepository.save(discount);
+    return this.discountRepository.save(discount);
   }
 
   async getAll() {
-    return this.DiscountRepository.getAll();
+    return this.discountRepository.getAll();
   }
 
   /**
@@ -32,7 +32,7 @@ module.exports = class DiscountService {
     if (!Number(discountId)) {
       throw new DiscountIdNotDefinedError();
     }
-    return this.DiscountRepository.getById(discountId);
+    return this.discountRepository.getById(discountId);
   }
 
   /**
@@ -42,7 +42,7 @@ module.exports = class DiscountService {
     if (!Array(discountsIds)) {
       throw new DiscountsIdsNotDefinedError();
     }
-    return this.DiscountRepository.getByIds(discountsIds);
+    return this.discountRepository.getByIds(discountsIds);
   }
 
   /**
@@ -53,10 +53,6 @@ module.exports = class DiscountService {
       throw new DiscountNotDefinedError();
     }
 
-    return this.DiscountRepository.delete(discount);
-  }
-
-  async saveType(type) {
-    return this.DiscountRepository.saveType(type);
+    return this.discountRepository.delete(discount);
   }
 };

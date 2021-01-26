@@ -8,7 +8,6 @@ const discountModel = require('../../model/discountModel');
 const categoryModel = require('../../../category/model/categoryModel');
 const productModel = require('../../../product/model/productModel');
 const brandModel = require('../../../brand/model/brandModel');
-const discountTypeModel = require('../../model/discountTypeModel');
 
 describe('discountRepository methods', () => {
   let sequelize;
@@ -17,7 +16,6 @@ describe('discountRepository methods', () => {
   let CategoryModel;
   let ProductModel;
   let BrandModel;
-  let DiscountTypeModel;
 
   beforeEach(async (done) => {
     sequelize = new Sequelize('sqlite::memory');
@@ -25,7 +23,6 @@ describe('discountRepository methods', () => {
     CategoryModel = categoryModel.setup(sequelize);
     ProductModel = productModel.setup(sequelize);
     BrandModel = brandModel.setup(sequelize);
-    DiscountTypeModel = discountTypeModel.setup(sequelize);
 
     ProductModel.belongsToMany(DiscountModel, {
       through: 'discount_products',
@@ -47,7 +44,7 @@ describe('discountRepository methods', () => {
     DiscountModel.belongsToMany(CategoryModel, { through: 'discount_category' });
     DiscountModel.belongsToMany(BrandModel, { through: 'discount_brand' });
 
-    discountRepository = new DiscountRepository(DiscountModel, DiscountTypeModel);
+    discountRepository = new DiscountRepository(DiscountModel);
     await sequelize.sync({ force: true });
     done();
   });

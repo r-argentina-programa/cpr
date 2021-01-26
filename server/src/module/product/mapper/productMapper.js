@@ -1,4 +1,4 @@
-const Product = require('../entity/entity');
+const Product = require('../entity/Product');
 const { calculatePrice } = require('../../management/utils/calculatePrice');
 
 function fromDataToEntity({ id, name, defaultPrice, imageSrc, description, brand_fk, categories }) {

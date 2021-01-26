@@ -1,21 +1,25 @@
 /* eslint-disable class-methods-use-this */
 const ProductIdNotDefinedError = require('../error/ProductIdNotDefinedError');
 const ProductNotDefinedError = require('../error/ProductNotDefinedError');
-const Product = require('../entity/entity');
+const Product = require('../entity/Product');
 const { calculatePrice } = require('../../management/utils/calculatePrice');
 
 module.exports = class ProductService {
   /**
-   * @param  {import("../repository/productRepository")} ProductRepository
+   * @param  {import("../repository/productRepository")} productRepository
+   * @param  {import("../../category/service/categoryService")} categoryService
+   * @param  {import("../../discount/service/discountService")} discountService
    */
-  constructor(ProductRepository, CategoryService, DiscountService) {
-    this.ProductRepository = ProductRepository;
-    this.CategoryService = CategoryService;
-    this.DiscountService = DiscountService;
+  constructor(productRepository, categoryService, discountService) {
+    this.productRepository = productRepository;
+    this.categoryService = categoryService;
+    this.discountService = discountService;
   }
 
   /**
    * @param {Product} product
+   * @param {Array} categoriesIds
+   * @param {Array} discountsIds
    */
   async save(product, categoriesIds, discountsIds) {
     if (!(product instanceof Product)) {
@@ -25,11 +29,15 @@ module.exports = class ProductService {
     await this.validateCategoriesDiscounts(product, categoriesIds);
     await this.validateProductsDiscounts(product, discountsIds);
 
-    return this.ProductRepository.save(product, categoriesIds, discountsIds);
+    return this.productRepository.save(product, categoriesIds, discountsIds);
   }
 
+  /**
+   * @param {Product} product
+   * @param {Array} categoriesIds
+   */
   async validateCategoriesDiscounts(product, categoriesIds) {
-    const categories = await this.CategoryService.getByIds(categoriesIds);
+    const categories = await this.categoryService.getByIds(categoriesIds);
     categories.forEach((category) => {
       category.discounts.forEach((discount) => {
         const price = calculatePrice(discount, product.defaultPrice);
@@ -42,8 +50,12 @@ module.exports = class ProductService {
     });
   }
 
+  /**
+   * @param {Product} product
+   * @param {Array} discountsIds
+   */
   async validateProductsDiscounts(product, discountsIds) {
-    const discounts = await this.DiscountService.getByIds(discountsIds);
+    const discounts = await this.discountService.getByIds(discountsIds);
     discounts.forEach((discount) => {
       const price = calculatePrice(discount, product.defaultPrice);
       if (price.finalPrice <= 0) {
@@ -61,7 +73,7 @@ module.exports = class ProductService {
     if (!Number(id)) {
       throw new ProductIdNotDefinedError();
     }
-    return this.ProductRepository.getById(id);
+    return this.productRepository.getById(id);
   }
 
   /**
@@ -71,22 +83,26 @@ module.exports = class ProductService {
     if (!(product instanceof Product)) {
       throw new ProductNotDefinedError();
     }
-    return this.ProductRepository.delete(product);
+    return this.productRepository.delete(product);
   }
 
   async getAll() {
-    return this.ProductRepository.getAll();
+    return this.productRepository.getAll();
   }
 
   /**
    * @param {string} term
    */
   async getAllProductsSearch(term) {
-    return this.ProductRepository.getAllProductsSearch(term);
+    return this.productRepository.getAllProductsSearch(term);
   }
 
-  async getAllByCategoryAndBrand(categories, brands) {
-    const data = await this.ProductRepository.getAllByCategoryAndBrand(categories, brands);
+  /**
+   * @param {Array} categoriesIds
+   * @param {Array} brandsIds
+   */
+  async getAllByCategoryAndBrand(categoriesIds, brandsIds) {
+    const data = await this.productRepository.getAllByCategoryAndBrand(categoriesIds, brandsIds);
     const products = data.filter((v, i, a) => a.findIndex((t) => t.id === v.id) === i);
     return products;
   }

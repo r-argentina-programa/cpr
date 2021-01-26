@@ -1,5 +1,7 @@
 const { fromModelToEntity } = require('../mapper/brandMapper');
-const { fromModelToEntity: fromModelToProductEntity } = require('../../product/mapper/mapper');
+const {
+  fromModelToEntity: fromModelToProductEntity,
+} = require('../../product/mapper/productMapper');
 const BrandNotDefinedError = require('../error/BrandNotDefinedError');
 const BrandIdNotDefinedError = require('../error/BrandIdNotDefinedError');
 const BrandNotFoundError = require('../error/BrandNotFoundError');
@@ -21,6 +23,7 @@ module.exports = class BrandRepository {
 
   /**
    * @param {Brand} brand
+   * @param {Array} discountsIds
    */
   async save(brand, discountsIds = []) {
     if (!(brand instanceof Brand)) {
@@ -64,7 +67,7 @@ module.exports = class BrandRepository {
         as: 'discounts',
       },
     });
-    console.log(brandInstances.map(fromModelToEntity))
+
     return brandInstances.map(fromModelToEntity);
   }
 
