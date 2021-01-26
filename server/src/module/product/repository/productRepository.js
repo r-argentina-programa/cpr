@@ -148,9 +148,8 @@ module.exports = class ProductRepository {
     return products;
   }
 
-  async getAllByCategoryAndBrand(categories = [], brands = []) {
+  async getAllByCategoryAndBrand(categories = [], brands = [], price = [0, 999999]) {
     const conditions = {};
-    const priceRange = [0, 100];
     let categoriesConditions;
     if (brands[0] != '0') {
       conditions.brand_fk = brands;
@@ -200,9 +199,9 @@ module.exports = class ProductRepository {
     return productsEntities.filter((product) => {
       const { discount } = product;
       if (discount) {
-        return discount.finalPrice >= priceRange[0] && discount.finalPrice <= priceRange[1];
+        return discount.finalPrice >= price[0] && discount.finalPrice <= price[1];
       }
-      return product.defaultPrice >= priceRange[0] && product.defaultPrice <= priceRange[1];
+      return product.defaultPrice >= price[0] && product.defaultPrice <= price[1];
     });
   }
 
