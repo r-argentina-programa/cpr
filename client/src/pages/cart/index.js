@@ -5,6 +5,7 @@
 import { useContext, useEffect, useState } from 'react';
 import { Table } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
+import Alert from 'react-bootstrap/Alert';
 
 import Header from '../../components/header';
 import { Container } from './styles';
@@ -13,7 +14,7 @@ import { ProductContext } from '../../store/products/productContext';
 
 export default function ProductDetail() {
   const [products, setProducts] = useState([]);
-  const { getCartFinalDiscounts, cartPrice } = useContext(ProductContext);
+  const { getCartFinalDiscounts, cartPrice, error } = useContext(ProductContext);
 
   useEffect(() => {
     const localCart = localStorage.getItem('cart');
@@ -28,7 +29,7 @@ export default function ProductDetail() {
   return (
     <>
       <Header />
-
+      {error && <Alert variant="danger">{error}</Alert>}
       {!products || products.length === 0 ? (
         <h1
           style={{ textAlign: 'center', color: 'steelblue', marginTop: '3rem' }}
@@ -37,7 +38,7 @@ export default function ProductDetail() {
           You do not have any products added to the cart!
         </h1>
       ) : (
-        <Container>
+        <Container className="table-responsive">
           <h1 className="title">Manage your cart and let us calculate the Final Price</h1>
           <Table striped hover>
             <thead>

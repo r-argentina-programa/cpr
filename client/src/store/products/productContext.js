@@ -14,6 +14,7 @@ import {
   GET_PRODUCT_SEARCH,
   GET_PRODUCTS_FILTERED,
   GET_CART_PRICE,
+  GET_PRODUCTS_ERROR,
 } from './productTypes';
 
 export const ProductContext = createContext();
@@ -24,6 +25,7 @@ const ProductContextProvider = ({ children }) => {
     product: {},
     search: [],
     cartPrice: null,
+    error: false,
   };
 
   const [state, dispatch] = useReducer(productReducer, initialState);
@@ -35,7 +37,7 @@ const ProductContextProvider = ({ children }) => {
         dispatch({ type: GET_ALL_PRODUCTS, payload: res.data });
       }
     } catch (error) {
-      console.log(error.message);
+      dispatch({ type: GET_PRODUCTS_ERROR, payload: error.message });
     }
   };
 
@@ -46,7 +48,7 @@ const ProductContextProvider = ({ children }) => {
         dispatch({ type: GET_PRODUCT_DETAILS, payload: res.data });
       }
     } catch (error) {
-      console.log(error.message);
+      dispatch({ type: GET_PRODUCTS_ERROR, payload: error.message });
     }
   };
 
@@ -57,7 +59,7 @@ const ProductContextProvider = ({ children }) => {
         dispatch({ type: PRODUCTS_BY_BRAND, payload: res.data });
       }
     } catch (error) {
-      console.log(error.message);
+      dispatch({ type: GET_PRODUCTS_ERROR, payload: error.message });
     }
   };
 
@@ -68,7 +70,7 @@ const ProductContextProvider = ({ children }) => {
         dispatch({ type: PRODUCTS_BY_CATEGORY, payload: res.data });
       }
     } catch (error) {
-      console.log(error.message);
+      dispatch({ type: GET_PRODUCTS_ERROR, payload: error.message });
     }
   };
 
@@ -79,7 +81,7 @@ const ProductContextProvider = ({ children }) => {
         dispatch({ type: GET_PRODUCT_SEARCH, payload: res.data });
       }
     } catch (error) {
-      console.log(error.message);
+      dispatch({ type: GET_PRODUCTS_ERROR, payload: error.message });
     }
   };
 
@@ -94,17 +96,16 @@ const ProductContextProvider = ({ children }) => {
       const res = await api.get(`/api/products/all/${brands}/${categories}`);
       dispatch({ type: GET_PRODUCTS_FILTERED, payload: res.data });
     } catch (error) {
-      console.warn(error.message);
+      dispatch({ type: GET_PRODUCTS_ERROR, payload: error.message });
     }
   };
 
   const getCartFinalDiscounts = async (productsId, productsAmount) => {
     try {
       const res = await api.get(`/api/getCartPrice/${productsId}/${productsAmount}`);
-      console.log(res.data);
       dispatch({ type: GET_CART_PRICE, payload: res.data });
     } catch (error) {
-      console.log(error);
+      dispatch({ type: GET_PRODUCTS_ERROR, payload: error.message });
     }
   };
   return (
@@ -114,6 +115,7 @@ const ProductContextProvider = ({ children }) => {
         product: state.product,
         search: state.search,
         cartPrice: state.cartPrice,
+        error: state.error,
         getAllProducts,
         getProductDetails,
         getProductsByBrand,

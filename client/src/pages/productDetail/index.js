@@ -1,5 +1,6 @@
 import { Link, useParams } from 'react-router-dom';
 import { useContext, useEffect, useState } from 'react';
+import Alert from 'react-bootstrap/Alert';
 import ab2str from 'arraybuffer-to-string';
 import { Table } from 'react-bootstrap';
 import { ProductContext } from '../../store/products/productContext';
@@ -16,7 +17,7 @@ import Header from '../../components/header';
 export default function ProductDetail() {
   const { id } = useParams();
   const [image, setImage] = useState('');
-  const { product, getProductDetails } = useContext(ProductContext);
+  const { product, getProductDetails, error } = useContext(ProductContext);
   const [cart, setCart] = useState([]);
 
   let localCart = localStorage.getItem('cart');
@@ -54,6 +55,7 @@ export default function ProductDetail() {
   return (
     <>
       <Header />
+      {error ? <Alert variant="danger">{error}</Alert> : null}
       {!product.brand ? (
         <p>Loading.. Please wait</p>
       ) : (

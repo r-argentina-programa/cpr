@@ -1,57 +1,19 @@
-import styled from 'styled-components/macro';
 import { useContext, useEffect, useState } from 'react';
+import Alert from 'react-bootstrap/Alert';
 import CardsList from '../../components/cardsList';
 import Header from '../../components/header';
 import { ProductContext } from '../../store/products/productContext';
 import { BrandContext } from '../../store/brand/brandContext';
 import { CategoryContext } from '../../store/category/categoryContext';
-
-const ListContainer = styled.div`
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-`;
-
-const NavContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  padding: 0.5rem 0;
-  background-color: #343a40;
-  a {
-    margin-right: 1rem;
-    text-decoration: none;
-    color: #fff;
-    font-size: 17px;
-
-    &:hover {
-      color: #e6e6e6;
-    }
-  }
-  span,
-  label {
-    color: antiquewhite;
-    margin-right: 1.2rem;
-  }
-
-  .item {
-    display: flex;
-    align-items: center;
-    margin-right: 1rem;
-  }
-`;
-
-const Title = styled.h1`
-  margin: 1rem 0;
-  text-align: center;
-  font-size: 2rem;
-`;
+import { ListContainer, NavContainer, Title } from './styles';
 
 export default function Main() {
-  const { getAllProducts, products, getFilteredProducts } = useContext(ProductContext);
+  const { getAllProducts, products, getFilteredProducts, error } = useContext(ProductContext);
   const { getAllBrands, brands } = useContext(BrandContext);
   const { getAllCategories, categories } = useContext(CategoryContext);
   const [activeBrands, setActiveBrands] = useState([]);
   const [activeCategories, setActiveCategories] = useState([]);
+
   useEffect(() => {
     getAllProducts();
     getAllBrands();
@@ -105,6 +67,7 @@ export default function Main() {
           </div>
         ))}
       </NavContainer>
+      {error && <Alert variant="danger">{error}</Alert>}
       <Title>See all the products Here!</Title>
       <ListContainer className="container-fluid">
         {products.map((product) => (

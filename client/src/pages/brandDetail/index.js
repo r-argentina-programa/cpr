@@ -2,6 +2,7 @@ import ab2str from 'arraybuffer-to-string';
 import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import TimeAgo from 'react-timeago';
+import Alert from 'react-bootstrap/Alert';
 import buildFormatter from 'react-timeago/lib/formatters/buildFormatter';
 import englishString from 'react-timeago/lib/language-strings/en';
 import { BrandContext } from '../../store/brand/brandContext';
@@ -24,7 +25,7 @@ const formatter = buildFormatter(englishString);
 export default function BrandDetail() {
   const { id } = useParams();
   const [image, setImage] = useState('');
-  const { products, getProductsByBrand } = useContext(ProductContext);
+  const { products, getProductsByBrand, error } = useContext(ProductContext);
   const { getBrandById, brand } = useContext(BrandContext);
 
   useEffect(() => {
@@ -42,6 +43,7 @@ export default function BrandDetail() {
   return (
     <>
       <Header />
+      {error && <Alert variant="danger">{error}</Alert>}
       <Container>
         <ImageContainer>
           <img src={`data:image/png;base64, ${image}`} alt="Product" />

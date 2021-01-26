@@ -1,6 +1,5 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable react/prop-types */
-import styled from 'styled-components';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 
@@ -10,15 +9,9 @@ import englishString from 'react-timeago/lib/language-strings/en';
 import { useEffect, useState } from 'react';
 import ab2str from 'arraybuffer-to-string';
 import { Link } from 'react-router-dom';
+import { TimeStyle, Container } from './styles';
 
 const formatter = buildFormatter(englishString);
-
-const TimeStyle = styled.span`
-  color: #999999;
-  font-size: 10px;
-  letter-spacing: 0.2px;
-  text-transform: uppercase;
-`;
 
 export default function CardsList({ item, imageSrc, link }) {
   const [image, setImage] = useState('');
@@ -37,8 +30,8 @@ export default function CardsList({ item, imageSrc, link }) {
   }, [item.discount]);
 
   return (
-    <>
-      <Card style={{ width: '15rem', height: '23rem' }}>
+    <Container>
+      <Card className="card">
         <Card.Body>
           <Card.Title style={{ textAlign: 'center' }}>{item.name}</Card.Title>
           <Card.Img
@@ -110,6 +103,6 @@ export default function CardsList({ item, imageSrc, link }) {
           </Link>
         </Card.Body>
       </Card>
-    </>
+    </Container>
   );
 }
