@@ -45,4 +45,24 @@ export const Container = styled.div`
   .finalPrice {
     font-weight: 800;
   }
+
+  .discounts {
+    font-size: 12px;
+    text-decoration: line-through;
+    color: darkgrey;
+  }
+  .discount-title {
+    font-size: 15px;
+    color: darkgrey;
+    display: grid;
+  }
+
+  .cart-result {
+    text-align: center;
+    margin: 1rem 0;
+    background: e6e6e6;
+    .final-price {
+      font-weight: 700;
+    }
+  }
 `;

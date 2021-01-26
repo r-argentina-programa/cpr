@@ -67,7 +67,7 @@ export default function ProductDetail() {
           </Button>
 
           {cartPrice ? (
-            <div>
+            <div className="cart-result">
               <h2>
                 The final Price is: <span className="final-price">${cartPrice}</span>
               </h2>

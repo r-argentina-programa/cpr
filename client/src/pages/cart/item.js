@@ -1,4 +1,4 @@
-/* eslint-disable prettier/prettier */
+/* eslint-disable react/jsx-indent */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable prefer-const */
@@ -56,10 +56,30 @@ export default function Item({ product, cart, setProducts }) {
         product.discount.type === 'Fixed' ? (
           <td className="price price-discount">
             ${product.discount.finalPrice} (-${product.discount.value} OFF)
+            <b className="discount-title"> Another Discounts:</b>
+            {product.discounts.length > 2 ? (
+              product.discounts.map((discount) => (
+                <p className="discounts" key={discount.id}>
+                  Type: {discount.type}, value:{discount.value}, finalPrice: {discount.finalPrice}
+                </p>
+              ))
+            ) : (
+              <small>This product has no more Discounts</small>
+            )}
           </td>
         ) : (
           <td className="price price-discount">
             ${product.discount.finalPrice} (-%{product.discount.value} OFF)
+            <b className="discount-title"> Another Discounts:</b>
+            {product.discounts.length > 2 ? (
+              product.discounts.map((discount) => (
+                <p className="discounts" key={discount.id}>
+                  Type: {discount.type}, value:{discount.value}, finalPrice: {discount.finalPrice}
+                </p>
+              ))
+            ) : (
+              <small>This product has no more Discounts</small>
+            )}
           </td>
         )
       ) : (
