@@ -235,7 +235,7 @@ module.exports = class ManagementController {
 
   async getCartPrice(req, res) {
     const productsIdsAndQuantity = [
-      // { id: 1, quantity: 3 },
+      { id: 1, quantity: 3 },
       { id: 2, quantity: 3 },
     ];
     const productIds = productsIdsAndQuantity.map((e) => e.id);
