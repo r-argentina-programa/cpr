@@ -1,6 +1,7 @@
 const idsQuantityMap = new Map();
 function calculateCartPrice(idsAndQuantity, products) {
   const usedDiscounts = new Map();
+  const bestDiscountPrice = new Map();
   idsAndQuantity.forEach(({ id, quantity }) => {
     idsQuantityMap.set(id, quantity);
   });
@@ -9,7 +10,7 @@ function calculateCartPrice(idsAndQuantity, products) {
     const quantity = idsQuantityMap.get(current.id);
     const currentDiscounts = [];
     for (let i = 0; i < quantity; i++) {
-      currentDiscounts.push(current.discount);
+      currentDiscounts.push(current.discount || { finalPrice: current.defaultPrice });
     }
     usedDiscounts.set(current.id, currentDiscounts);
     let price;
