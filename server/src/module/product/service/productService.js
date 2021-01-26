@@ -65,6 +65,16 @@ module.exports = class ProductService {
   }
 
   /**
+   * @param {Array} productIds
+   */
+  async getByIds(productIds) {
+    if (!Array(productIds)) {
+      throw new ProductIdNotDefinedError();
+    }
+    return this.ProductRepository.getByIds(productIds);
+  }
+
+  /**
    * @param {Product} product
    */
   async delete(product) {

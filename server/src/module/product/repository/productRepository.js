@@ -196,4 +196,53 @@ module.exports = class ProductRepository {
       return fromModelToEntity(product);
     });
   }
+
+  /**
+   * @param {Array} productIds
+   */
+  async getByIds(productIds) {
+    if (!Array(productIds)) {
+      throw new ProductIdNotDefinedError();
+    }
+
+    const productsInstance = await this.productModel.findAll({
+      where: {
+        id: productIds,
+      },
+      include: [
+        {
+          model: this.brandModel,
+          include: {
+            model: this.discountModel,
+            as: 'discounts',
+          },
+        },
+        {
+          model: this.categoryModel,
+          as: 'categories',
+          include: {
+            model: this.discountModel,
+            as: 'discounts',
+          },
+        },
+        {
+          model: this.discountModel,
+          as: 'discounts',
+        },
+      ],
+    });
+
+    return productsInstance.map((product) => {
+      if (Array.isArray(product.categories)) {
+        product.categories.forEach((category) => {
+          product.discounts.push(...category.discounts);
+        });
+      }
+      const brandDiscounts = product.Brand.discounts;
+      if (Array.isArray(brandDiscounts)) {
+        product.discounts.push(...brandDiscounts);
+      }
+      return fromModelToEntity(product);
+    });
+  }
 };

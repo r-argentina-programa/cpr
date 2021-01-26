@@ -13,6 +13,7 @@ import {
   PRODUCTS_BY_CATEGORY,
   GET_PRODUCT_SEARCH,
   GET_PRODUCTS_FILTERED,
+  GET_CART_PRICE,
 } from './productTypes';
 
 export const ProductContext = createContext();
@@ -22,6 +23,7 @@ const ProductContextProvider = ({ children }) => {
     products: [],
     product: {},
     search: [],
+    cartPrice: null,
   };
 
   const [state, dispatch] = useReducer(productReducer, initialState);
@@ -95,18 +97,30 @@ const ProductContextProvider = ({ children }) => {
       console.warn(error.message);
     }
   };
+
+  const getCartFinalDiscounts = async (productsId, productsAmount) => {
+    try {
+      const res = await api.get(`/api/getCartPrice/${productsId}/${productsAmount}`);
+      console.log(res.data);
+      dispatch({ type: GET_CART_PRICE, payload: res.data });
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <ProductContext.Provider
       value={{
         products: state.products,
         product: state.product,
         search: state.search,
+        cartPrice: state.cartPrice,
         getAllProducts,
         getProductDetails,
         getProductsByBrand,
         getProductsByCategory,
         getProductBySearch,
         getFilteredProducts,
+        getCartFinalDiscounts,
       }}
     >
       {children}

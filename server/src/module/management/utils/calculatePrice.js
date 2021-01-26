@@ -1,6 +1,7 @@
 function calculatePrice(discount, defaultPrice) {
   let finalPrice = defaultPrice;
-  const { type, value } = discount;
+  let { type, value } = discount;
+  value = Number(value);
   switch (type) {
     case 'Fixed': {
       finalPrice = defaultPrice - value;
@@ -11,6 +12,7 @@ function calculatePrice(discount, defaultPrice) {
       break;
     }
     default:
+      finalPrice = defaultPrice;
       break;
   }
   return { ...discount, finalPrice };

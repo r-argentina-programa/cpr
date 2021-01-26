@@ -28,4 +28,41 @@ export const Container = styled.div`
     width: 3rem;
     margin-left: 1rem;
   }
+
+  .title {
+    text-align: center;
+    color: steelblue;
+    margin: 2rem 0;
+  }
+
+  .submit {
+    width: 100%;
+    background-color: steelblue;
+  }
+  h2 {
+    font-weight: 500;
+  }
+  .finalPrice {
+    font-weight: 800;
+  }
+
+  .discounts {
+    font-size: 12px;
+    text-decoration: line-through;
+    color: darkgrey;
+  }
+  .discount-title {
+    font-size: 15px;
+    color: darkgrey;
+    display: grid;
+  }
+
+  .cart-result {
+    text-align: center;
+    margin: 1rem 0;
+    background: e6e6e6;
+    .final-price {
+      font-weight: 700;
+    }
+  }
 `;
