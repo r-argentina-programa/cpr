@@ -1,4 +1,4 @@
-import { GET_ALL_CATEGORIES } from './categoryTypes';
+import { GET_ALL_CATEGORIES, GET_CATEGORIES_ERROR } from './categoryTypes';
 
 export default function productReducer(state, action) {
   switch (action.type) {
@@ -6,6 +6,12 @@ export default function productReducer(state, action) {
       return {
         ...state,
         categories: [...action.payload],
+        error: false,
+      };
+    case GET_CATEGORIES_ERROR:
+      return {
+        ...state,
+        error: action.payload,
       };
     default:
       return state;
