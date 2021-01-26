@@ -17,6 +17,14 @@ export default function ProductDetail() {
   const { id } = useParams();
   const [image, setImage] = useState('');
   const { product, getProductDetails } = useContext(ProductContext);
+  const [cart, setCart] = useState([]);
+
+  let localCart = localStorage.getItem('cart');
+
+  useEffect(() => {
+    localCart = JSON.parse(localCart);
+    if (localCart) setCart(localCart);
+  }, []);
 
   useEffect(() => {
     getProductDetails(id);
@@ -29,6 +37,19 @@ export default function ProductDetail() {
     }
     setImage(ab2str(uint8));
   }, [product]);
+
+  function addProductToCart(productToSave) {
+    const cartCopy = [...cart];
+    const existingProduct = cartCopy.find((productItem) => productItem.id === productToSave.id);
+    if (!existingProduct) {
+      cartCopy.push(productToSave);
+    }
+
+    setCart(cartCopy);
+
+    const stringCart = JSON.stringify(cartCopy);
+    localStorage.setItem('cart', stringCart);
+  }
 
   return (
     <>
@@ -78,7 +99,9 @@ export default function ProductDetail() {
                   <span>${product.defaultPrice}</span>
                 )}
                 <br />
-                <a href="/cart">Add to Cart</a>
+                <a href="/cart" onClick={() => addProductToCart(product)}>
+                  Add to Cart
+                </a>
               </ProductPrice>
             </RightColumnContainer>
           </Container>
@@ -97,7 +120,7 @@ export default function ProductDetail() {
                   </thead>
                   <tbody>
                     {product.discounts.map((discount) => (
-                      <tr>
+                      <tr key={discount.id}>
                         <td>{discount.type}</td>
                         <td>{discount.value}</td>
                         <td>${discount.finalPrice}</td>
