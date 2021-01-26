@@ -13,12 +13,14 @@ const repositoryMock = {
   getAllProductsSearch: jest.fn(),
 };
 
-const categoryServiceMock = {
-  getByIds: jest.fn(() => Array.from({ length: 3 }, (id) => createTestCategory(id + 1))),
-};
-
 const discountServiceMock = {
   getByIds: jest.fn(() => Array.from({ length: 3 }, (id) => createTestDiscount(id + 1))),
+};
+
+const categoryServiceMock = {
+  getByIds: jest.fn(() =>
+    Array.from({ length: 3 }, (id) => createTestCategory(id + 1, discountServiceMock.getByIds([1])))
+  ),
 };
 
 const mockService = new ProductService(repositoryMock, categoryServiceMock, discountServiceMock);
@@ -70,5 +72,17 @@ describe('ProductService methods', () => {
     await mockService.getAllProductsSearch(searchTerm);
     expect(repositoryMock.getAllProductsSearch).toHaveBeenCalledTimes(1);
     expect(repositoryMock.getAllProductsSearch).toHaveBeenCalledWith(searchTerm);
+  });
+
+  test('validateProductsDiscounts throws an error if the price after discount is zero or less', async () => {
+    const productMock = ProductTestProduct(1, 40);
+
+    await expect(mockService.validateProductsDiscounts(productMock, [1])).rejects.toThrowError();
+  });
+
+  test('validateCategoriesDiscounts throws an error if the price after discount is zero or less', async () => {
+    const productMock = ProductTestProduct(1, 40);
+
+    await expect(mockService.validateCategoriesDiscounts(productMock, [1])).rejects.toThrowError();
   });
 });

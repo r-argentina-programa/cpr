@@ -1,10 +1,10 @@
 const Product = require('../../entity/entity');
 
-module.exports = function createTestProduct(id, brandFk = '3') {
+module.exports = function createTestProduct(id, defaultPrice = '300', brandFk = '3') {
   return new Product({
     id,
     name: 'coca-cola',
-    defaultPrice: '300',
+    defaultPrice,
     description: 'product description',
     brandFk,
     imageSrc: '/public/uploads/test.jpg',

@@ -1,12 +1,14 @@
 const DiscountService = require('../discountService');
 const DiscountNotDefinedError = require('../../error/DiscountNotDefinedError');
 const DiscountIdNotDefinedError = require('../../error/DiscountIdNotDefinedError');
+const DiscountsIdsNotDefinedError = require('../../error/DiscountsIdsNotDefinedError');
 const createTestDiscount = require('../../controller/__test__/discount.fixture');
 
 const repositoryMock = {
   save: jest.fn(),
   getAll: jest.fn(),
   getById: jest.fn(),
+  getByIds: jest.fn(),
   delete: jest.fn(),
 };
 
@@ -40,6 +42,21 @@ describe('discountService methods', () => {
 
   test('getById throws error if param is not a number', async () => {
     await expect(mockService.getById()).rejects.toThrowError(DiscountIdNotDefinedError);
+  });
+
+  test("getByIds calls repository's getByIds method", async () => {
+    const discountIdsMock = [1, 2, 3];
+    await mockService.getByIds(discountIdsMock);
+
+    expect(repositoryMock.getByIds).toHaveBeenCalledTimes(1);
+    expect(repositoryMock.getByIds).toHaveBeenCalledWith(discountIdsMock);
+  });
+
+  test('getByIds throws an error if the parameter is incorrect', async () => {
+    const discountIdsMock = '';
+    await expect(mockService.getByIds(discountIdsMock)).rejects.toThrowError(
+      DiscountsIdsNotDefinedError
+    );
   });
 
   test("delete calls repository's delete method", async () => {

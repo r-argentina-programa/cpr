@@ -39,7 +39,7 @@ module.exports = class DiscountService {
    * @param {Array} discountsIds
    */
   async getByIds(discountsIds) {
-    if (!Array(discountsIds)) {
+    if (!Array.isArray(discountsIds)) {
       throw new DiscountsIdsNotDefinedError();
     }
     return this.DiscountRepository.getByIds(discountsIds);
