@@ -28,4 +28,21 @@ export const Container = styled.div`
     width: 3rem;
     margin-left: 1rem;
   }
+
+  .title {
+    text-align: center;
+    color: steelblue;
+    margin: 2rem 0;
+  }
+
+  .submit {
+    width: 100%;
+    background-color: steelblue;
+  }
+  h2 {
+    font-weight: 500;
+  }
+  .finalPrice {
+    font-weight: 800;
+  }
 `;
