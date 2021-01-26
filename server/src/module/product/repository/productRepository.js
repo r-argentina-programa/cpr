@@ -150,6 +150,7 @@ module.exports = class ProductRepository {
 
   async getAllByCategoryAndBrand(categories = [], brands = []) {
     const conditions = {};
+    const priceRange = [0, 100];
     let categoriesConditions;
     if (brands[0] != '0') {
       conditions.brand_fk = brands;
@@ -183,7 +184,7 @@ module.exports = class ProductRepository {
       ],
     });
 
-    return products.map((product) => {
+    const productsEntities = products.map((product) => {
       if (Array.isArray(product.categories)) {
         product.categories.forEach((category) => {
           product.discounts.push(...category.discounts);
@@ -194,6 +195,14 @@ module.exports = class ProductRepository {
         product.discounts.push(...brandDiscounts);
       }
       return fromModelToEntity(product);
+    });
+
+    return productsEntities.filter((product) => {
+      const { discount } = product;
+      if (discount) {
+        return discount.finalPrice >= priceRange[0] && discount.finalPrice <= priceRange[1];
+      }
+      return product.defaultPrice >= priceRange[0] && product.defaultPrice <= priceRange[1];
     });
   }
 
