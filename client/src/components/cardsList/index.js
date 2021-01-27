@@ -41,27 +41,17 @@ export default function CardsList({ item, imageSrc, link }) {
             alt={item.name}
           />
           {item.defaultPrice ? (
-            !item.discount ? (
-              <Card.Subtitle
-                style={{
-                  margin: '.3rem 0',
-                  color: '#575757',
-                }}
-              >
-                ${item.defaultPrice}
-              </Card.Subtitle>
-            ) : (
-              <Card.Subtitle
-                style={{
-                  margin: '.3rem 0',
-                  color: '#575757',
-                  textDecoration: 'line-through',
-                }}
-              >
-                ${item.defaultPrice}
-              </Card.Subtitle>
-            )
+            <Card.Subtitle
+              style={{
+                margin: '.3rem 0',
+                color: 'grey',
+                textDecoration: `${item.discount ? 'line-through' : ''}`,
+              }}
+            >
+              ${item.defaultPrice}
+            </Card.Subtitle>
           ) : null}
+
           {item.discount ? (
             isPercentage ? (
               <Card.Subtitle style={{ margin: '.3rem 0', color: '#B00000' }}>
