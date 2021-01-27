@@ -1,9 +1,9 @@
 import styled from 'styled-components/macro';
 
 export const ListContainer = styled.div`
-  display: grid;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
 `;
 
 export const NavContainer = styled.div`
