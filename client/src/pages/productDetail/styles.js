@@ -69,7 +69,8 @@ export const ProductPrice = styled.div`
   }
   a {
     display: inline-block;
-    background-color: #7dc855;
+    background-color: rgb(13, 101, 114);
+    font-weight: 500;
     border-radius: 6px;
     font-size: 16px;
     color: #ffffff;
@@ -77,7 +78,7 @@ export const ProductPrice = styled.div`
     padding: 12px 30px;
     transition: all 0.5s;
     &:hover {
-      background-color: #64af3d;
+      background-color: cadetblue;
     }
   }
 `;
