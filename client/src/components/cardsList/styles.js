@@ -13,4 +13,18 @@ export const Container = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   grid-gap: 1rem;
+
+  .img-container {
+    width: 200px;
+    height: 200px;
+    .item-span {
+      display: inline-block;
+      height: 100%;
+      vertical-align: middle;
+    }
+    .item-img {
+      max-height: 100%;
+      max-width: 100%;
+    }
+  }
 `;

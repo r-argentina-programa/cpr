@@ -34,12 +34,15 @@ export default function CardsList({ item, imageSrc, link }) {
       <Card className="card">
         <Card.Body>
           <Card.Title style={{ textAlign: 'center' }}>{item.name}</Card.Title>
-          <Card.Img
-            variant="top"
-            src={`data:image/png;base64, ${image}`}
-            style={{ height: '9rem', width: '10rem' }}
-            alt={item.name}
-          />
+          <div className="img-container">
+            <span className="item-span" />
+            <Card.Img
+              variant="top"
+              src={`data:image/png;base64, ${image}`}
+              className="item-img"
+              alt={item.name}
+            />
+          </div>
           {item.defaultPrice ? (
             <Card.Subtitle
               style={{
