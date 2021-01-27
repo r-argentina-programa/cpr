@@ -9,11 +9,6 @@ export const TimeStyle = styled.span`
 `;
 
 export const Container = styled.div`
-  display: grid;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  grid-gap: 1rem;
-
   .img-container {
     width: 200px;
     height: 200px;
