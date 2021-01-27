@@ -91,20 +91,15 @@ module.exports = class ProductRepository {
       ],
     });
 
+    if (!productInstance) {
+      throw new ProductNotFoundError(`There is not existing product with ID ${id}`);
+    }
+
     if (Array.isArray(productInstance.categories)) {
       productInstance.categories.forEach((category) => {
         productInstance.discounts.push(...category.discounts);
       });
     }
-    const brandDiscounts = productInstance.Brand.discounts;
-    if (Array.isArray(brandDiscounts)) {
-      productInstance.discounts.push(...brandDiscounts);
-    }
-
-    if (!productInstance) {
-      throw new ProductNotFoundError(`There is not existing product with ID ${id}`);
-    }
-
     return fromModelToEntity(productInstance);
   }
 
@@ -230,7 +225,7 @@ module.exports = class ProductRepository {
    * @param {Array} productIds
    */
   async getByIds(productIds) {
-    if (!Array(productIds)) {
+    if (!Array.isArray(productIds)) {
       throw new ProductIdNotDefinedError();
     }
 
