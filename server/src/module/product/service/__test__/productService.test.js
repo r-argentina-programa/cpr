@@ -9,8 +9,10 @@ const repositoryMock = {
   save: jest.fn(),
   getAll: jest.fn(),
   getById: jest.fn(),
+  getByIds: jest.fn(),
   delete: jest.fn(),
   getAllProductsSearch: jest.fn(),
+  getAllByCategoryAndBrand: jest.fn(),
 };
 
 const discountServiceMock = {
@@ -55,6 +57,21 @@ describe('ProductService methods', () => {
     await expect(mockService.getById()).rejects.toThrowError(ProductIdNotDefinedError);
   });
 
+  test("getByIds calls repository's getByIds method", async () => {
+    const productIdsMock = [1, 2, 3];
+    await mockService.getByIds(productIdsMock);
+    expect(repositoryMock.getByIds).toHaveBeenCalledTimes(1);
+    expect(repositoryMock.getByIds).toHaveBeenCalledWith(productIdsMock);
+  });
+
+  test('getById throws error if param is not an array', async () => {
+    const productIdsMock = '';
+
+    await expect(mockService.getByIds(productIdsMock)).rejects.toThrowError(
+      ProductIdNotDefinedError
+    );
+  });
+
   test("delete calls repository's delete method", async () => {
     const product = ProductTestProduct(1);
     await mockService.delete(product);
@@ -84,5 +101,19 @@ describe('ProductService methods', () => {
     const productMock = ProductTestProduct(1, 40);
 
     await expect(mockService.validateCategoriesDiscounts(productMock, [1])).rejects.toThrowError();
+  });
+
+  test("getAllByCategoryAndBrand calls repository's getAllByCategoryAndBrand", async () => {
+    const categoriesMock = ['category1', 'category2'];
+    const brandsMock = ['brand1', 'brand2'];
+    const priceMock = 100;
+
+    await mockService.getAllByCategoryAndBrand(categoriesMock, brandsMock, priceMock);
+    expect(repositoryMock.getAllByCategoryAndBrand).toHaveBeenCalledTimes(1);
+    expect(repositoryMock.getAllByCategoryAndBrand).toHaveBeenCalledWith(
+      categoriesMock,
+      brandsMock,
+      priceMock
+    );
   });
 });
