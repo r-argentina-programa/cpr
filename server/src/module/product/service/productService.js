@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 const ProductIdNotDefinedError = require('../error/ProductIdNotDefinedError');
 const ProductNotDefinedError = require('../error/ProductNotDefinedError');
-const Product = require('../entity/entity');
+const Product = require('../entity/Product');
 const { calculatePrice } = require('../../management/utils/calculatePrice');
 
 module.exports = class ProductService {

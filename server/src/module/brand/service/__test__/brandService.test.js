@@ -14,12 +14,13 @@ const repositoryMock = {
 const mockService = new BrandService(repositoryMock);
 
 describe('BrandService methods', () => {
-  test("save calls repository's save method", async () => {
+  test("save calls repository's save method without discounts", async () => {
     const brand = createTestBrand(1);
+    const discounts = undefined;
     await mockService.save(brand);
 
     expect(repositoryMock.save).toHaveBeenCalledTimes(1);
-    expect(repositoryMock.save).toHaveBeenCalledWith(brand);
+    expect(repositoryMock.save).toHaveBeenCalledWith(brand, discounts);
   });
 
   test('save throws an error if param is not instance of Brand', async () => {

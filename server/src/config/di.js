@@ -31,7 +31,6 @@ const {
   DiscountModel,
   DiscountRepository,
   DiscountService,
-  DiscountTypeModel,
 } = require('../module/discount/module');
 
 const { ManagementController } = require('../module/management/module');
@@ -98,10 +97,6 @@ function configureDiscountModel(container) {
   return DiscountModel.setup(container.get('Sequelize'));
 }
 
-function configureDiscountTypeModel(container) {
-  return DiscountTypeModel.setup(container.get('Sequelize'));
-}
-
 function addProductModuleDefinitions(container) {
   container.addDefinitions({
     ProductController: object(ProductController).construct(
@@ -128,7 +123,11 @@ function addProductModuleDefinitions(container) {
 
 function addBrandModuleDefinitions(container) {
   container.addDefinitions({
-    BrandController: object(BrandController).construct(get('BrandService'), get('Multer')),
+    BrandController: object(BrandController).construct(
+      get('BrandService'),
+      get('DiscountService'),
+      get('Multer')
+    ),
     BrandService: object(BrandService).construct(get('BrandRepository')),
     BrandRepository: object(BrandRepository).construct(
       get('BrandModel'),
@@ -160,12 +159,8 @@ function addDiscountModuleDefinitions(container) {
   container.addDefinitions({
     DiscountController: object(DiscountController).construct(get('DiscountService')),
     DiscountService: object(DiscountService).construct(get('DiscountRepository')),
-    DiscountRepository: object(DiscountRepository).construct(
-      get('DiscountModel'),
-      get('DiscountTypeModel')
-    ),
+    DiscountRepository: object(DiscountRepository).construct(get('DiscountModel')),
     DiscountModel: factory(configureDiscountModel),
-    DiscountTypeModel: factory(configureDiscountTypeModel),
   });
 }
 

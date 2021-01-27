@@ -5,5 +5,6 @@ module.exports = function createTestBrand(id) {
     id,
     name: 'coca-cola',
     logo: '/public/uploads/test.jpg',
+    discounts: [],
   });
 };

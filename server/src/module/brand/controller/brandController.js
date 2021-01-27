@@ -2,14 +2,22 @@ const { fromDataToEntity } = require('../mapper/brandMapper');
 const BrandIdNotDefinedError = require('../error/BrandIdNotDefinedError');
 
 module.exports = class BrandController {
-  constructor(brandService, uploadMiddleware) {
+  /**
+   * @param {import("../../brand/service/brandService")} brandService
+   * @param {import("../service/productService")} discountService
+   */
+  constructor(brandService, discountService, uploadMiddleware) {
     this.ADMIN_ROUTE = '/admin';
     this.ROUTE_BASE = '/admin/brand';
     this.BRAND_VIEW_DIR = 'brand/view';
-    this.BrandService = brandService;
+    this.brandService = brandService;
+    this.discountService = discountService;
     this.uploadMiddleware = uploadMiddleware;
   }
 
+  /**
+   * @param  {import("express".Application)} app
+   */
   configureRoutes(app) {
     const ROUTE = this.ROUTE_BASE;
 
@@ -44,7 +52,7 @@ module.exports = class BrandController {
    * @param {import('express').Response} res
    */
   async brand(req, res) {
-    const brands = await this.BrandService.getAll();
+    const brands = await this.brandService.getAll();
     const { errors, messages } = req.session;
     res.render(`${this.BRAND_VIEW_DIR}/index.njk`, { brands, messages, errors });
     req.session.errors = [];
@@ -56,7 +64,20 @@ module.exports = class BrandController {
    * @param {import('express').Response} res
    */
   async createBrand(req, res) {
-    res.render(`${this.BRAND_VIEW_DIR}/form.njk`);
+    try {
+      const discounts = await this.discountService.getAll();
+      if (discounts.length > 0) {
+        res.render(`${this.BRAND_VIEW_DIR}/form.njk`, {
+          discounts,
+          brand: { discounts: [] },
+        });
+      } else {
+        throw new Error('To create a brand you must first create a discount');
+      }
+    } catch (e) {
+      req.session.errors = [e.message];
+      res.redirect(this.ROUTE_BASE);
+    }
   }
 
   /**
@@ -65,13 +86,18 @@ module.exports = class BrandController {
    */
   async editBrand(req, res) {
     const { id } = req.params;
-    if (!id) {
+    if (!Number(id)) {
       throw new BrandIdNotDefinedError();
     }
 
     try {
-      const brand = await this.BrandService.getById(id);
-      res.render(`${this.BRAND_VIEW_DIR}/form.njk`, { brand });
+      const brand = await this.brandService.getById(id);
+      const discounts = await this.discountService.getAll();
+
+      res.render(`${this.BRAND_VIEW_DIR}/form.njk`, {
+        brand,
+        discounts,
+      });
     } catch (e) {
       req.session.errors = [e.message, e.stack];
       res.redirect(this.ROUTE_BASE);
@@ -84,12 +110,19 @@ module.exports = class BrandController {
    */
   async saveBrand(req, res) {
     try {
-      const brand = fromDataToEntity(req.body);
-      if (req.file) {
-        brand.logo = req.file.buffer.toString('base64');
+      const brandData = fromDataToEntity(req.body);
+
+      let discountsIds = [];
+      if (req.body.discounts) {
+        discountsIds = JSON.parse(req.body.discounts).map((e) => e.id);
       }
-      const savedBrand = await this.BrandService.save(brand);
-      if (brand.id) {
+
+      if (req.file) {
+        brandData.logo = req.file.buffer.toString('base64');
+      }
+      const savedBrand = await this.brandService.save(brandData, discountsIds);
+
+      if (brandData.id) {
         req.session.messages = [
           `The brand ${savedBrand.name} was updated correctly (ID: ${savedBrand.id})`,
         ];
@@ -111,8 +144,8 @@ module.exports = class BrandController {
   async deleteBrand(req, res) {
     try {
       const { id } = req.params;
-      const brand = await this.BrandService.getById(id);
-      await this.BrandService.delete(brand);
+      const brand = await this.brandService.getById(id);
+      await this.brandService.delete(brand);
       req.session.messages = [`The brand ${brand.name} was removed (ID: ${id})`];
     } catch (e) {
       req.session.errors = [e.message, e.stack];
@@ -127,8 +160,8 @@ module.exports = class BrandController {
   async viewProducts(req, res) {
     try {
       const { id } = req.params;
-      const products = await this.BrandService.viewProducts(id);
-      const brand = await this.BrandService.getById(id);
+      const products = await this.brandService.viewProducts(id);
+      const brand = await this.brandService.getById(id);
       res.render(`${this.BRAND_VIEW_DIR}/view.njk`, {
         products,
         brand,
