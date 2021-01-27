@@ -110,6 +110,7 @@ module.exports = class CategoryController {
       if (discounts.length > 0) {
         res.render(`${this.CATEGORY_VIEWS}/form.njk`, {
           discounts,
+          category: { discounts: [] },
         });
       } else {
         throw new Error('To create a category you must first create a discount');
@@ -128,12 +129,12 @@ module.exports = class CategoryController {
     try {
       const categoryData = fromDataToEntity(req.body);
 
-      let discounts = [];
+      let discountsIds = [];
       if (req.body.discounts) {
-        discounts = JSON.parse(req.body.discounts).map((e) => e.id);
+        discountsIds = JSON.parse(req.body.discounts).map((e) => e.id);
       }
 
-      const savedCategory = await this.categoryService.save(categoryData, discounts);
+      const savedCategory = await this.categoryService.save(categoryData, discountsIds);
 
       if (categoryData.id) {
         req.session.messages = [

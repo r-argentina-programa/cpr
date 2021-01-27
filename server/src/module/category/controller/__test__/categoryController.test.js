@@ -157,7 +157,10 @@ describe('CategoryController methods', () => {
     const discounts = discountServiceMock.getAll();
     expect(discountServiceMock.getAll).toHaveBeenCalledTimes(2);
     expect(resMock.render).toHaveBeenCalledTimes(1);
-    expect(resMock.render).toHaveBeenCalledWith('category/view/form.njk', { discounts });
+    expect(resMock.render).toHaveBeenCalledWith('category/view/form.njk', {
+      discounts,
+      category: { discounts: [] },
+    });
   });
 
   test('save, saves a new category, without discounts', async () => {

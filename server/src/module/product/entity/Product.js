@@ -1,4 +1,19 @@
 module.exports = class Product {
+  /**
+   * @param {number} id
+   * @param {string} name
+   * @param {number} defaultPrice
+   * @param {ArrayBuffer} imageSrc
+   * @param {string} description
+   * @param {number} brandFk
+   * @param {object} brand
+   * @param {Array} categories
+   * @param {Array} discount
+   * @param {Array} discounts
+   * @param {string} createdAt
+   * @param {string} updatedAt
+   * @param {string} deletedAt
+   */
   constructor({
     id,
     name,
@@ -10,8 +25,9 @@ module.exports = class Product {
     categories = [],
     discount,
     discounts,
-    updatedAt,
     createdAt,
+    updatedAt,
+    deletedAt,
   }) {
     this.id = id;
     this.name = name;
@@ -23,6 +39,7 @@ module.exports = class Product {
     this.brand = brand;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
+    this.deletedAt = deletedAt;
     this.categories = categories;
     this.discounts = discounts;
   }

@@ -7,7 +7,7 @@ module.exports = class Category {
    * @param {string} updatedAt
    * @param {string} deletedAt
    */
-  constructor({ id, name, discounts, updatedAt, createdAt, deletedAt }) {
+  constructor({ id, name, discounts, createdAt, updatedAt, deletedAt }) {
     this.id = id;
     this.name = name;
     this.createdAt = createdAt;

@@ -1,10 +1,9 @@
 const { Op } = require('sequelize');
-const { fromModelToEntity } = require('../mapper/mapper');
+const { fromModelToEntity } = require('../mapper/productMapper');
 const ProductNotDefinedError = require('../error/ProductNotDefinedError');
 const ProductIdNotDefinedError = require('../error/ProductIdNotDefinedError');
 const ProductNotFoundError = require('../error/ProductNotFoundError');
-const Product = require('../entity/entity');
-const CategoryModel = require('../../category/model/categoryModel');
+const Product = require('../entity/Product');
 
 module.exports = class ProductRepository {
   /**
@@ -22,8 +21,10 @@ module.exports = class ProductRepository {
 
   /**
    * @param {Product} product
+   * @param {Array} categoriesIds
+   * @param {Array} discountsIds
    */
-  async save(product, categories = [], discounts = []) {
+  async save(product, categoriesIds = [], discountsIds = []) {
     if (!(product instanceof Product)) {
       throw new ProductNotDefinedError();
     }
@@ -42,7 +43,7 @@ module.exports = class ProductRepository {
       await productModel.removeCategory(categoriesId);
     }
 
-    categories.map(async (id) => {
+    categoriesIds.map(async (id) => {
       await productModel.addCategory(id);
     });
 
@@ -52,7 +53,7 @@ module.exports = class ProductRepository {
       await productModel.removeDiscount(discountsId);
     }
 
-    discounts.map(async (id) => {
+    discountsIds.map(async (id) => {
       await productModel.addDiscount(id);
     });
 
@@ -82,6 +83,10 @@ module.exports = class ProductRepository {
         },
         {
           model: this.brandModel,
+          include: {
+            model: this.discountModel,
+            as: 'discounts',
+          },
         },
       ],
     });
@@ -91,9 +96,15 @@ module.exports = class ProductRepository {
         productInstance.discounts.push(...category.discounts);
       });
     }
+    const brandDiscounts = productInstance.Brand.discounts;
+    if (Array.isArray(brandDiscounts)) {
+      productInstance.discounts.push(...brandDiscounts);
+    }
+
     if (!productInstance) {
       throw new ProductNotFoundError(`There is not existing product with ID ${id}`);
     }
+
     return fromModelToEntity(productInstance);
   }
 
@@ -110,7 +121,13 @@ module.exports = class ProductRepository {
   async getAll() {
     const productsInstance = await this.productModel.findAll({
       include: [
-        { model: this.brandModel },
+        {
+          model: this.brandModel,
+          include: {
+            model: this.discountModel,
+            as: 'discounts',
+          },
+        },
         {
           model: this.categoryModel,
           as: 'categories',
@@ -132,6 +149,10 @@ module.exports = class ProductRepository {
           product.discounts.push(...category.discounts);
         });
       }
+      const brandDiscounts = product.Brand.discounts;
+      if (Array.isArray(brandDiscounts)) {
+        product.discounts.push(...brandDiscounts);
+      }
       return fromModelToEntity(product);
     });
   }
@@ -151,7 +172,7 @@ module.exports = class ProductRepository {
   async getAllByCategoryAndBrand(categories = [], brands = [], price = [0, 999999]) {
     const conditions = {};
     let categoriesConditions;
-    if (brands[0] != '0') {
+    if (brands[0] !== '0') {
       conditions.brand_fk = brands;
     }
     if (categories[0] !== '0') {
@@ -189,7 +210,7 @@ module.exports = class ProductRepository {
           product.discounts.push(...category.discounts);
         });
       }
-      const brandDiscounts = product.Brand.discount;
+      const brandDiscounts = product.Brand.discounts;
       if (Array.isArray(brandDiscounts)) {
         product.discounts.push(...brandDiscounts);
       }

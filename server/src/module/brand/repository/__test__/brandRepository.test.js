@@ -1,7 +1,9 @@
 const { Sequelize } = require('sequelize');
 const BrandRepository = require('../brandRepository');
 const brandModel = require('../../model/brandModel');
+const discountModel = require('../../../discount/model/discountModel');
 const productModel = require('../../../product/model/productModel');
+const categoryModel = require('../../../category/model/categoryModel');
 const createTestBrand = require('../../controller/__test__/brands.fixture');
 const createTestProduct = require('../../../product/controller/__test__/products.fixture');
 const BrandNotDefinedError = require('../../error/BrandNotDefinedError');
@@ -9,14 +11,26 @@ const BrandIdNotDefinedError = require('../../error/BrandIdNotDefinedError');
 const BrandNotFoundError = require('../../error/BrandNotFoundError');
 
 describe('BrandRepository methods', () => {
-  let sequelize, BrandModel, ProductModel, brandRepository;
+  let sequelize, BrandModel, ProductModel, CategoryModel, DiscountModel, brandRepository;
   beforeEach(async (done) => {
     sequelize = new Sequelize('sqlite::memory', { logging: false });
     BrandModel = brandModel.setup(sequelize);
     ProductModel = productModel.setup(sequelize);
-    BrandModel.hasMany(ProductModel, { foreignKey: 'brandFk', as: 'getBrand' });
-    ProductModel.belongsTo(BrandModel, { through: 'category_products' });
-    brandRepository = new BrandRepository(BrandModel, ProductModel);
+    CategoryModel = categoryModel.setup(sequelize);
+    DiscountModel = discountModel.setup(sequelize);
+    BrandModel.hasMany(ProductModel, {
+      foreignKey: 'brandFk',
+      as: 'getBrand',
+    });
+    BrandModel.belongsToMany(DiscountModel, {
+      through: 'discount_brand',
+      foreignKey: 'brand_id',
+      as: 'discounts',
+    });
+    ProductModel.belongsTo(BrandModel, { foreignKey: 'brandFk' });
+    DiscountModel.belongsToMany(ProductModel, { through: 'discount_products' });
+    DiscountModel.belongsToMany(BrandModel, { through: 'discount_brand' });
+    brandRepository = new BrandRepository(BrandModel, ProductModel, CategoryModel, DiscountModel);
     await sequelize.sync({ force: true });
     done();
   });
