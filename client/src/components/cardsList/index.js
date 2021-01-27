@@ -38,13 +38,14 @@ export default function CardsList({ item, imageSrc, link }) {
             variant="top"
             src={`data:image/png;base64, ${image}`}
             style={{ height: '9rem', width: '10rem' }}
+            alt={item.name}
           />
           {item.defaultPrice ? (
             !item.discount ? (
               <Card.Subtitle
                 style={{
                   margin: '.3rem 0',
-                  color: 'grey',
+                  color: '#575757',
                 }}
               >
                 ${item.defaultPrice}
@@ -53,7 +54,7 @@ export default function CardsList({ item, imageSrc, link }) {
               <Card.Subtitle
                 style={{
                   margin: '.3rem 0',
-                  color: 'grey',
+                  color: '#575757',
                   textDecoration: 'line-through',
                 }}
               >
@@ -63,7 +64,7 @@ export default function CardsList({ item, imageSrc, link }) {
           ) : null}
           {item.discount ? (
             isPercentage ? (
-              <Card.Subtitle style={{ margin: '.3rem 0', color: 'red' }}>
+              <Card.Subtitle style={{ margin: '.3rem 0', color: '#B00000' }}>
                 -%
                 {item.discount.value}
                 <span
@@ -77,7 +78,7 @@ export default function CardsList({ item, imageSrc, link }) {
                 </span>
               </Card.Subtitle>
             ) : (
-              <Card.Subtitle style={{ margin: '.3rem 0', color: 'red' }}>
+              <Card.Subtitle style={{ margin: '.3rem 0', color: '#B00000' }}>
                 -$
                 {item.discount.value}
                 <span
@@ -97,7 +98,10 @@ export default function CardsList({ item, imageSrc, link }) {
             <br />
           </TimeStyle>
           <Link to={link}>
-            <Button style={{ width: '100%' }} variant="info">
+            <Button
+              style={{ width: '100%', backgroundColor: '#0D6572', borderColor: '#0D6572' }}
+              variant="info"
+            >
               See Details
             </Button>
           </Link>

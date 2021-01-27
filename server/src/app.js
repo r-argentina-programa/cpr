@@ -2,6 +2,7 @@ require('dotenv').config({ path: `${__dirname}/.env` });
 const path = require('path');
 const express = require('express');
 const nunjucks = require('nunjucks');
+const compression = require('compression');
 const cors = require('cors');
 
 const app = express();
@@ -26,7 +27,7 @@ nunjucks.configure(`${__dirname}/module`, {
 
 const container = configureDI();
 app.use(container.get('Session'));
-
+app.use(compression());
 app.use(cors());
 initProductModule(app, container);
 initBrandModule(app, container);

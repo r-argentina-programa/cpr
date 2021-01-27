@@ -1,7 +1,7 @@
 import styled from 'styled-components/macro';
 
 export const TimeStyle = styled.span`
-  color: #999999;
+  color: #575757;
   font-size: 10px;
   letter-spacing: 0.2px;
   text-transform: uppercase;
