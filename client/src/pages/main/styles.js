@@ -2,8 +2,8 @@ import styled from 'styled-components/macro';
 
 export const ListContainer = styled.div`
   display: grid;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+grid-gap: 0.2rem;
 `;
 
 export const NavContainer = styled.div`
