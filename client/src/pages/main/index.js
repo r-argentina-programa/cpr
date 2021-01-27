@@ -16,7 +16,7 @@ export default function Main() {
   const { getAllCategories, categories } = useContext(CategoryContext);
   const [activeBrands, setActiveBrands] = useState([]);
   const [activeCategories, setActiveCategories] = useState([]);
-  const [priceRange, setPriceRange] = useState({});
+  const [priceRange, setPriceRange] = useState({ minPrice: 0, maxPrice: Infinity });
   const [price, setPrice] = useState({
     minPrice: 0,
     maxPrice: 0,
@@ -35,7 +35,6 @@ export default function Main() {
   function handleFilter() {
     setPriceRange(price);
   }
-
   return (
     <>
       <Header />
@@ -86,6 +85,7 @@ export default function Main() {
             type="number"
             id="price"
             name="min-price"
+            min="0"
             value={price.minPrice}
             onChange={(e) => setPrice({ ...price, minPrice: e.target.value })}
           />
@@ -95,6 +95,7 @@ export default function Main() {
           <input
             type="number"
             id="price"
+            min="0"
             name="max-price"
             value={price.maxPrice}
             onChange={(e) => setPrice({ ...price, maxPrice: e.target.value })}
