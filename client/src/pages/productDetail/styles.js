@@ -84,9 +84,9 @@ export const ProductPrice = styled.div`
 `;
 
 export const ListContainer = styled.div`
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-gap: 0.2rem;
   margin-top: 12rem;
   h2 {
     font-size: 3rem;

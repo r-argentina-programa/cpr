@@ -22,4 +22,12 @@ export const Container = styled.div`
       max-width: 100%;
     }
   }
+
+  @media (max-width: 480px) {
+    .img-container {
+      margin: 0 auto;
+      width: 100%;
+      height: 100%;
+    }
+  }
 `;
