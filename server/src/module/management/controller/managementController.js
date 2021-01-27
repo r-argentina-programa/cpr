@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 /* eslint-disable class-methods-use-this */
 const { fromDataToEntity } = require('../mapper/adminMapper');
 const { calculateCartPrice } = require('../utils/calculateCartPrice');
@@ -228,6 +229,9 @@ module.exports = class ManagementController {
     try {
       let { brands, categories, price } = req.params;
       price = price.split('-');
+      price[0] = price[0] == false ? 0 : price[0];
+      price[1] = price[1] == false ? Infinity : price[1];
+
       brands = brands.split(',');
       categories = categories.split(',');
       const products = await this.ProductService.getAllByCategoryAndBrand(

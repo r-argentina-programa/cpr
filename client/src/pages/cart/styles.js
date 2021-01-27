@@ -31,13 +31,14 @@ export const Container = styled.div`
 
   .title {
     text-align: center;
-    color: steelblue;
+    color: rgb(13, 101, 110);
     margin: 2rem 0;
   }
 
   .submit {
     width: 100%;
-    background-color: steelblue;
+    background-color: rgb(13, 101, 114);
+    border-color: rgb(13, 101, 114);
   }
   h2 {
     font-weight: 500;

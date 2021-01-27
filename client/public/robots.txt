@@ -1,0 +1,5 @@
+user-agent: *
+disallow: /admin/
+
+user-agent: magicsearchbot
+disallow: /admin/

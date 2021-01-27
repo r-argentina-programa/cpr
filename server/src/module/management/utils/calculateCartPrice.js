@@ -73,8 +73,12 @@ function getProfit(product) {
         let [x, y, z] = value.split(/[x=]/gi);
         x = Number(x);
         y = Number(y);
-        z = Number(z);
-        discount.profit = (x + (100 - z) / 100) / y;
+        const [zValue, zType] = z.split(/(?=[%$])/);
+        if (zType === '$') {
+          discount.profit = (x + (product.defaultPrice - zValue) / 100) / y;
+        } else {
+          discount.profit = (x + (100 - zValue) / 100) / y;
+        }
         break;
       }
       default:
@@ -119,7 +123,7 @@ function replaceDiscounts(discount, discounts, i, id) {
       let [x, y, z] = value.split(/[x=]/gi);
       x = Number(x);
       y = Number(y);
-      z = Number(z);
+      const [zValue, zType] = z.split(/(?=[%$])/);
       const productQuantity = idsQuantityMap.get(id);
       const used = parseInt(productQuantity / y, 10);
       let aux = 0;
@@ -129,7 +133,14 @@ function replaceDiscounts(discount, discounts, i, id) {
         if (aux < y) {
           discounts[i] = discount;
         } else {
-          discounts[i] = { ...discount, finalPrice: discount.finalPrice * ((100 - z) / 100) };
+          if (zType === '$') {
+            discounts[i] = { ...discount, finalPrice: discount.finalPrice - zValue };
+          } else {
+            discounts[i] = {
+              ...discount,
+              finalPrice: discount.finalPrice * ((100 - zValue) / 100),
+            };
+          }
           aux = 0;
         }
         i++;

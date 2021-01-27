@@ -1,5 +1,4 @@
 const { fromDataToEntity } = require('../mapper/discountMapper');
-const { fromDataToEntity: fromDataToTypeEntity } = require('../mapper/discountTypeMapper');
 const DiscountIdNotDefinedError = require('../error/DiscountIdNotDefinedError');
 
 module.exports = class DiscountController {

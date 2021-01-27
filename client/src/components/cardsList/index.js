@@ -34,36 +34,30 @@ export default function CardsList({ item, imageSrc, link }) {
       <Card className="card">
         <Card.Body>
           <Card.Title style={{ textAlign: 'center' }}>{item.name}</Card.Title>
-          <Card.Img
-            variant="top"
-            src={`data:image/png;base64, ${image}`}
-            style={{ height: '9rem', width: '10rem' }}
-          />
+          <div className="img-container">
+            <span className="item-span" />
+            <Card.Img
+              variant="top"
+              src={`data:image/png;base64, ${image}`}
+              className="item-img"
+              alt={item.name}
+            />
+          </div>
           {item.defaultPrice ? (
-            !item.discount ? (
-              <Card.Subtitle
-                style={{
-                  margin: '.3rem 0',
-                  color: 'grey',
-                }}
-              >
-                ${item.defaultPrice}
-              </Card.Subtitle>
-            ) : (
-              <Card.Subtitle
-                style={{
-                  margin: '.3rem 0',
-                  color: 'grey',
-                  textDecoration: 'line-through',
-                }}
-              >
-                ${item.defaultPrice}
-              </Card.Subtitle>
-            )
+            <Card.Subtitle
+              style={{
+                margin: '.3rem 0',
+                color: '#575757',
+                textDecoration: `${item.discount ? 'line-through' : ''}`,
+              }}
+            >
+              ${item.defaultPrice}
+            </Card.Subtitle>
           ) : null}
+
           {item.discount ? (
             isPercentage ? (
-              <Card.Subtitle style={{ margin: '.3rem 0', color: 'red' }}>
+              <Card.Subtitle style={{ margin: '.3rem 0', color: '#B00000' }}>
                 -%
                 {item.discount.value}
                 <span
@@ -77,7 +71,7 @@ export default function CardsList({ item, imageSrc, link }) {
                 </span>
               </Card.Subtitle>
             ) : (
-              <Card.Subtitle style={{ margin: '.3rem 0', color: 'red' }}>
+              <Card.Subtitle style={{ margin: '.3rem 0', color: '#B00000' }}>
                 -$
                 {item.discount.value}
                 <span
@@ -97,7 +91,10 @@ export default function CardsList({ item, imageSrc, link }) {
             <br />
           </TimeStyle>
           <Link to={link}>
-            <Button style={{ width: '100%' }} variant="info">
+            <Button
+              style={{ width: '100%', backgroundColor: '#0D6572', borderColor: '#0D6572' }}
+              variant="info"
+            >
               See Details
             </Button>
           </Link>

@@ -1,9 +1,10 @@
 import styled from 'styled-components/macro';
 
 export const ListContainer = styled.div`
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
+  display: grid;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-gap: 1rem;
 `;
 
 export const NavContainer = styled.div`

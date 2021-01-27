@@ -50,47 +50,58 @@
 
 {% block footerScripts%}
   <script>
-    const currentDiscounts = {{ discounts | dump | safe }};
+    const currentDiscounts = {{ category.discounts | dump | safe }};
     const discounts = {{ discounts | dump | safe }};
 
-    const cleanDiscounts = discounts.map((discount) => ({id: discount.id, value: discount.value, type: discount.type}))
-      const cleanCurrentDiscounts = currentDiscounts.map((discount) => ({id: discount.id, value: discount.value, type: discount.type}))
-        const input2 = document.querySelector('input[name=discounts]'),
-          discountsTagify = new Tagify(input2, {
-            enforceWhitelist: true,
-            delimiters: null,
-            templates: {
-              tag: function (tagData) {
-                try {
-                  return `<tag title='${tagData.id}' contenteditable='false' spellcheck="false" class='tagify__tag ${tagData.class
-                    ? tagData.class
-                    : ""}' ${this.getAttributes(tagData)}>
+    const cleanDiscounts = discounts.map(({ id, value, type }) => ({
+      id,
+      value: id,
+      discountValue: value,
+      type,
+    }));
+    const cleanCurrentDiscounts = currentDiscounts.map(({ id, value, type }) => ({
+      id,
+      value: id,
+      discountValue: value,
+      type,
+    }));
+
+    const input2 = document.querySelector('input[name=discounts]'),
+      discountsTagify = new Tagify(input2, {
+        enforceWhitelist: true,
+        delimiters: null,
+        templates: {
+          tag: function (tagData) {
+            const valueText =
+              tagData.type === 'Fixed' ? `$${tagData.discountValue}` : `${tagData.discountValue}%`;
+            try {
+              return `<tag title='${tagData.id}' contenteditable='false' spellcheck="false" class='tagify__tag ${tagData.class ? tagData.class : ''}' ${this.getAttributes(tagData)}>
                         <x title='remove tag' class='tagify__tag__removeBtn'></x>
                         <div>
-                            <span class='tagify__tag-text'>${tagData.value}</span><span>${tagData.type}</span>
+                          <span class='tagify__tag-text'>${valueText} Off</span>
                         </div>
-                    </tag>`
-                } catch (err) {}
-              },
+                      </tag>`;
+            } catch (err) {}
+          },
 
-              dropdownItem: function (tagData) {
-                const valueText = tagData.type === 'Fixed' ? `$${tagData.value}` : `${tagData.value}%`
-                try {
-                  return `<div class='tagify__dropdown__item ${tagData.class
-                    ? tagData.class
-                    : ""}' tagifySuggestionIdx="${tagData.tagifySuggestionIdx}">
-                            <span>${valueText} Off</span>
-                        </div>`
-                } catch (err) {}
-              }
-            },
-            whitelist: cleanDiscounts,
-            dropdown: {
-              enabled: 1, // suggest tags after a single character input
-              classname: 'extra-properties' // custom class for the suggestions dropdown
-            } // map tags' values to this property name, so this property will be the actual value and not the printed value on the screen
-          });
+          dropdownItem: function (tagData) {
+            const valueText =
+              tagData.type === 'Fixed' ? `$${tagData.discountValue}` : `${tagData.discountValue}%`;
+            try {
+              return `<div class='tagify__dropdown__item ${tagData.class ? tagData.class : ''}' tagifySuggestionIdx="${tagData.tagifySuggestionIdx}">
+                        <span>${valueText} Off</span>
+                      </div>`;
+            } catch (err) {}
+          },
+        },
+        whitelist: cleanDiscounts,
+        dropdown: {
+          enabled: 1,
+          classname: 'extra-properties',
+          searchKeys: ['value', 'type'],
+        },
+      });
 
-        tagify.addTags(cleanCurrentDiscounts);
+    discountsTagify.addTags(cleanCurrentDiscounts);
   </script>
 {% endblock %}

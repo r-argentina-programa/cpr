@@ -1,7 +1,5 @@
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
-import Form from 'react-bootstrap/Form';
-import FormControl from 'react-bootstrap/FormControl';
 import { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components/macro';
 import SearchContainer from '../search';
@@ -16,6 +14,11 @@ const ContainerSearch = styled.div`
   border-radius: 4px;
   outline: 0px;
   padding-left: 5px;
+
+  label {
+    display: flex;
+    color: #fff;
+  }
 `;
 
 export default function Header() {
@@ -38,8 +41,10 @@ export default function Header() {
       <Navbar bg="dark" variant="dark" sticky="top">
         <Navbar.Brand href="/">Market</Navbar.Brand>
         <Nav className="mr-auto">
-          <Nav.Link href="/brands">Brands</Nav.Link>
-          <Nav.Link href="/cart">
+          <Nav.Link style={{ color: 'hsla(0,0%,100%,0.7)' }} href="/brands">
+            Brands
+          </Nav.Link>
+          <Nav.Link href="/cart" aria-label="Cart">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="20"
@@ -55,16 +60,20 @@ export default function Header() {
         </Nav>
 
         <ContainerSearch>
-          <Form inline>
-            <FormControl
-              type="text"
-              placeholder="Search"
-              className="mr-sm-2"
-              value={term}
-              onChange={(e) => setTerm(e.target.value)}
-            />
+          <form>
+            <label htmlFor="Search">
+              Search Products:
+              <input
+                type="text"
+                placeholder="Search"
+                className="form-control"
+                value={term}
+                id="Search"
+                onChange={(e) => setTerm(e.target.value)}
+              />
+            </label>
             {term.length > 0 && <SearchContainer />}
-          </Form>
+          </form>
         </ContainerSearch>
       </Navbar>
     </header>

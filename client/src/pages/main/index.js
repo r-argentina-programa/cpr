@@ -16,7 +16,7 @@ export default function Main() {
   const { getAllCategories, categories } = useContext(CategoryContext);
   const [activeBrands, setActiveBrands] = useState([]);
   const [activeCategories, setActiveCategories] = useState([]);
-  const [priceRange, setPriceRange] = useState({});
+  const [priceRange, setPriceRange] = useState({ minPrice: 0, maxPrice: Infinity });
   const [price, setPrice] = useState({
     minPrice: 0,
     maxPrice: 0,
@@ -35,7 +35,6 @@ export default function Main() {
   function handleFilter() {
     setPriceRange(price);
   }
-
   return (
     <>
       <Header />
@@ -43,16 +42,16 @@ export default function Main() {
         <span>Brands:</span>
         {brands.map((brand) => (
           <div className="item" key={brand.id}>
-            <label htmlFor={brand.id}>{brand.name}</label>
+            <label htmlFor={`brand-${brand.id}`}>{brand.name}</label>
             <input
               type="checkbox"
-              id={brand.id}
+              id={`brand-${brand.id}`}
               value={brand.id}
               onClick={(e) => {
-                if (activeBrands.includes(e.target.id)) {
-                  setActiveBrands(activeBrands.filter((id) => id !== e.target.id));
+                if (activeBrands.includes(e.target.value)) {
+                  setActiveBrands(activeBrands.filter((id) => id !== e.target.value));
                 } else {
-                  setActiveBrands([...activeBrands, e.target.id]);
+                  setActiveBrands([...activeBrands, e.target.value]);
                 }
               }}
             />
@@ -63,16 +62,16 @@ export default function Main() {
         <span>Categories:</span>
         {categories.map((category) => (
           <div className="item" key={category.id}>
-            <label htmlFor={category.id}>{category.name}</label>
+            <label htmlFor={`category-${category.id}`}>{category.name}</label>
             <input
               type="checkbox"
-              id={category.id}
+              id={`category-${category.id}`}
               value={category.id}
               onClick={(e) => {
-                if (activeCategories.includes(e.target.id)) {
-                  setActiveCategories(activeCategories.filter((id) => id !== e.target.id));
+                if (activeCategories.includes(e.target.value)) {
+                  setActiveCategories(activeCategories.filter((id) => id !== e.target.value));
                 } else {
-                  setActiveCategories([...activeCategories, e.target.id]);
+                  setActiveCategories([...activeCategories, e.target.value]);
                 }
               }}
             />
@@ -80,27 +79,34 @@ export default function Main() {
         ))}
       </NavContainer>
       <NavContainer>
-        <label htmlFor="price">
+        <label htmlFor="min-price">
           Min Price:
           <input
             type="number"
-            id="price"
+            id="min-price"
             name="min-price"
+            min="0"
             value={price.minPrice}
             onChange={(e) => setPrice({ ...price, minPrice: e.target.value })}
           />
         </label>
-        <label htmlFor="price">
+        <label htmlFor="max-price">
           Max Price:
           <input
             type="number"
-            id="price"
+            id="max-price"
+            min="0"
             name="max-price"
             value={price.maxPrice}
             onChange={(e) => setPrice({ ...price, maxPrice: e.target.value })}
           />
         </label>
-        <Button onClick={() => handleFilter()}>Filter Products</Button>
+        <Button
+          style={{ backgroundColor: '#0D6572', borderColor: '#0D6572' }}
+          onClick={() => handleFilter()}
+        >
+          Filter Products
+        </Button>
       </NavContainer>
       {error && <Alert variant="danger">{error}</Alert>}
       <Title>See all the products Here!</Title>

@@ -1,19 +1,21 @@
-const Discount = require('../../discount/entity/Discount');
 const ProductIdNotDefinedError = require('../error/ProductIdNotDefinedError');
-const { fromDataToEntity } = require('../mapper/mapper');
+const { fromDataToEntity } = require('../mapper/productMapper');
 
 module.exports = class ProductController {
   /**
-   * @param  {import("../service/productService")} ProductService
+   * @param {import("../../brand/service/brandService")} brandService
+   * @param {import("../service/productService")} categoryService
+   * @param {import("../service/productService")} productService
+   * @param {import("../service/productService")} discountService
    */
-  constructor(BrandService, CategoryService, ProductService, DiscountService, UploadMiddleware) {
+  constructor(brandService, categoryService, productService, discountService, uploadMiddleware) {
     this.ADMIN_ROUTE = '/admin';
     this.ROUTE_BASE = '/admin/product';
-    this.BrandService = BrandService;
-    this.CategoryService = CategoryService;
-    this.ProductService = ProductService;
-    this.DiscountService = DiscountService;
-    this.UploadMiddleware = UploadMiddleware;
+    this.brandService = brandService;
+    this.categoryService = categoryService;
+    this.productService = productService;
+    this.discountService = discountService;
+    this.uploadMiddleware = uploadMiddleware;
     this.PRODUCT_VIEWS = 'product/view';
   }
 
@@ -25,7 +27,7 @@ module.exports = class ProductController {
     app.post(
       `${ROUTE}/save`,
       this.auth.bind(this),
-      this.UploadMiddleware.single('file'),
+      this.uploadMiddleware.single('file'),
       this.save.bind(this)
     );
     app.get(`${ROUTE}/delete/:id`, this.auth.bind(this), this.delete.bind(this));
@@ -53,7 +55,7 @@ module.exports = class ProductController {
    * @param  {import("express").Response} res
    */
   async index(req, res) {
-    const productsList = await this.ProductService.getAll();
+    const productsList = await this.productService.getAll();
     const { errors, messages } = req.session;
     res.render(`${this.PRODUCT_VIEWS}/index.njk`, {
       productsList,
@@ -83,7 +85,7 @@ module.exports = class ProductController {
         product.imageSrc = req.file.buffer.toString('base64');
       }
 
-      const savedProduct = await this.ProductService.save(product, categories, discounts);
+      const savedProduct = await this.productService.save(product, categories, discounts);
 
       if (product.id) {
         req.session.messages = [
@@ -110,10 +112,10 @@ module.exports = class ProductController {
       throw new ProductIdNotDefinedError();
     }
     try {
-      const product = await this.ProductService.getById(id);
-      const brands = await this.BrandService.getAll();
-      const categories = await this.CategoryService.getAll();
-      const discounts = await this.DiscountService.getAll();
+      const product = await this.productService.getById(id);
+      const brands = await this.brandService.getAll();
+      const categories = await this.categoryService.getAll();
+      const discounts = await this.discountService.getAll();
 
       res.render(`${this.PRODUCT_VIEWS}/form.njk`, {
         product,
@@ -137,8 +139,8 @@ module.exports = class ProductController {
       throw new ProductIdNotDefinedError();
     }
     try {
-      const product = await this.ProductService.getById(id);
-      await this.ProductService.delete(product);
+      const product = await this.productService.getById(id);
+      await this.productService.delete(product);
       req.session.messages = [`The product ${product.name} was removed (ID: ${id})`];
     } catch (e) {
       req.session.errors = [e.message, e.stack];
@@ -152,9 +154,9 @@ module.exports = class ProductController {
    */
   async create(req, res) {
     try {
-      const brands = await this.BrandService.getAll();
-      const categories = await this.CategoryService.getAll();
-      const discounts = await this.DiscountService.getAll();
+      const brands = await this.brandService.getAll();
+      const categories = await this.categoryService.getAll();
+      const discounts = await this.discountService.getAll();
 
       if (brands.length > 0 && categories.length > 0 && discounts.length > 0) {
         res.render(`${this.PRODUCT_VIEWS}/form.njk`, {

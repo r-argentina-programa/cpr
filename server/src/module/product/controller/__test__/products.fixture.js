@@ -1,4 +1,4 @@
-const Product = require('../../entity/entity');
+const Product = require('../../entity/Product');
 
 module.exports = function createTestProduct(id, defaultPrice = '300', brandFk = '3') {
   return new Product({
