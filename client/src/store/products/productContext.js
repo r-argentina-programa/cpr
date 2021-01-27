@@ -85,7 +85,7 @@ const ProductContextProvider = ({ children }) => {
     }
   };
 
-  const getFilteredProducts = async (brands, categories) => {
+  const getFilteredProducts = async (brands, categories, price) => {
     try {
       if (brands.length === 0) {
         brands = 0;
@@ -93,7 +93,10 @@ const ProductContextProvider = ({ children }) => {
       if (categories.length === 0) {
         categories = 0;
       }
-      const res = await api.get(`/api/products/all/${brands}/${categories}`);
+
+      const res = await api.get(
+        `/api/products/all/${brands}/${categories}/${price.minPrice}-${price.maxPrice}`
+      );
       dispatch({ type: GET_PRODUCTS_FILTERED, payload: res.data });
     } catch (error) {
       dispatch({ type: GET_PRODUCTS_ERROR, payload: error.message });
@@ -103,7 +106,9 @@ const ProductContextProvider = ({ children }) => {
   const getCartFinalDiscounts = async (productsId, productsAmount) => {
     try {
       const res = await api.get(`/api/getCartPrice/${productsId}/${productsAmount}`);
-      dispatch({ type: GET_CART_PRICE, payload: res.data });
+      if (typeof res.data === 'number') {
+        dispatch({ type: GET_CART_PRICE, payload: res.data });
+      }
     } catch (error) {
       dispatch({ type: GET_PRODUCTS_ERROR, payload: error.message });
     }

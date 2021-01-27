@@ -169,7 +169,7 @@ module.exports = class ProductRepository {
     return products;
   }
 
-  async getAllByCategoryAndBrand(categories = [], brands = []) {
+  async getAllByCategoryAndBrand(categories = [], brands = [], price = [0, 999999]) {
     const conditions = {};
     let categoriesConditions;
     if (brands[0] !== '0') {
@@ -204,7 +204,7 @@ module.exports = class ProductRepository {
       ],
     });
 
-    return products.map((product) => {
+    const productsEntities = products.map((product) => {
       if (Array.isArray(product.categories)) {
         product.categories.forEach((category) => {
           product.discounts.push(...category.discounts);
@@ -215,6 +215,14 @@ module.exports = class ProductRepository {
         product.discounts.push(...brandDiscounts);
       }
       return fromModelToEntity(product);
+    });
+
+    return productsEntities.filter((product) => {
+      const { discount } = product;
+      if (discount) {
+        return discount.finalPrice >= price[0] && discount.finalPrice <= price[1];
+      }
+      return product.defaultPrice >= price[0] && product.defaultPrice <= price[1];
     });
   }
 

@@ -1,4 +1,5 @@
 const idsQuantityMap = new Map();
+const finalDiscounts = [];
 function calculateCartPrice(idsAndQuantity, products) {
   const usedDiscounts = new Map();
   idsAndQuantity.forEach(({ id, quantity }) => {
@@ -45,6 +46,12 @@ function calculateCartPrice(idsAndQuantity, products) {
   products.forEach((product) => {
     const discounts = usedDiscounts.get(product.id);
     bestPrice += discounts.reduce((acum, curr) => acum + curr.finalPrice, 0);
+    const remainingProducts = idsQuantityMap.get(product.id);
+    for (let j = 0; j < remainingProducts; j++) {
+      if (product.discount) {
+        finalDiscounts.push(product.discount);
+      }
+    }
   });
 
   return bestPrice;
@@ -101,6 +108,11 @@ function replaceDiscounts(discount, discounts, i, id) {
         i++;
       }
       idsQuantityMap.set(id, productQuantity - x * free);
+
+      for (let j = 0; j < free; j++) {
+        finalDiscounts.push(discount);
+      }
+
       break;
     }
     case 'BuyXgetYthWithZOff': {
@@ -123,6 +135,11 @@ function replaceDiscounts(discount, discounts, i, id) {
         i++;
       }
       idsQuantityMap.set(id, productQuantity - n);
+
+      for (let j = 0; j < used; j++) {
+        finalDiscounts.push(discount);
+      }
+
       break;
     }
     default:
