@@ -79,34 +79,36 @@ export default function Main() {
         ))}
       </NavContainer>
       <NavContainer>
-        <label htmlFor="min-price">
-          Min Price:
-          <input
-            type="number"
-            id="min-price"
-            name="min-price"
-            min="0"
-            value={price.minPrice}
-            onChange={(e) => setPrice({ ...price, minPrice: e.target.value })}
-          />
-        </label>
-        <label htmlFor="max-price">
-          Max Price:
-          <input
-            type="number"
-            id="max-price"
-            min="0"
-            name="max-price"
-            value={price.maxPrice}
-            onChange={(e) => setPrice({ ...price, maxPrice: e.target.value })}
-          />
-        </label>
-        <Button
-          style={{ backgroundColor: '#0D6572', borderColor: '#0D6572' }}
-          onClick={() => handleFilter()}
-        >
-          Filter Products
-        </Button>
+        <div className="price-filter">
+          <label htmlFor="min-price">
+            Min Price:
+            <input
+              type="number"
+              id="min-price"
+              name="min-price"
+              min="0"
+              value={price.minPrice}
+              onChange={(e) => setPrice({ ...price, minPrice: e.target.value })}
+            />
+          </label>
+          <label htmlFor="max-price">
+            Max Price:
+            <input
+              type="number"
+              id="max-price"
+              min="0"
+              name="max-price"
+              value={price.maxPrice}
+              onChange={(e) => setPrice({ ...price, maxPrice: e.target.value })}
+            />
+          </label>
+          <Button
+            style={{ backgroundColor: '#0D6572', borderColor: '#0D6572' }}
+            onClick={() => handleFilter()}
+          >
+            Filter Products
+          </Button>
+        </div>
       </NavContainer>
       {error && <Alert variant="danger">{error}</Alert>}
       <Title>See all the products Here!</Title>

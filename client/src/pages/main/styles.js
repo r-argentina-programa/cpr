@@ -32,6 +32,14 @@ export const NavContainer = styled.div`
     align-items: center;
     margin-right: 1rem;
   }
+
+  .price-filter {
+    @media (max-width: 480px) {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+  }
 `;
 
 export const Title = styled.h1`
