@@ -44,7 +44,7 @@ export default function CardsList({ item, imageSrc, link }) {
             <Card.Subtitle
               style={{
                 margin: '.3rem 0',
-                color: 'grey',
+                color: '#575757',
                 textDecoration: `${item.discount ? 'line-through' : ''}`,
               }}
             >

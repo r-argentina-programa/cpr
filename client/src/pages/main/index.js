@@ -48,10 +48,10 @@ export default function Main() {
               id={`brand-${brand.id}`}
               value={brand.id}
               onClick={(e) => {
-                if (activeBrands.includes(e.target.id)) {
-                  setActiveBrands(activeBrands.filter((id) => id !== e.target.id));
+                if (activeBrands.includes(e.target.value)) {
+                  setActiveBrands(activeBrands.filter((id) => id !== e.target.value));
                 } else {
-                  setActiveBrands([...activeBrands, e.target.id]);
+                  setActiveBrands([...activeBrands, e.target.value]);
                 }
               }}
             />
@@ -68,10 +68,10 @@ export default function Main() {
               id={`category-${category.id}`}
               value={category.id}
               onClick={(e) => {
-                if (activeCategories.includes(e.target.id)) {
-                  setActiveCategories(activeCategories.filter((id) => id !== e.target.id));
+                if (activeCategories.includes(e.target.value)) {
+                  setActiveCategories(activeCategories.filter((id) => id !== e.target.value));
                 } else {
-                  setActiveCategories([...activeCategories, e.target.id]);
+                  setActiveCategories([...activeCategories, e.target.value]);
                 }
               }}
             />
