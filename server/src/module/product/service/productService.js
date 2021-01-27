@@ -68,7 +68,7 @@ module.exports = class ProductService {
    * @param {Array} productIds
    */
   async getByIds(productIds) {
-    if (!Array(productIds)) {
+    if (!Array.isArray(productIds)) {
       throw new ProductIdNotDefinedError();
     }
     return this.ProductRepository.getByIds(productIds);
