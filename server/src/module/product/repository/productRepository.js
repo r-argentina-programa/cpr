@@ -83,6 +83,10 @@ module.exports = class ProductRepository {
         },
         {
           model: this.brandModel,
+          include: {
+            model: this.discountModel,
+            as: 'discounts',
+          },
         },
       ],
     });
@@ -92,9 +96,15 @@ module.exports = class ProductRepository {
         productInstance.discounts.push(...category.discounts);
       });
     }
+    const brandDiscounts = productInstance.Brand.discounts;
+    if (Array.isArray(brandDiscounts)) {
+      productInstance.discounts.push(...brandDiscounts);
+    }
+
     if (!productInstance) {
       throw new ProductNotFoundError(`There is not existing product with ID ${id}`);
     }
+
     return fromModelToEntity(productInstance);
   }
 
@@ -111,7 +121,13 @@ module.exports = class ProductRepository {
   async getAll() {
     const productsInstance = await this.productModel.findAll({
       include: [
-        { model: this.brandModel },
+        {
+          model: this.brandModel,
+          include: {
+            model: this.discountModel,
+            as: 'discounts',
+          },
+        },
         {
           model: this.categoryModel,
           as: 'categories',
@@ -133,6 +149,10 @@ module.exports = class ProductRepository {
           product.discounts.push(...category.discounts);
         });
       }
+      const brandDiscounts = product.Brand.discounts;
+      if (Array.isArray(brandDiscounts)) {
+        product.discounts.push(...brandDiscounts);
+      }
       return fromModelToEntity(product);
     });
   }
@@ -152,7 +172,7 @@ module.exports = class ProductRepository {
   async getAllByCategoryAndBrand(categories = [], brands = []) {
     const conditions = {};
     let categoriesConditions;
-    if (brands[0] != '0') {
+    if (brands[0] !== '0') {
       conditions.brand_fk = brands;
     }
     if (categories[0] !== '0') {
@@ -190,7 +210,7 @@ module.exports = class ProductRepository {
           product.discounts.push(...category.discounts);
         });
       }
-      const brandDiscounts = product.Brand.discount;
+      const brandDiscounts = product.Brand.discounts;
       if (Array.isArray(brandDiscounts)) {
         product.discounts.push(...brandDiscounts);
       }
