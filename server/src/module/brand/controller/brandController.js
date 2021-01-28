@@ -21,16 +21,16 @@ module.exports = class BrandController {
   configureRoutes(app) {
     const ROUTE = this.ROUTE_BASE;
 
-    app.get(`${ROUTE}/`, this.auth.bind(this), this.brand.bind(this));
-    app.get(`${ROUTE}/create`, this.auth.bind(this), this.createBrand.bind(this));
-    app.get(`${ROUTE}/edit/:id`, this.auth.bind(this), this.editBrand.bind(this));
+    app.get(`${ROUTE}/`, this.auth.bind(this), this.index.bind(this));
+    app.get(`${ROUTE}/create`, this.auth.bind(this), this.create.bind(this));
+    app.get(`${ROUTE}/edit/:id`, this.auth.bind(this), this.edit.bind(this));
     app.get(`${ROUTE}/product/:id`, this.auth.bind(this), this.viewProducts.bind(this));
-    app.get(`${ROUTE}/delete/:id`, this.auth.bind(this), this.deleteBrand.bind(this));
+    app.get(`${ROUTE}/delete/:id`, this.auth.bind(this), this.delete.bind(this));
     app.post(
       `${ROUTE}/save`,
       this.auth.bind(this),
       this.uploadMiddleware.single('file'),
-      this.saveBrand.bind(this)
+      this.save.bind(this)
     );
   }
 
@@ -51,7 +51,7 @@ module.exports = class BrandController {
    * @param {import('express').Request} req
    * @param {import('express').Response} res
    */
-  async brand(req, res) {
+  async index(req, res) {
     const brands = await this.brandService.getAll();
     const { errors, messages } = req.session;
     res.render(`${this.BRAND_VIEW_DIR}/index.njk`, { brands, messages, errors });
@@ -63,7 +63,7 @@ module.exports = class BrandController {
    * @param {import('express').Request} req
    * @param {import('express').Response} res
    */
-  async createBrand(req, res) {
+  async create(req, res) {
     try {
       const discounts = await this.discountService.getAll();
       if (discounts.length > 0) {
@@ -84,7 +84,7 @@ module.exports = class BrandController {
    * @param {import('express').Request} req
    * @param {import('express').Response} res
    */
-  async editBrand(req, res) {
+  async edit(req, res) {
     const { id } = req.params;
     if (!Number(id)) {
       throw new BrandIdNotDefinedError();
@@ -108,7 +108,7 @@ module.exports = class BrandController {
    * @param {import('express').Request} req
    * @param {import('express').Response} res
    */
-  async saveBrand(req, res) {
+  async save(req, res) {
     try {
       const brandData = fromDataToEntity(req.body);
 
@@ -141,7 +141,7 @@ module.exports = class BrandController {
    * @param {import('express').Request} req
    * @param {import('express').Response} res
    */
-  async deleteBrand(req, res) {
+  async delete(req, res) {
     try {
       const { id } = req.params;
       const brand = await this.brandService.getById(id);
