@@ -41,7 +41,9 @@
           <tr>
             <td>{{ discount.id }}</td>
             <td>{{ discount.type }}</td>
-            <td>{{ discount.value + '%' if discount.type === 'Percentage' else '$' + discount.value}}</td>
+            <td> 
+            {{'$' if discount.type === 'Fixed' }}{{discount.value}}{{'%' if discount.type === 'Percentage'}}
+            </td>
             <td>
               <a href="/admin/discount/edit/{{ discount.id }}" class="button is-info is-fullwidth is-light">Edit</a>
             </td>
