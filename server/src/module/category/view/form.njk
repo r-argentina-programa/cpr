@@ -73,7 +73,7 @@
         templates: {
           tag: function (tagData) {
             const valueText =
-              tagData.type === 'Fixed' ? `$${tagData.discountValue}` : `${tagData.discountValue}%`;
+              tagData.type === 'Fixed' ? `$${tagData.discountValue}` : (tagData.type ==="Percentage" ? `${tagData.discountValue}%` : `${tagData.discountValue}`);
             try {
               return `<tag title='${tagData.id}' contenteditable='false' spellcheck="false" class='tagify__tag ${tagData.class ? tagData.class : ''}' ${this.getAttributes(tagData)}>
                         <x title='remove tag' class='tagify__tag__removeBtn'></x>
@@ -86,7 +86,7 @@
 
           dropdownItem: function (tagData) {
             const valueText =
-              tagData.type === 'Fixed' ? `$${tagData.discountValue}` : `${tagData.discountValue}%`;
+              tagData.type === 'Fixed' ? `$${tagData.discountValue}` : (tagData.type ==="Percentage" ? `${tagData.discountValue}%` : `${tagData.discountValue}`);
             try {
               return `<div class='tagify__dropdown__item ${tagData.class ? tagData.class : ''}' tagifySuggestionIdx="${tagData.tagifySuggestionIdx}">
                         <span>${valueText} Off</span>
@@ -98,7 +98,8 @@
         dropdown: {
           enabled: 1,
           classname: 'extra-properties',
-          searchKeys: ['value', 'type'],
+          searchKeys: ['value', 'type','discountValue'],
+          maxItems: 100
         },
       });
 
