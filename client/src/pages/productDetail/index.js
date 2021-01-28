@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Link, useParams } from 'react-router-dom';
 import { useContext, useEffect, useState } from 'react';
 import Alert from 'react-bootstrap/Alert';
@@ -13,11 +14,18 @@ import {
   ListContainer,
 } from './styles';
 import Header from '../../components/header';
+import CardsList from '../../components/cardsList';
 
 export default function ProductDetail() {
   const { id } = useParams();
   const [image, setImage] = useState('');
-  const { product, getProductDetails, error } = useContext(ProductContext);
+  const {
+    product,
+    getProductDetails,
+    error,
+    getProductsByBrand,
+    products: productsByBrand,
+  } = useContext(ProductContext);
   const [cart, setCart] = useState([]);
 
   let localCart = localStorage.getItem('cart');
@@ -29,7 +37,10 @@ export default function ProductDetail() {
 
   useEffect(() => {
     getProductDetails(id);
-  }, [id]);
+    if (product.brand) {
+      getProductsByBrand(product.brand.id);
+    }
+  }, [id, product.id]);
 
   useEffect(() => {
     let uint8;
@@ -51,7 +62,7 @@ export default function ProductDetail() {
     const stringCart = JSON.stringify(cartCopy);
     localStorage.setItem('cart', stringCart);
   }
-
+  console.log(productsByBrand);
   return (
     <>
       <Header />
@@ -110,31 +121,48 @@ export default function ProductDetail() {
           <ListContainer>
             {product.discounts.length !== 0 ? (
               <>
-                <h2>Another Discounts for this Product:</h2>
+                <div className="discount-table">
+                  <h2>Another Discounts for this Product:</h2>
 
-                <Table striped bordered hover>
-                  <thead>
-                    <tr>
-                      <th>Discount Type</th>
-                      <th>Discount Value</th>
-                      <th>Final Price</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {product.discounts.map((discount) => (
-                      <tr key={discount.id}>
-                        <td>{discount.type}</td>
-                        <td>{discount.value}</td>
-                        <td>${discount.finalPrice}</td>
+                  <Table striped bordered hover>
+                    <thead>
+                      <tr>
+                        <th>Discount Type</th>
+                        <th>Discount Value</th>
+                        <th>Final Price</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </Table>
+                    </thead>
+                    <tbody>
+                      {product.discounts.map((discount) => (
+                        <tr key={discount.id}>
+                          <td>{discount.type}</td>
+                          <td>{discount.value}</td>
+                          <td>${discount.finalPrice}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </Table>
+                </div>
               </>
             ) : (
-              <h2>There are no discounts in this product</h2>
+              <h2 style={{ marginTop: '16rem' }}>There are no discounts in this product</h2>
             )}
           </ListContainer>
+          {productsByBrand.length > 1 && (
+            <ListContainer>
+              <h2 style={{ marginTop: '3rem' }}>Another products from {product.brand.name}</h2>
+              <div className="products-list">
+                {productsByBrand.map((productByBrand) => (
+                  <CardsList
+                    key={productByBrand.id}
+                    item={productByBrand}
+                    imageSrc={productByBrand.imageSrc.data}
+                    link={`/product/${productByBrand.id}`}
+                  />
+                ))}
+              </div>
+            </ListContainer>
+          )}
         </>
       )}
     </>
