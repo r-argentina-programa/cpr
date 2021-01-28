@@ -1,6 +1,8 @@
-const idsQuantityMap = new Map();
-const finalDiscounts = [];
 function calculateCartPrice(idsAndQuantity, products) {
+  const idsQuantityMap = new Map();
+  const finalDiscounts = [];
+  const discountsPerProduct = {};
+
   const usedDiscounts = new Map();
   idsAndQuantity.forEach(({ id, quantity }) => {
     idsQuantityMap.set(id, quantity);
@@ -22,43 +24,81 @@ function calculateCartPrice(idsAndQuantity, products) {
     return acum + price * quantity;
   }, 0);
 
-  products.forEach((product) => {
-    product.discounts = getProfit(product);
-    product.discounts = product.discounts.sort((a, b) => a.profit - b.profit);
-  });
+  setDiscountsProfit(products, idsQuantityMap);
 
   products.forEach((product) => {
     let currentDiscounts = [...usedDiscounts.get(product.id)];
     const bestCurrentPrice = currentDiscounts.reduce((acum, curr) => acum + curr.finalPrice, 0);
+    const newDiscounts = [];
+    let finalPrice = bestCurrentPrice;
     let i = 0;
-    product.discounts.forEach((discount) => {
-      const replacedDiscounts = replaceDiscounts(discount, currentDiscounts, i, product.id);
+
+    let p = product;
+    while (p.discounts[0] && idsQuantityMap.get(product.id) > 0) {
+      const discount = product.discounts.shift();
+      const replacedDiscounts = replaceDiscounts(
+        discount,
+        currentDiscounts,
+        i,
+        product.id,
+        idsQuantityMap,
+        newDiscounts
+      );
       currentDiscounts = replacedDiscounts.discounts;
-      i = replacedDiscounts.i;
-    });
-    const currentPrice = currentDiscounts.reduce((acum, curr) => acum + curr.finalPrice, 0);
-    if (currentPrice < bestCurrentPrice) {
-      usedDiscounts.set(product.id, currentDiscounts);
+      p = setProductDiscountsProfit(product, idsQuantityMap);
+
+      const currentPrice = currentDiscounts.reduce((acum, curr) => acum + curr.finalPrice, 0);
+      if (currentPrice < bestCurrentPrice) {
+        usedDiscounts.set(product.id, currentDiscounts);
+        finalPrice = currentPrice;
+        i = replacedDiscounts.i;
+      }
     }
+    discountsPerProduct[product.id] = { discounts: newDiscounts, finalPrice };
   });
 
   bestPrice = 0;
   products.forEach((product) => {
     const discounts = usedDiscounts.get(product.id);
+    finalDiscounts.push(...discountsPerProduct[product.id].discounts);
     bestPrice += discounts.reduce((acum, curr) => acum + curr.finalPrice, 0);
     const remainingProducts = idsQuantityMap.get(product.id);
-    for (let j = 0; j < remainingProducts; j++) {
-      if (product.discount) {
-        finalDiscounts.push(product.discount);
+    if (product.discount && remainingProducts) {
+      if (product.discount.discount_products) {
+        for (let j = 0; j < remainingProducts; j++) {
+          finalDiscounts.push(product.discount);
+          discountsPerProduct[product.id].discounts.push(product.discount);
+        }
+      } else {
+        if (!finalDiscounts.find((discount) => discount.id === product.discount.id)) {
+          finalDiscounts.push(product.discount);
+        }
+        discountsPerProduct[product.id].discounts.push(product.discount);
       }
     }
   });
 
-  return bestPrice;
+  return { bestPrice, discountsPerProduct, finalDiscounts };
 }
 
+const setDiscountsProfit = (products, idsQuantityMap) => {
+  products.forEach((product) => {
+    const quantity = idsQuantityMap.get(product.id);
+    product.discounts = getProfit(product, quantity);
+    product.discounts = product.discounts.sort((a, b) => a.profit - b.profit);
+  });
+};
+
+const setProductDiscountsProfit = (p, idsQuantityMap) => {
+  const quantity = idsQuantityMap.get(p.id);
+  const product = p;
+  product.discounts = getProfit(product, quantity);
+  product.discounts = product.discounts.sort((a, b) => a.profit - b.profit);
+  return product;
+};
+
 // Profit the lower the better
-function getProfit(product) {
+function getProfit(product, quantity) {
   return product.discounts.map((discount) => {
     const { type, value } = discount;
     switch (type) {
@@ -66,7 +106,7 @@ function getProfit(product) {
         let [x, y] = value.split('x');
         x = Number(x);
         y = Number(y);
-        discount.profit = y / x;
+        discount.profit = ((quantity % x) + (quantity / x) * y) / quantity;
         break;
       }
       case 'BuyXgetYthWithZOff': {
@@ -75,9 +115,10 @@ function getProfit(product) {
         y = Number(y);
         const [zValue, zType] = z.split(/(?=[%$])/);
         if (zType === '$') {
-          discount.profit = (x + (product.defaultPrice - zValue) / 100) / y;
+          discount.profit =
+            ((quantity % y) + quantity / y + (product.defaultPrice - zValue) / 100) / quantity;
         } else {
-          discount.profit = (x + (100 - zValue) / 100) / y;
+          discount.profit = ((quantity % y) + quantity / y + (100 - zValue) / 100) / quantity;
         }
         break;
       }
@@ -88,7 +129,7 @@ function getProfit(product) {
   });
 }
 
-function replaceDiscounts(discount, discounts, i, id) {
+function replaceDiscounts(discount, discounts, i, id, idsQuantityMap, finalDiscounts) {
   const { type, value } = discount;
   switch (type) {
     case 'BuyXpayY': {
