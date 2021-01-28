@@ -1,9 +1,9 @@
 import styled from 'styled-components/macro';
 
 export const ListContainer = styled.div`
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-gap: 0.2rem;
 `;
 
 export const NavContainer = styled.div`
@@ -31,6 +31,14 @@ export const NavContainer = styled.div`
     display: flex;
     align-items: center;
     margin-right: 1rem;
+  }
+
+  .price-filter {
+    @media (max-width: 480px) {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
   }
 `;
 
