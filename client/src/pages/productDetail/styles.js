@@ -15,7 +15,6 @@ export const Container = styled.div`
 export const ImageContainer = styled.div`
   width: 65%;
   position: relative;
-  max-height: 500px;
 
   img {
     width: 100%;
@@ -23,6 +22,7 @@ export const ImageContainer = styled.div`
     left: 0;
     top: 0;
     transition: all 0.3s ease;
+    max-height: 500px;
   }
   @media (max-width: 940px) {
     width: 100%;
@@ -113,7 +113,7 @@ export const ListContainer = styled.div`
   .discount-table {
     display: flex;
     flex-wrap: wrap;
-    margin-top: 13rem;
+    margin-top: 10rem;
     span {
       border: 1px solid red;
     }
