@@ -4,7 +4,7 @@ module.exports = {
     es2021: true,
     'jest/globals': true,
   },
-  extends: ['airbnb', 'prettier'],
+  extends: ['airbnb', 'prettier', 'plugin:cypress/recommended'],
   plugins: ['prettier', 'jest'],
   rules: {
     'prettier/prettier': [
@@ -18,5 +18,8 @@ module.exports = {
     'react/jsx-filename-extension': [0],
     'react/jsx-one-expression-per-line': 'off',
     'react/prop-types': 0,
+  },
+  globals: {
+    cy: true,
   },
 };
