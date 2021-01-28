@@ -64,6 +64,12 @@ export default function ProductDetail() {
                     cartData.discountsPerProduct[product.id] &&
                     cartData.discountsPerProduct[product.id].discounts
                   }
+                  priceWithDiscounts={
+                    cartData &&
+                    cartData.discountsPerProduct &&
+                    cartData.discountsPerProduct[product.id] &&
+                    cartData.discountsPerProduct[product.id].finalPrice
+                  }
                 />
               ))}
             </tbody>

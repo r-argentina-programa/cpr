@@ -9,7 +9,7 @@ import ab2str from 'arraybuffer-to-string';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 
-export default function Item({ product, cart, setProducts, discounts }) {
+export default function Item({ product, cart, setProducts, discounts, priceWithDiscounts }) {
   const [amount, setAmount] = useState(0);
 
   function configureImage(imageSrc) {
@@ -95,11 +95,7 @@ export default function Item({ product, cart, setProducts, discounts }) {
         <td>This product has no discount.</td>
       )}
       {discounts ? (
-        product.discount && (
-          <td className="price price-discount">
-            ${discounts.map((discount) => discount.finalPrice)}
-          </td>
-        )
+        product.discount && <td className="price price-discount">${priceWithDiscounts}</td>
       ) : (
         <td className="price price-discount">No discount Applied</td>
       )}
