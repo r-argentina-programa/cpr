@@ -5,6 +5,11 @@ export const Container = styled.div`
   margin: 0 auto;
   padding: 15px;
   display: flex;
+
+  @media (max-width: 940px) {
+    flex-direction: column;
+    margin-top: 60px;
+  }
 `;
 
 export const ImageContainer = styled.div`
@@ -19,12 +24,26 @@ export const ImageContainer = styled.div`
     top: 0;
     margin: 1px solid red;
     transition: all 0.3s ease;
+
+    @media (max-width: 940px) {
+      width: 100%;
+      img {
+        width: 300px;
+        right: 0;
+        top: -65px;
+        left: initial;
+      }
+    }
   }
 `;
 
 export const RightColumnContainer = styled.div`
   width: 35%;
   margin-top: 60px;
+
+  @media (max-width: 940px) {
+    width: 100%;
+  }
 `;
 
 export const BrandDescription = styled.div`
