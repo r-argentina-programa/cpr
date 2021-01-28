@@ -14,7 +14,7 @@ import { ProductContext } from '../../store/products/productContext';
 
 export default function ProductDetail() {
   const [products, setProducts] = useState([]);
-  const { getCartFinalDiscounts, cartPrice, error } = useContext(ProductContext);
+  const { getCartFinalDiscounts, cartData, error } = useContext(ProductContext);
 
   useEffect(() => {
     const localCart = localStorage.getItem('cart');
@@ -26,6 +26,7 @@ export default function ProductDetail() {
     const productsAmount = products.map((product) => product.amount);
     getCartFinalDiscounts(productsId, productsAmount);
   }
+  console.log(cartData);
   return (
     <>
       <Header />
@@ -45,7 +46,8 @@ export default function ProductDetail() {
                 <th>Brand</th>
                 <th>Categories</th>
                 <th>Default Price</th>
-                <th> Price with Discount</th>
+                <th>Discounts Applied</th>
+                <th>Price with Discount Applied</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -56,6 +58,18 @@ export default function ProductDetail() {
                   key={product.id}
                   cart={products}
                   setProducts={setProducts}
+                  discounts={
+                    cartData &&
+                    cartData.discountsPerProduct &&
+                    cartData.discountsPerProduct[product.id] &&
+                    cartData.discountsPerProduct[product.id].discounts
+                  }
+                  priceWithDiscounts={
+                    cartData &&
+                    cartData.discountsPerProduct &&
+                    cartData.discountsPerProduct[product.id] &&
+                    cartData.discountsPerProduct[product.id].finalPrice
+                  }
                 />
               ))}
             </tbody>
@@ -64,10 +78,10 @@ export default function ProductDetail() {
             Submit data
           </Button>
 
-          {cartPrice ? (
+          {cartData.bestPrice ? (
             <div className="cart-result">
               <h2>
-                The final Price is: <span className="final-price">${cartPrice}</span>
+                The final Price is: <span className="final-price">${cartData.bestPrice}</span>
               </h2>
             </div>
           ) : null}
