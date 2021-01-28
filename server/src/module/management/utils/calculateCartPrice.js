@@ -21,6 +21,7 @@ function calculateCartPrice(idsAndQuantity, products) {
     } else {
       price = current.defaultPrice;
     }
+    discountsPerProduct[current.id] = { discounts: [], finalPrice: price * quantity };
     return acum + price * quantity;
   }, 0);
 
@@ -34,7 +35,8 @@ function calculateCartPrice(idsAndQuantity, products) {
     let i = 0;
 
     let p = product;
-    while (p.discounts[0] && idsQuantityMap.get(product.id) > 0) {
+    let productQuantity = idsQuantityMap.get(product.id);
+    while (p.discounts[0] && productQuantity > 0) {
       const discount = product.discounts.shift();
       const replacedDiscounts = replaceDiscounts(
         discount,
@@ -52,15 +54,20 @@ function calculateCartPrice(idsAndQuantity, products) {
         usedDiscounts.set(product.id, currentDiscounts);
         finalPrice = currentPrice;
         i = replacedDiscounts.i;
+        discountsPerProduct[product.id] = { discounts: newDiscounts, finalPrice };
+      } else {
+        idsQuantityMap.set(product.id, productQuantity);
       }
+      productQuantity = idsQuantityMap.get(product.id);
     }
-    discountsPerProduct[product.id] = { discounts: newDiscounts, finalPrice };
   });
 
   bestPrice = 0;
   products.forEach((product) => {
     const discounts = usedDiscounts.get(product.id);
-    finalDiscounts.push(...discountsPerProduct[product.id].discounts);
+    if (discountsPerProduct[product.id].discounts.length) {
+      finalDiscounts.push(...discountsPerProduct[product.id].discounts);
+    }
     bestPrice += discounts.reduce((acum, curr) => acum + curr.finalPrice, 0);
     const remainingProducts = idsQuantityMap.get(product.id);
     if (product.discount && remainingProducts) {
@@ -81,10 +88,25 @@ function calculateCartPrice(idsAndQuantity, products) {
   return { bestPrice, discountsPerProduct, finalDiscounts };
 }
 
+const getProductDefaultBestProfit = (product) => {
+  let productBestProfit;
+  if (product.discount) {
+    if (product.discount.type === 'Percentage') {
+      productBestProfit = (100 - product.discount.value) / 100;
+    } else if (product.discount.type === 'Fixed') {
+      productBestProfit = (product.defaultPrice - product.discount.value) / 100;
+    }
+  } else {
+    productBestProfit = 1;
+  }
+  return productBestProfit;
+};
+
 const setDiscountsProfit = (products, idsQuantityMap) => {
   products.forEach((product) => {
     const quantity = idsQuantityMap.get(product.id);
-    product.discounts = getProfit(product, quantity);
+    const productBestProfit = getProductDefaultBestProfit(product);
+    product.discounts = getProfit(product, quantity, productBestProfit);
     product.discounts = product.discounts.sort((a, b) => a.profit - b.profit);
   });
 };
@@ -92,13 +114,14 @@ const setDiscountsProfit = (products, idsQuantityMap) => {
 const setProductDiscountsProfit = (p, idsQuantityMap) => {
   const quantity = idsQuantityMap.get(p.id);
   const product = p;
-  product.discounts = getProfit(product, quantity);
+  const productBestProfit = getProductDefaultBestProfit(product);
+  product.discounts = getProfit(product, quantity, productBestProfit);
   product.discounts = product.discounts.sort((a, b) => a.profit - b.profit);
   return product;
 };
 
 // Profit the lower the better
-function getProfit(product, quantity) {
+function getProfit(product, quantity, productBestProfit = 1) {
   return product.discounts.map((discount) => {
     const { type, value } = discount;
     switch (type) {
@@ -106,7 +129,7 @@ function getProfit(product, quantity) {
         let [x, y] = value.split('x');
         x = Number(x);
         y = Number(y);
-        discount.profit = ((quantity % x) + (quantity / x) * y) / quantity;
+        discount.profit = ((quantity % x) * productBestProfit + (quantity / x) * y) / quantity;
         break;
       }
       case 'BuyXgetYthWithZOff': {
@@ -116,9 +139,13 @@ function getProfit(product, quantity) {
         const [zValue, zType] = z.split(/(?=[%$])/);
         if (zType === '$') {
           discount.profit =
-            ((quantity % y) + quantity / y + (product.defaultPrice - zValue) / 100) / quantity;
+            ((quantity % y) * productBestProfit +
+              quantity / y +
+              (product.defaultPrice - zValue) / 100) /
+            quantity;
         } else {
-          discount.profit = ((quantity % y) + quantity / y + (100 - zValue) / 100) / quantity;
+          discount.profit =
+            ((quantity % y) * productBestProfit + quantity / y + (100 - zValue) / 100) / quantity;
         }
         break;
       }
