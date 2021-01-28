@@ -15,6 +15,7 @@ export const Container = styled.div`
 export const ImageContainer = styled.div`
   width: 65%;
   position: relative;
+  max-height: 500px;
 
   img {
     width: 100%;
@@ -102,23 +103,29 @@ export const ProductPrice = styled.div`
 `;
 
 export const ListContainer = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  margin-top: 12rem;
   h2 {
     font-size: 3rem;
     width: 100%;
     color: cadetblue;
     text-align: center;
     font-weight: 250;
-    margin-bottom: 3rem;
+  }
+  .discount-table {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 13rem;
+    span {
+      border: 1px solid red;
+    }
+
+    tbody tr:nth-child(1) {
+      background-color: mediumaquamarine;
+    }
   }
 
-  span {
-    border: 1px solid red;
-  }
-
-  tbody tr:nth-child(1) {
-    background-color: mediumaquamarine;
+  .products-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-gap: 0.2rem;
   }
 `;
