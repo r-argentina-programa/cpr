@@ -19,13 +19,8 @@ import CardsList from '../../components/cardsList';
 export default function ProductDetail() {
   const { id } = useParams();
   const [image, setImage] = useState('');
-  const {
-    product,
-    getProductDetails,
-    error,
-    getProductsByBrand,
-    products: productsByBrand,
-  } = useContext(ProductContext);
+  const { product, getProductDetails, error, getProductsByBrand } = useContext(ProductContext);
+  let { products: productsByBrand } = useContext(ProductContext);
   const [cart, setCart] = useState([]);
 
   let localCart = localStorage.getItem('cart');
@@ -62,7 +57,8 @@ export default function ProductDetail() {
     const stringCart = JSON.stringify(cartCopy);
     localStorage.setItem('cart', stringCart);
   }
-  console.log(productsByBrand);
+  productsByBrand = productsByBrand.filter((productItem) => productItem.id !== Number(id));
+
   return (
     <>
       <Header />
