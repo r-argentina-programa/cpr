@@ -24,7 +24,12 @@ function fromModelToEntity(model) {
     calculatePrice(discount, modelJson.defaultPrice)
   );
   modelJson.discounts.sort((a, b) => a.finalPrice - b.finalPrice);
-  modelJson.discount = modelJson.discounts[0] || 0;
+  modelJson.discount = 0;
+  if (modelJson.discounts[0]) {
+    if (modelJson.discounts[0].type === 'Fixed' || modelJson.discounts[0].type === 'Percentage') {
+      modelJson.discount = modelJson.discounts[0];
+    }
+  }
   modelJson.brand = modelJson.Brand;
   return new Product(modelJson);
 }
