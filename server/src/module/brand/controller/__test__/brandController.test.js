@@ -75,7 +75,7 @@ describe('BrandController methods', () => {
 
   test('brand renders index.njk with a list of brands', async () => {
     const brands = serviceMock.getAll();
-    await mockController.brand(reqMock, resMock);
+    await mockController.index(reqMock, resMock);
 
     expect(serviceMock.getAll).toHaveBeenCalledTimes(2);
     expect(resMock.render).toHaveBeenCalledTimes(1);
@@ -87,10 +87,10 @@ describe('BrandController methods', () => {
     });
   });
 
-  test('editBrand renders a form to edit a brand', async () => {
+  test('edit renders a form to edit a brand', async () => {
     const brand = serviceMock.getById(1);
     const discounts = discountServiceMock.getAll();
-    await mockController.editBrand(reqMock, resMock);
+    await mockController.edit(reqMock, resMock);
 
     expect(serviceMock.getById).toHaveBeenCalledTimes(2);
     expect(discountServiceMock.getAll).toHaveBeenCalledTimes(2);
@@ -103,21 +103,21 @@ describe('BrandController methods', () => {
     expect(reqMock.session.errors.length).toBe(0);
   });
 
-  test('editBrand throws an error on undefined carId as argument', async () => {
+  test('edit throws an error on undefined carId as argument', async () => {
     const reqMockWithoutBrandId = {
       params: {},
     };
 
-    await expect(mockController.editBrand(reqMockWithoutBrandId, resMock)).rejects.toThrowError(
+    await expect(mockController.edit(reqMockWithoutBrandId, resMock)).rejects.toThrowError(
       BrandIdNotDefinedError
     );
   });
 
-  test('editBrand sets errors and redirect because brand was not found', async () => {
+  test('edit sets errors and redirect because brand was not found', async () => {
     serviceMock.getById.mockImplementationOnce(() => {
       throw new Error();
     });
-    await mockController.editBrand(reqMock, resMock);
+    await mockController.edit(reqMock, resMock);
 
     expect(serviceMock.getById).toHaveBeenCalledTimes(1);
     expect(resMock.render).toHaveBeenCalledTimes(0);
@@ -125,8 +125,8 @@ describe('BrandController methods', () => {
     expect(resMock.redirect).toHaveBeenCalledTimes(1);
   });
 
-  test('createBrand renders a form to add a new brand', async () => {
-    await mockController.createBrand(reqMock, resMock);
+  test('create renders a form to add a new brand', async () => {
+    await mockController.create(reqMock, resMock);
     const discounts = discountServiceMock.getAll();
     expect(discountServiceMock.getAll).toHaveBeenCalledTimes(2);
     expect(resMock.render).toHaveBeenCalledTimes(1);
@@ -136,7 +136,7 @@ describe('BrandController methods', () => {
     });
   });
 
-  test('saveBrand, saves a new brand with an image', async () => {
+  test('save, saves a new brand with an image', async () => {
     const reqSaveMock = {
       body: {
         id: 0,
@@ -155,7 +155,7 @@ describe('BrandController methods', () => {
     const brandMock = createTestBrand(0);
     brandMock.discounts = undefined;
 
-    await mockController.saveBrand(reqSaveMock, resMock);
+    await mockController.save(reqSaveMock, resMock);
     expect(serviceMock.save).toHaveBeenCalledTimes(1);
     expect(serviceMock.save).toHaveBeenCalledWith(brandMock, discounts);
     expect(resMock.redirect).toHaveBeenCalledTimes(1);
@@ -163,7 +163,7 @@ describe('BrandController methods', () => {
     expect(reqSaveMock.session.errors).toHaveLength(0);
   });
 
-  test('saveBrand updates a brand with an image', async () => {
+  test('save updates a brand with an image', async () => {
     const reqSaveMock = {
       body: {
         id: 1,
@@ -181,7 +181,7 @@ describe('BrandController methods', () => {
     const brandMock = createTestBrand(1);
     brandMock.discounts = undefined;
 
-    await mockController.saveBrand(reqSaveMock, resMock);
+    await mockController.save(reqSaveMock, resMock);
     expect(serviceMock.save).toHaveBeenCalledTimes(1);
     expect(serviceMock.save).toHaveBeenCalledWith(brandMock, discounts);
     expect(resMock.redirect).toHaveBeenCalledTimes(1);
@@ -189,7 +189,7 @@ describe('BrandController methods', () => {
     expect(reqSaveMock.session.errors).toHaveLength(0);
   });
 
-  test('saveBrand set errors if service save throw error', async () => {
+  test('save set errors if service save throw error', async () => {
     const reqSaveMock = {
       body: {
         id: 1,
@@ -206,14 +206,14 @@ describe('BrandController methods', () => {
     serviceMock.save.mockImplementationOnce(() => {
       throw new Error();
     });
-    await mockController.saveBrand(reqSaveMock, resMock);
+    await mockController.save(reqSaveMock, resMock);
     expect(serviceMock.save).toHaveBeenCalledTimes(1);
     expect(resMock.redirect).toHaveBeenCalledTimes(1);
     expect(reqSaveMock.session.errors).not.toHaveLength(0);
   });
 
-  test('deleteBrand an existing brand', async () => {
-    await mockController.deleteBrand(reqMock, resMock);
+  test('delete an existing brand', async () => {
+    await mockController.delete(reqMock, resMock);
 
     expect(serviceMock.getById).toHaveBeenCalledTimes(1);
     expect(serviceMock.delete).toHaveBeenCalledTimes(1);
@@ -222,22 +222,22 @@ describe('BrandController methods', () => {
     expect(reqMock.session.errors).toHaveLength(0);
   });
 
-  test('deleteBrand set errors because brand was not found', async () => {
+  test('delete set errors because brand was not found', async () => {
     serviceMock.getById.mockImplementationOnce(() => {
       throw new Error();
     });
-    await mockController.deleteBrand(reqMock, resMock);
+    await mockController.delete(reqMock, resMock);
     expect(serviceMock.getById).toHaveBeenCalledTimes(1);
     expect(serviceMock.delete).toHaveBeenCalledTimes(0);
     expect(resMock.redirect).toHaveBeenCalledTimes(1);
     expect(reqMock.session.errors).not.toHaveLength(0);
   });
 
-  test('deleteBrand set errors because delete was not successful', async () => {
+  test('delete set errors because delete was not successful', async () => {
     serviceMock.delete.mockImplementationOnce(() => {
       throw new Error();
     });
-    await mockController.deleteBrand(reqMock, resMock);
+    await mockController.delete(reqMock, resMock);
     expect(serviceMock.getById).toHaveBeenCalledTimes(1);
     expect(serviceMock.delete).toHaveBeenCalledTimes(1);
     expect(resMock.redirect).toHaveBeenCalledTimes(1);
