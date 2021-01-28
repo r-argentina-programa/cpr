@@ -7,7 +7,9 @@
     "dev": "nodemon src/app.js -e js,html,njk",
     "test:watch": "jest --watch --rootDir=src",
     "test:coverage": "jest --coverage",
-    "test": "jest"
+    "test": "jest",
+    "format:check": "prettier -c src",
+    "format": "prettier -w src"
   },
   "repository": {
     "type": "git",
