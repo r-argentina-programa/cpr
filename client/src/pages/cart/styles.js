@@ -11,7 +11,7 @@ export const Container = styled.div`
     text-align: center;
   }
   .price-discount {
-    color: lightsalmon;
+    color: steelblue;
   }
   .brand {
     font-size: 0.8rem;
@@ -53,7 +53,7 @@ export const Container = styled.div`
     color: darkgrey;
   }
   .discount-title {
-    font-size: 15px;
+    font-size: 20px;
     color: darkgrey;
     display: grid;
   }
@@ -64,6 +64,19 @@ export const Container = styled.div`
     background: e6e6e6;
     .final-price {
       font-weight: 700;
+    }
+  }
+
+  .price-discount {
+    ul {
+      font-size: 1rem;
+      border: 1px solid;
+      margin: 1px 0;
+    }
+    li {
+      list-style: none;
+      font-size: 1rem;
+      text-align: left;
     }
   }
 `;

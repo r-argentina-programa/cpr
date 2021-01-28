@@ -5,8 +5,8 @@ import {
   PRODUCTS_BY_CATEGORY,
   GET_PRODUCT_SEARCH,
   GET_PRODUCTS_FILTERED,
-  GET_CART_PRICE,
   GET_PRODUCTS_ERROR,
+  GET_CART_DATA,
 } from './productTypes';
 
 export default function productReducer(state, action) {
@@ -32,10 +32,10 @@ export default function productReducer(state, action) {
         search: [...action.payload],
         error: false,
       };
-    case GET_CART_PRICE:
+    case GET_CART_DATA:
       return {
         ...state,
-        cartPrice: action.payload,
+        cartData: action.payload,
         error: false,
       };
     case GET_PRODUCTS_ERROR:

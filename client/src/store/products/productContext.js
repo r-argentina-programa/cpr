@@ -13,7 +13,7 @@ import {
   PRODUCTS_BY_CATEGORY,
   GET_PRODUCT_SEARCH,
   GET_PRODUCTS_FILTERED,
-  GET_CART_PRICE,
+  GET_CART_DATA,
   GET_PRODUCTS_ERROR,
 } from './productTypes';
 
@@ -24,7 +24,7 @@ const ProductContextProvider = ({ children }) => {
     products: [],
     product: {},
     search: [],
-    cartPrice: null,
+    cartData: {},
     error: false,
   };
 
@@ -106,9 +106,7 @@ const ProductContextProvider = ({ children }) => {
   const getCartFinalDiscounts = async (productsId, productsAmount) => {
     try {
       const res = await api.get(`/api/getCartPrice/${productsId}/${productsAmount}`);
-      if (typeof res.data === 'number') {
-        dispatch({ type: GET_CART_PRICE, payload: res.data });
-      }
+      dispatch({ type: GET_CART_DATA, payload: res.data });
     } catch (error) {
       dispatch({ type: GET_PRODUCTS_ERROR, payload: error.message });
     }
@@ -119,7 +117,7 @@ const ProductContextProvider = ({ children }) => {
         products: state.products,
         product: state.product,
         search: state.search,
-        cartPrice: state.cartPrice,
+        cartData: state.cartData,
         error: state.error,
         getAllProducts,
         getProductDetails,
