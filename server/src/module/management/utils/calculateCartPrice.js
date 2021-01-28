@@ -29,7 +29,7 @@ function calculateCartPrice(idsAndQuantity, products) {
 
   products.forEach((product) => {
     let currentDiscounts = [...usedDiscounts.get(product.id)];
-    const bestCurrentPrice = currentDiscounts.reduce((acum, curr) => acum + curr.finalPrice, 0);
+    let bestCurrentPrice = currentDiscounts.reduce((acum, curr) => acum + curr.finalPrice, 0);
     const newDiscounts = [];
     let finalPrice = bestCurrentPrice;
     let i = 0;
@@ -37,7 +37,7 @@ function calculateCartPrice(idsAndQuantity, products) {
     let p = product;
     let productQuantity = idsQuantityMap.get(product.id);
     while (p.discounts[0] && productQuantity > 0) {
-      const discount = product.discounts.shift();
+      const discount = p.discounts[0];
       const replacedDiscounts = replaceDiscounts(
         discount,
         currentDiscounts,
@@ -47,16 +47,20 @@ function calculateCartPrice(idsAndQuantity, products) {
         newDiscounts
       );
       currentDiscounts = replacedDiscounts.discounts;
-      p = setProductDiscountsProfit(product, idsQuantityMap);
+      p = setProductDiscountsProfit(p, idsQuantityMap);
 
       const currentPrice = currentDiscounts.reduce((acum, curr) => acum + curr.finalPrice, 0);
+      // console.log('----------', product.id, discount.type);
+      // console.log(currentPrice, bestCurrentPrice, discount.value, discount.profit);
       if (currentPrice < bestCurrentPrice) {
         usedDiscounts.set(product.id, currentDiscounts);
         finalPrice = currentPrice;
         i = replacedDiscounts.i;
         discountsPerProduct[product.id] = { discounts: newDiscounts, finalPrice };
+        bestCurrentPrice = currentPrice;
       } else {
         idsQuantityMap.set(product.id, productQuantity);
+        p.discounts.shift();
       }
       productQuantity = idsQuantityMap.get(product.id);
     }
@@ -121,7 +125,7 @@ const setProductDiscountsProfit = (p, idsQuantityMap) => {
 };
 
 // Profit the lower the better
-function getProfit(product, quantity, productBestProfit = 1) {
+function getProfit(product) {
   return product.discounts.map((discount) => {
     const { type, value } = discount;
     switch (type) {
@@ -129,27 +133,24 @@ function getProfit(product, quantity, productBestProfit = 1) {
         let [x, y] = value.split('x');
         x = Number(x);
         y = Number(y);
-        discount.profit = ((quantity % x) * productBestProfit + (quantity / x) * y) / quantity;
+        discount.profit = y / x;
         break;
       }
       case 'BuyXgetYthWithZOff': {
         let [x, y, z] = value.split(/[x=]/gi);
         x = Number(x);
         y = Number(y);
-        const [zValue, zType] = z.split(/(?=[%$])/);
+        let [zValue, zType] = z.split(/(?=[%$])/);
+        zValue = Number(zValue);
         if (zType === '$') {
-          discount.profit =
-            ((quantity % y) * productBestProfit +
-              quantity / y +
-              (product.defaultPrice - zValue) / 100) /
-            quantity;
+          discount.profit = (x + (product.defaultPrice - zValue) / 100) / y;
         } else {
-          discount.profit =
-            ((quantity % y) * productBestProfit + quantity / y + (100 - zValue) / 100) / quantity;
+          discount.profit = (x + (100 - zValue) / 100) / y;
         }
         break;
       }
       default:
+        discount.profit = getProductDefaultBestProfit(product);
         break;
     }
     return discount;
@@ -158,16 +159,18 @@ function getProfit(product, quantity, productBestProfit = 1) {
 
 function replaceDiscounts(discount, discounts, i, id, idsQuantityMap, finalDiscounts) {
   const { type, value } = discount;
+  const productQuantity = idsQuantityMap.get(id);
   switch (type) {
     case 'BuyXpayY': {
       let [x, y] = value.split('x');
       x = Number(x);
       y = Number(y);
-      const productQuantity = idsQuantityMap.get(id);
-      const free = parseInt(productQuantity / x, 10);
       const freeQuantity = x - y;
       let aux = 0;
-      for (let j = 0; j < x * free; j++) {
+      if (productQuantity < x) {
+        break;
+      }
+      for (let j = 0; j < x; j++) {
         aux++;
         if (aux <= freeQuantity) {
           discounts[i] = { ...discount, finalPrice: 0 };
@@ -179,20 +182,18 @@ function replaceDiscounts(discount, discounts, i, id, idsQuantityMap, finalDisco
         }
         i++;
       }
-      idsQuantityMap.set(id, productQuantity - x * free);
-
-      for (let j = 0; j < free; j++) {
-        finalDiscounts.push(discount);
-      }
-
+      idsQuantityMap.set(id, productQuantity - x);
+      finalDiscounts.push(discount);
       break;
     }
     case 'BuyXgetYthWithZOff': {
       let [x, y, z] = value.split(/[x=]/gi);
       x = Number(x);
       y = Number(y);
+      if (productQuantity < y) {
+        break;
+      }
       const [zValue, zType] = z.split(/(?=[%$])/);
-      const productQuantity = idsQuantityMap.get(id);
       const used = parseInt(productQuantity / y, 10);
       let aux = 0;
       const n = used * y;
@@ -222,6 +223,8 @@ function replaceDiscounts(discount, discounts, i, id, idsQuantityMap, finalDisco
       break;
     }
     default:
+      idsQuantityMap.set(id, productQuantity - 1);
+      i++;
       break;
   }
   return { discounts, i };
