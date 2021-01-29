@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom';
 import { useState } from 'react';
 
 export default function Item({ product, cart, setProducts, discounts, priceWithDiscounts }) {
-  const [amount, setAmount] = useState(0);
+  const [amount, setAmount] = useState(1);
 
   function configureImage(imageSrc) {
     const uint8 = new Uint8Array(imageSrc);
@@ -30,6 +30,8 @@ export default function Item({ product, cart, setProducts, discounts, priceWithD
     setAmount(e.target.value);
     product.amount = e.target.value;
   }
+
+  product.amount = amount;
 
   return (
     <tr>
