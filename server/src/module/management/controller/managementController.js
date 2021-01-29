@@ -220,9 +220,13 @@ module.exports = class ManagementController {
    * @param {import('express').Response} res
    */
   async search(req, res) {
-    const { term } = req.params;
-    const products = await this.ProductService.getAllProductsSearch(term);
-    res.status(200).json(products);
+    try {
+      const { term } = req.params;
+      const products = await this.ProductService.getAllProductsSearch(term);
+      res.status(200).json(products);
+    } catch (e) {
+      res.status(500).send(e);
+    }
   }
 
   async getAllByCategoryAndBrand(req, res) {
@@ -240,8 +244,8 @@ module.exports = class ManagementController {
         price
       );
       res.status(200).json(products);
-    } catch (error) {
-      console.log(error.message);
+    } catch (e) {
+      res.status(500).send(e);
     }
   }
 
@@ -261,8 +265,8 @@ module.exports = class ManagementController {
       const products = await this.ProductService.getByIds(productIds);
       const cartPrice = calculateCartPrice(productsIdsAndQuantity, products);
       res.status(200).json(cartPrice);
-    } catch (error) {
-      console.log(error.message);
+    } catch (e) {
+      res.status(500).send(e);
     }
   }
 };
