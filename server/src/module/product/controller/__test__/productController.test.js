@@ -93,7 +93,6 @@ describe('ProductController methods', () => {
   test('index renders index.njk with a list of products', async () => {
     const productsList = serviceMock.getAll();
     await mockController.index(reqMock, resMock);
-    const page = reqMock.params.page ? Number(reqMock.params.page) : 1;
 
     const { errors, messages } = reqMock.session;
     expect(serviceMock.getAll).toHaveBeenCalledTimes(2);
@@ -102,7 +101,6 @@ describe('ProductController methods', () => {
       productsList,
       errors,
       messages,
-      page,
     });
   });
 
