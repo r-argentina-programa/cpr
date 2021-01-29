@@ -9,7 +9,6 @@ export const TimeStyle = styled.span`
 `;
 
 export const Container = styled.div`
-  flex: 1;
   .img-container {
     width: 200px;
     height: 200px;
