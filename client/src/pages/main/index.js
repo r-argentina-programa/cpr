@@ -1,9 +1,11 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable no-unused-vars */
 import { useContext, useEffect, useState } from 'react';
 import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/esm/Button';
 import { useLocation } from 'react-router-dom';
 import Pagination from 'react-bootstrap/Pagination';
+import Spinner from 'react-bootstrap/Spinner';
 import CardsList from '../../components/cardsList';
 import Header from '../../components/header';
 import { ProductContext } from '../../store/products/productContext';
@@ -20,7 +22,9 @@ export default function Main() {
   const priceRangeQuery = searchParams.get('priceRange');
   const splittedPriceRange = priceRangeQuery ? priceRangeQuery.split('-') : [];
   const pageQuery = searchParams.get('page');
-  const { products, getFilteredProducts, error, getProductBySearch } = useContext(ProductContext);
+  const { products, getFilteredProducts, error, getProductBySearch, loading } = useContext(
+    ProductContext
+  );
   const { getAllBrands, brands } = useContext(BrandContext);
   const { getAllCategories, categories } = useContext(CategoryContext);
   const [activeBrands, setActiveBrands] = useState(brandsQuery);
@@ -146,20 +150,29 @@ export default function Main() {
             </div>
           </ul>
         </SidebarContainer>
-        <ContentContainer>
-          <ListContainer className="container-fluid">
+        {loading ? (
+          <Spinner animation="border" role="status" style={{ margin: '2rem auto' }}>
+            <span className="sr-only">Loading...</span>
+          </Spinner>
+        ) : (
+          <ContentContainer>
             {error && <Alert variant="danger">{error}</Alert>}
-            {products.map((product) => (
-              <CardsList
-                key={product.id}
-                item={product}
-                imageSrc={product.imageSrc.data}
-                link={`/product/${product.id}`}
-              />
-            ))}
-          </ListContainer>
-          <Pagination>{}</Pagination>
-        </ContentContainer>
+            <ListContainer className="container-fluid">
+              {products.map((product) => (
+                <CardsList
+                  key={product.id}
+                  item={product}
+                  imageSrc={product.imageSrc.data}
+                  link={`/product/${product.id}`}
+                />
+              ))}
+            </ListContainer>
+            <Pagination>
+              <Pagination.Prev />
+              <Pagination.Next />
+            </Pagination>
+          </ContentContainer>
+        )}
       </Container>
     </>
   );
