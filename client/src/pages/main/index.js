@@ -3,7 +3,7 @@ import { useContext, useEffect, useState } from 'react';
 import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/esm/Button';
 import { useLocation } from 'react-router-dom';
-
+import Pagination from 'react-bootstrap/Pagination';
 import CardsList from '../../components/cardsList';
 import Header from '../../components/header';
 import { ProductContext } from '../../store/products/productContext';
@@ -20,8 +20,7 @@ export default function Main() {
   const priceRangeQuery = searchParams.get('priceRange');
   const splittedPriceRange = priceRangeQuery ? priceRangeQuery.split('-') : [];
   const pageQuery = searchParams.get('page');
-
-  const { getAllProducts, products, getFilteredProducts, error } = useContext(ProductContext);
+  const { products, getFilteredProducts, error, getProductBySearch } = useContext(ProductContext);
   const { getAllBrands, brands } = useContext(BrandContext);
   const { getAllCategories, categories } = useContext(CategoryContext);
   const [activeBrands, setActiveBrands] = useState(brandsQuery);
@@ -59,11 +58,13 @@ export default function Main() {
   useEffect(() => {
     handleQueries();
     getFilteredProducts(activeBrands, activeCategories, priceRange, page, searchTerm);
+    getProductBySearch(searchWord);
   }, [activeBrands, activeCategories, priceRange]);
 
   function handleFilter() {
     setPriceRange(`${price.minPrice}-${price.maxPrice}`);
   }
+
   return (
     <>
       <Header />
@@ -159,6 +160,7 @@ export default function Main() {
               />
             ))}
           </ListContainer>
+          <Pagination>{}</Pagination>
         </ContentContainer>
       </Container>
     </>

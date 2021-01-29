@@ -69,4 +69,6 @@ export const Container = styled.div`
   height: 100vh;
 `;
 
-export const ContentContainer = styled.div``;
+export const ContentContainer = styled.div`
+  overflow: scroll;
+`;

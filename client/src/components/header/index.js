@@ -1,8 +1,8 @@
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import { useContext, useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import styled from 'styled-components/macro';
-import SearchContainer from '../search';
 import { ProductContext } from '../../store/products/productContext';
 
 const ContainerSearch = styled.div`
@@ -25,6 +25,7 @@ export default function Header() {
   const [term, setTerm] = useState('');
   const { getProductBySearch } = useContext(ProductContext);
   const [cart, setCart] = useState([]);
+  const history = useHistory();
   let time = null;
 
   useEffect(() => {
@@ -82,7 +83,14 @@ export default function Header() {
         </Nav>
 
         <ContainerSearch>
-          <form>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (term.trim()) {
+                history.push(`/?search=${term}`);
+              }
+            }}
+          >
             <label htmlFor="Search">
               Search Products:
               <input
@@ -94,7 +102,6 @@ export default function Header() {
                 onChange={(e) => setTerm(e.target.value)}
               />
             </label>
-            {term.length > 0 && <SearchContainer />}
           </form>
         </ContainerSearch>
       </Navbar>

@@ -15,6 +15,7 @@ export default function productReducer(state, action) {
     case GET_PRODUCTS_FILTERED:
     case PRODUCTS_BY_BRAND:
     case PRODUCTS_BY_CATEGORY:
+    case GET_PRODUCT_SEARCH:
       return {
         ...state,
         products: [...action.payload],
@@ -24,12 +25,6 @@ export default function productReducer(state, action) {
       return {
         ...state,
         product: { ...action.payload },
-        error: false,
-      };
-    case GET_PRODUCT_SEARCH:
-      return {
-        ...state,
-        search: [...action.payload],
         error: false,
       };
     case GET_CART_DATA:
