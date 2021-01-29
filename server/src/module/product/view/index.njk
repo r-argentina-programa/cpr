@@ -14,14 +14,32 @@
     </div>
   {% endfor %}
 
-  <nav class="level-right">
-    <div class="level-item">
-      <a href="/admin/product/create" class="button is-primary is-medium is-light">
-        <span class="icon">
-          <i class="fas fa-plus"></i>
-        </span>
-        <span>Add new Product</span>
-      </a>
+  <nav class="navbar">
+    <div class="navbar-menu">
+      <div class="navbar-start">
+        <div class="navbar-item">
+          <div class="field has-addons">
+            <div class="control">
+              <input class="input" type="text" name="search" placeholder="Find a product">
+            </div>
+            <div class="control">
+              <a class="button is-info is-outlined">
+                Search
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="navbar-end">
+        <div class="navbar-item">
+          <a href="/admin/product/create" class="button is-primary is-medium is-light">
+            <span class="icon">
+              <i class="fas fa-plus"></i>
+            </span>
+            <span>Add new Product</span>
+          </a>
+        </div>
+      </div>
     </div>
   </nav>
 
@@ -44,7 +62,7 @@
 
       <tbody>
         {% for product in productsList %}
-          <tr>
+          <tr id="product-{{ product.id }}">
             <td>{{ product.id }}</td>
             <td>{{ product.name }}</td>
             <td>${{ product.defaultPrice }}</td>
@@ -80,4 +98,26 @@
       </tbody>
     </table>
   </div>
+{% endblock %}
+{% block footerScripts %}
+  <script>
+    const inputName = document.querySelector('input[name=search]');
+    const placeholderValue = inputName.placeholder;
+
+    inputName.addEventListener('input', checkName);
+
+    function checkName(event) {
+      const searchValue = event.target.value.toLowerCase();
+      const products = {{ productsList | dump | safe }};
+      products.forEach((product) => {
+        const name = product.name.toLowerCase();
+        const productTr = document.getElementById(`product-${product.id}`);
+        if (name.indexOf(searchValue) > -1) {
+          productTr.classList.remove('is-hidden');
+        } else {
+          productTr.classList.add('is-hidden');
+        }
+      });
+    }
+  </script>
 {% endblock %}
