@@ -2,6 +2,7 @@
 /* eslint-disable class-methods-use-this */
 const { fromDataToEntity } = require('../mapper/adminMapper');
 const { calculateCartPrice } = require('../utils/calculateCartPrice');
+
 module.exports = class ManagementController {
   /**
    * @param  {import("../../brand/service/brandService")} BrandService
@@ -36,7 +37,7 @@ module.exports = class ManagementController {
     app.get(`${ROUTE}/brand/:id/viewProducts`, this.viewProductsByBrand.bind(this));
     app.get(`${ROUTE}/category/:id/viewProducts`, this.viewProductsByCategory.bind(this));
     app.get(
-      `${ROUTE}/products/all/:brands/:categories/:price`,
+      `${ROUTE}/products/all/:brands/:categories/:price/:page/:search`,
       this.getAllByCategoryAndBrand.bind(this)
     );
     app.get(`${ROUTE}/getCartPrice/:productsId/:productsAmount`, this.getCartPrice.bind(this));
@@ -231,7 +232,7 @@ module.exports = class ManagementController {
 
   async getAllByCategoryAndBrand(req, res) {
     try {
-      let { brands, categories, price } = req.params;
+      let { brands, categories, price, page, search } = req.params;
       price = price.split('-');
       price[0] = price[0] == false ? 0 : price[0];
       price[1] = price[1] == false ? Infinity : price[1];
@@ -241,7 +242,9 @@ module.exports = class ManagementController {
       const products = await this.ProductService.getAllByCategoryAndBrand(
         categories,
         brands,
-        price
+        price,
+        page,
+        search
       );
       res.status(200).json(products);
     } catch (e) {

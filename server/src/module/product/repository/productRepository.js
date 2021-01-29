@@ -164,15 +164,34 @@ module.exports = class ProductRepository {
     return products;
   }
 
-  async getAllByCategoryAndBrand(categories = [], brands = [], price = [0, 999999]) {
-    const conditions = {};
+  async getAllByCategoryAndBrand(
+    categories = [],
+    brands = [],
+    price = [0, 999999],
+    page = 0,
+    search
+  ) {
+    const limit = 4;
+    let conditions;
     let categoriesConditions;
+    let brandsConditions;
+    if (search !== '0') {
+      conditions = {
+        name: { [Op.iLike]: `%${search}%` },
+      };
+    }
     if (brands[0] !== '0') {
-      conditions.brand_fk = brands;
+      brandsConditions = {
+        name: {
+          [Op.like]: { [Op.any]: brands },
+        },
+      };
     }
     if (categories[0] !== '0') {
       categoriesConditions = {
-        id: categories,
+        name: {
+          [Op.like]: { [Op.any]: categories },
+        },
       };
     }
 
@@ -191,12 +210,15 @@ module.exports = class ProductRepository {
         { model: this.discountModel, as: 'discounts' },
         {
           model: this.brandModel,
+          where: brandsConditions,
           include: {
             model: this.discountModel,
             as: 'discounts',
           },
         },
       ],
+      limit,
+      offset: (page - 1) * limit,
     });
 
     const productsEntities = products.map((product) => {
@@ -214,10 +236,13 @@ module.exports = class ProductRepository {
 
     return productsEntities.filter((product) => {
       const { discount } = product;
-      if (discount) {
-        return discount.finalPrice >= price[0] && discount.finalPrice <= price[1];
+      if (price[1] === 'Infinity') {
+        price[1] = 99999999999;
       }
-      return product.defaultPrice >= price[0] && product.defaultPrice <= price[1];
+      if (discount) {
+        return discount.finalPrice >= price[0] && discount.finalPrice <= Number(price[1]);
+      }
+      return product.defaultPrice >= price[0] && product.defaultPrice <= Number(price[1]);
     });
   }
 

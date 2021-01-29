@@ -95,8 +95,14 @@ module.exports = class ProductService {
     return this.ProductRepository.getAllProductsSearch(term);
   }
 
-  async getAllByCategoryAndBrand(categories, brands, price) {
-    const data = await this.ProductRepository.getAllByCategoryAndBrand(categories, brands, price);
+  async getAllByCategoryAndBrand(categories, brands, price, page, search) {
+    const data = await this.ProductRepository.getAllByCategoryAndBrand(
+      categories,
+      brands,
+      price,
+      page,
+      search
+    );
     return data;
   }
 };

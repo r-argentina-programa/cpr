@@ -2,39 +2,68 @@
 import { useContext, useEffect, useState } from 'react';
 import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/esm/Button';
-
+import { useLocation } from 'react-router-dom';
 import CardsList from '../../components/cardsList';
 import Header from '../../components/header';
-import { ProductContext } from '../../store/products/productContext';
 import { BrandContext } from '../../store/brand/brandContext';
 import { CategoryContext } from '../../store/category/categoryContext';
+import { ProductContext } from '../../store/products/productContext';
 import { ListContainer, NavContainer, Title } from './styles';
 
 export default function Main() {
+  const { search } = useLocation();
+  const searchParams = new URLSearchParams(search);
+  const searchWord = searchParams.get('search');
+  const brandsQuery = searchParams.getAll('brand');
+  const categoriesQuery = searchParams.getAll('category');
+  const priceRangeQuery = searchParams.get('priceRange');
+  const splittedPriceRange = priceRangeQuery ? priceRangeQuery.split('-') : [];
+  const pageQuery = searchParams.get('page');
+
   const { getAllProducts, products, getFilteredProducts, error } = useContext(ProductContext);
   const { getAllBrands, brands } = useContext(BrandContext);
   const { getAllCategories, categories } = useContext(CategoryContext);
-  const [activeBrands, setActiveBrands] = useState([]);
-  const [activeCategories, setActiveCategories] = useState([]);
-  const [priceRange, setPriceRange] = useState({ minPrice: 0, maxPrice: Infinity });
+  const [activeBrands, setActiveBrands] = useState(brandsQuery);
+  const [activeCategories, setActiveCategories] = useState(categoriesQuery);
   const [price, setPrice] = useState({
-    minPrice: 0,
-    maxPrice: 0,
+    minPrice: splittedPriceRange[0] || 0,
+    maxPrice: splittedPriceRange[1] || 0,
   });
+  const [priceRange, setPriceRange] = useState(priceRangeQuery);
+  const [searchTerm, setSearchTerm] = useState(searchWord || '');
+  const [page, setPage] = useState(pageQuery || 1);
+
+  function handleQueries() {
+    const newSearchParams = new URLSearchParams();
+    activeBrands.forEach((brand) => {
+      newSearchParams.append('brand', brand);
+    });
+    activeCategories.forEach((category) => {
+      newSearchParams.append('category', category);
+    });
+    if (searchTerm !== '') newSearchParams.set('search', searchTerm);
+    if (page) newSearchParams.set('page', page);
+    if (priceRange) newSearchParams.set('priceRange', priceRange);
+    const refresh = `${window.location.protocol}//${window.location.host}${
+      window.location.pathname
+    }${newSearchParams.toString() ? `?${newSearchParams.toString()}` : ''}`;
+    window.history.pushState({ path: refresh }, '', refresh);
+  }
 
   useEffect(() => {
-    getFilteredProducts(activeBrands, activeCategories, priceRange);
-  }, [activeBrands, activeCategories, priceRange]);
-
-  useEffect(() => {
-    getAllProducts();
     getAllBrands();
     getAllCategories();
   }, []);
 
+  useEffect(() => {
+    handleQueries();
+    getFilteredProducts(activeBrands, activeCategories, priceRange, page, searchTerm);
+  }, [activeBrands, activeCategories, priceRange]);
+
   function handleFilter() {
     setPriceRange(price);
   }
+
   return (
     <>
       <Header />
@@ -46,10 +75,11 @@ export default function Main() {
             <input
               type="checkbox"
               id={`brand-${brand.id}`}
-              value={brand.id}
-              onClick={(e) => {
+              value={brand.name}
+              checked={activeBrands.includes(brand.name)}
+              onChange={(e) => {
                 if (activeBrands.includes(e.target.value)) {
-                  setActiveBrands(activeBrands.filter((id) => id !== e.target.value));
+                  setActiveBrands(activeBrands.filter((name) => name !== e.target.value));
                 } else {
                   setActiveBrands([...activeBrands, e.target.value]);
                 }
@@ -66,10 +96,11 @@ export default function Main() {
             <input
               type="checkbox"
               id={`category-${category.id}`}
-              value={category.id}
-              onClick={(e) => {
+              value={category.name}
+              checked={activeCategories.includes(category.name)}
+              onChange={(e) => {
                 if (activeCategories.includes(e.target.value)) {
-                  setActiveCategories(activeCategories.filter((id) => id !== e.target.value));
+                  setActiveCategories(activeCategories.filter((name) => name !== e.target.value));
                 } else {
                   setActiveCategories([...activeCategories, e.target.value]);
                 }
