@@ -118,7 +118,7 @@ export default function ProductDetail() {
             {product.discounts.length !== 0 ? (
               <>
                 <div className="discount-table">
-                  <h2>Another Discounts for this Product:</h2>
+                  <h2>Other Discounts for this product:</h2>
 
                   <Table striped bordered hover>
                     <thead>
@@ -146,7 +146,7 @@ export default function ProductDetail() {
           </ListContainer>
           {productsByBrand.length > 1 && (
             <ListContainer>
-              <h2 style={{ marginTop: '3rem' }}>Another products from {product.brand.name}</h2>
+              <h2 style={{ marginTop: '3rem' }}>Other Products From {product.brand.name}</h2>
               <div className="products-list">
                 {productsByBrand.map((productByBrand) => (
                   <CardsList
