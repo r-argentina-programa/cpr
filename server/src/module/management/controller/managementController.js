@@ -30,7 +30,7 @@ module.exports = class ManagementController {
     app.get(`${ROUTE}/brand/:id`, this.brand.bind(this));
     app.get(`${ROUTE}/categories/all`, this.allCategories.bind(this));
     app.get(`${ROUTE}/category/:id`, this.category.bind(this));
-    app.get(`${ROUTE}/products/all/:offset/:limit`, this.allProducts.bind(this));
+    app.get(`${ROUTE}/products/all/:offset?/:limit?`, this.allProducts.bind(this));
     app.get(`${ROUTE}/product/:id`, this.product.bind(this));
     app.get(`${ROUTE}/search/:term`, this.search.bind(this));
     app.get(`${ROUTE}/brand/:id/viewProducts`, this.viewProductsByBrand.bind(this));
