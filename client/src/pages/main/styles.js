@@ -66,6 +66,7 @@ export const Title = styled.h1`
 export const Container = styled.div`
   display: flex;
   flex: 1;
+  height: 100vh;
 `;
 
 export const ContentContainer = styled.div``;
