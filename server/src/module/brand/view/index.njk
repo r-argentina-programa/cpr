@@ -1,80 +1,121 @@
 {% extends 'management/view/layout/base.njk' %} {% block body %}
-<h1 class="title is-1">Brand Managment</h1>
+  <h1 class="title is-1">Brand Managment</h1>
 
-{% for error in errors %}
-<div class="notification is-danger">
-  {{error}}
-</div>
-{% endfor %}
-
-{% for message in messages %}
-<div class="notification is-success">
-  {{message}}
-</div>
-{% endfor %}
-
-<nav class="level-right">
-  <div class="level-item">
-    <a href="/admin/brand/create" class="button is-primary is-medium is-light">
-      <span class="icon"><i class="fas fa-plus"></i></span>
-      <span>Add new Brand</span>
-    </a>
+  {% for error in errors %}
+  <div class="notification is-danger">
+    {{error}}
   </div>
-</nav>
+  {% endfor %}
 
-<div class="panel-block">
-  <table class="table is-striped is-narrow is-hoverable is-fullwidth">
-    <thead>
-      <tr>
-        <th>Id</th>
-        <th>Brand</th>
-        <th>Logo</th>
-        <th>Discounts</th>
-        <th></th>
-        <th></th>
-        <th></th>
-        <th></th>
-      </tr>
-    </thead>
+  {% for message in messages %}
+  <div class="notification is-success">
+    {{message}}
+  </div>
+  {% endfor %}
 
-    <tbody>
-      {% for brand in brands %}
-      <tr>
-        <td>{{ brand.id }}</td>
-        <td>{{ brand.name }}</td>
-        <td>
-          <figure class="image is-128x128">
-            <img src="data:image/png;base64, {{ brand.logo }}" width="128" height="128" alt="Brand Logo"/>
-          </figure>
-        </td>
-        <td>
-          {% for discount in brand.discounts %}
-            {{ discount.value + '%' if discount.type === 'Percentage' else '$' + discount.value}}
-          {% endfor %}
-        </td>
-        <td>
-          <a class="button is-link is-fullwidth is-light" href="/admin/brand/edit/{{ brand.id }}">
-            <span>Edit</span>
+  <nav class="navbar">
+    <div class="navbar-menu">
+      <div class="navbar-start">
+        <div class="navbar-item">
+          <div class="field has-addons">
+            <div class="control">
+              <input class="input" type="text" name="search" placeholder="Find a brand">
+            </div>
+            <div class="control">
+              <a class="button is-info is-outlined">
+                Search
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="navbar-end">
+        <div class="navbar-item">
+          <a href="/admin/product/create" class="button is-primary is-medium is-light">
+            <span class="icon">
+              <i class="fas fa-plus"></i>
+            </span>
+            <span>Add new Product</span>
           </a>
-        </td>
-        <td>
-          <a class="button is-danger is-fullwidth is-light" href="/admin/brand/delete/{{ brand.id }}">
-            <span>Delete</span>
-          </a>
-        </td>
-        <td>
-          <a href="/admin/product/create" class="button is-primary is-fullwidth is-light"
-            >Create New Product</a
-          >
-        </td>
-         <td>
-          <a href="/admin/brand/product/{{brand.id}}" class="button is-light is-fullwidth is-light"
-            >View Products</a
-          >
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-</div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="panel-block">
+    <table class="table is-striped is-narrow is-hoverable is-fullwidth">
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Brand</th>
+          <th>Logo</th>
+          <th>Discounts</th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for brand in brands %}
+        <tr id="brand-{{ brand.id }}">
+          <td>{{ brand.id }}</td>
+          <td>{{ brand.name }}</td>
+          <td>
+            <figure class="image is-128x128">
+              <img src="data:image/png;base64, {{ brand.logo }}" width="128" height="128" alt="Brand Logo"/>
+            </figure>
+          </td>
+          <td>
+            {% for discount in brand.discounts %}
+              {{ discount.value + '%' if discount.type === 'Percentage' else '$' + discount.value}}
+            {% endfor %}
+          </td>
+          <td>
+            <a class="button is-link is-fullwidth is-light" href="/admin/brand/edit/{{ brand.id }}">
+              <span>Edit</span>
+            </a>
+          </td>
+          <td>
+            <a class="button is-danger is-fullwidth is-light" href="/admin/brand/delete/{{ brand.id }}">
+              <span>Delete</span>
+            </a>
+          </td>
+          <td>
+            <a href="/admin/product/create" class="button is-primary is-fullwidth is-light"
+              >Create New Product</a
+            >
+          </td>
+          <td>
+            <a href="/admin/brand/product/{{brand.id}}" class="button is-light is-fullwidth is-light"
+              >View Products</a
+            >
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}
+{% block footerScripts %}
+  <script>
+    const inputName = document.querySelector('input[name=search]');
+
+    inputName.addEventListener('input', checkName);
+
+    function checkName(event) {
+      const searchValue = event.target.value.toLowerCase();
+      const brands = {{ brands | dump | safe }};
+      brands.forEach((brand) => {
+        const name = brand.name.toLowerCase();
+        const brandTr = document.getElementById(`brand-${brand.id}`);
+        if (name.indexOf(searchValue) > -1) {
+          brandTr.classList.remove('is-hidden');
+        } else {
+          brandTr.classList.add('is-hidden');
+        }
+      });
+    }
+  </script>
 {% endblock %}
