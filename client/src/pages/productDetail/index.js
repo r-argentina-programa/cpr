@@ -22,12 +22,15 @@ export default function ProductDetail() {
   const { product, getProductDetails, error, getProductsByBrand } = useContext(ProductContext);
   let { products: productsByBrand } = useContext(ProductContext);
   const [cart, setCart] = useState([]);
+  const [status, setStatus] = useState('');
 
   let localCart = localStorage.getItem('cart');
 
   useEffect(() => {
     localCart = JSON.parse(localCart);
-    if (localCart) setCart(localCart);
+    if (localCart) {
+      setCart(localCart);
+    }
   }, []);
 
   useEffect(() => {
@@ -50,6 +53,9 @@ export default function ProductDetail() {
     const existingProduct = cartCopy.find((productItem) => productItem.id === productToSave.id);
     if (!existingProduct) {
       cartCopy.push(productToSave);
+      setStatus(`${productToSave.name} has been successfully added to the cart.`);
+    } else {
+      setStatus(`${productToSave.name} is already in your Cart!`);
     }
 
     setCart(cartCopy);
@@ -57,12 +63,23 @@ export default function ProductDetail() {
     const stringCart = JSON.stringify(cartCopy);
     localStorage.setItem('cart', stringCart);
   }
+
   productsByBrand = productsByBrand.filter((productItem) => productItem.id !== Number(id));
 
   return (
     <>
       <Header />
-      {error ? <Alert variant="danger">{error}</Alert> : null}
+      {error ? (
+        <Alert variant="danger" style={{ textAlign: 'center' }}>
+          {error}
+        </Alert>
+      ) : null}
+      {status && (
+        <Alert variant="info" style={{ textAlign: 'center' }}>
+          {status}
+        </Alert>
+      )}
+
       {!product.brand ? (
         <p>Loading.. Please wait</p>
       ) : (
@@ -108,9 +125,13 @@ export default function ProductDetail() {
                   <span>${product.defaultPrice}</span>
                 )}
                 <br />
-                <a href="/cart" onClick={() => addProductToCart(product)}>
+                <button
+                  type="button"
+                  className="add-cart"
+                  onClick={() => addProductToCart(product)}
+                >
                   Add to Cart
-                </a>
+                </button>
               </ProductPrice>
             </RightColumnContainer>
           </Container>
