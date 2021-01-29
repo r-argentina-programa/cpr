@@ -31,7 +31,7 @@ export default function CardsList({ item, imageSrc, link }) {
 
   return (
     <Container>
-      <Card className="card">
+      <Card className="card" style={{ height: '400px' }}>
         <Card.Body>
           <Card.Title style={{ textAlign: 'center' }}>{item.name}</Card.Title>
           <div className="img-container">
@@ -92,7 +92,12 @@ export default function CardsList({ item, imageSrc, link }) {
           </TimeStyle>
           <Link to={link}>
             <Button
-              style={{ width: '100%', backgroundColor: '#0D6572', borderColor: '#0D6572' }}
+              style={{
+                width: '100%',
+                backgroundColor: '#0D6572',
+                borderColor: '#0D6572',
+                marginTop: `${!item.discount ? '2.6rem' : ' '}`,
+              }}
               variant="info"
             >
               See Details
