@@ -91,7 +91,11 @@ describe('ManagementController methods', () => {
     expect(appMock.get).toHaveBeenNthCalledWith(4, `${ROUTE}/brand/:id`, expect.any(Function));
     expect(appMock.get).toHaveBeenNthCalledWith(5, `${ROUTE}/categories/all`, expect.any(Function));
     expect(appMock.get).toHaveBeenNthCalledWith(6, `${ROUTE}/category/:id`, expect.any(Function));
-    expect(appMock.get).toHaveBeenNthCalledWith(7, `${ROUTE}/products/all`, expect.any(Function));
+    expect(appMock.get).toHaveBeenNthCalledWith(
+      7,
+      `${ROUTE}/products/all/:offset/:limit`,
+      expect.any(Function)
+    );
     expect(appMock.get).toHaveBeenNthCalledWith(8, `${ROUTE}/product/:id`, expect.any(Function));
     expect(appMock.get).toHaveBeenNthCalledWith(9, `${ROUTE}/search/:term`, expect.any(Function));
     expect(appMock.get).toHaveBeenNthCalledWith(
