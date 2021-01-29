@@ -16,6 +16,7 @@ import {
   GET_CART_DATA,
   GET_PRODUCTS_ERROR,
   PRODUCT_SEARCH_ERROR,
+  PRODUCTS_LOAD,
 } from './productTypes';
 
 export const ProductContext = createContext();
@@ -27,12 +28,14 @@ const ProductContextProvider = ({ children }) => {
     search: [],
     cartData: {},
     error: false,
+    loading: true,
   };
 
   const [state, dispatch] = useReducer(productReducer, initialState);
 
   const getAllProducts = async () => {
     try {
+      dispatch({ type: PRODUCTS_LOAD });
       const res = await api.get('/api/products/all/5/5');
       if (res.status === 200) {
         dispatch({ type: GET_ALL_PRODUCTS, payload: res.data });
@@ -44,6 +47,7 @@ const ProductContextProvider = ({ children }) => {
 
   const getProductDetails = async (id) => {
     try {
+      dispatch({ type: PRODUCTS_LOAD });
       const res = await api.get(`api/product/${id}`);
       if (res.status === 200) {
         dispatch({ type: GET_PRODUCT_DETAILS, payload: res.data });
@@ -55,6 +59,7 @@ const ProductContextProvider = ({ children }) => {
 
   const getProductsByBrand = async (brandId) => {
     try {
+      dispatch({ type: PRODUCTS_LOAD });
       const res = await api.get(`/api/brand/${brandId}/viewProducts`);
       if (res.status === 200) {
         dispatch({ type: PRODUCTS_BY_BRAND, payload: res.data });
@@ -66,6 +71,7 @@ const ProductContextProvider = ({ children }) => {
 
   const getProductsByCategory = async (categoryId) => {
     try {
+      dispatch({ type: PRODUCTS_LOAD });
       const res = await api.get(`/api/category/${categoryId}/viewProducts`);
       if (res.status === 200) {
         dispatch({ type: PRODUCTS_BY_CATEGORY, payload: res.data });
@@ -76,10 +82,10 @@ const ProductContextProvider = ({ children }) => {
   };
 
   const getProductBySearch = async (term) => {
+    dispatch({ type: PRODUCTS_LOAD });
     try {
       const res = await api.get(`/api/search/${term}`);
       if (res.status === 200) {
-        console.log(res.data);
         if (res.data.length === 0) {
           dispatch({
             type: PRODUCT_SEARCH_ERROR,
@@ -96,6 +102,7 @@ const ProductContextProvider = ({ children }) => {
 
   const getFilteredProducts = async (brands, categories, price, page, search) => {
     try {
+      dispatch({ type: PRODUCTS_LOAD });
       if (brands.length === 0) {
         brands = '0';
       }
@@ -123,6 +130,7 @@ const ProductContextProvider = ({ children }) => {
 
   const getCartFinalDiscounts = async (productsId, productsAmount) => {
     try {
+      dispatch({ type: PRODUCTS_LOAD });
       const res = await api.get(`/api/getCartPrice/${productsId}/${productsAmount}`);
       dispatch({ type: GET_CART_DATA, payload: res.data });
     } catch (error) {
@@ -137,6 +145,7 @@ const ProductContextProvider = ({ children }) => {
         search: state.search,
         cartData: state.cartData,
         error: state.error,
+        loading: state.loading,
         getAllProducts,
         getProductDetails,
         getProductsByBrand,
