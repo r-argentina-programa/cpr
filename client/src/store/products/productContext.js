@@ -32,12 +32,12 @@ const ProductContextProvider = ({ children }) => {
 
   const getAllProducts = async () => {
     try {
-      const res = await api.get('/api/products/all');
+      const res = await api.get('/api/products/all/5/5');
       if (res.status === 200) {
         dispatch({ type: GET_ALL_PRODUCTS, payload: res.data });
       }
     } catch (error) {
-      dispatch({ type: GET_PRODUCTS_ERROR, payload: error.message });
+      dispatch({ type: GET_PRODUCTS_ERROR, payload: error.response.data.error });
     }
   };
 
@@ -48,7 +48,7 @@ const ProductContextProvider = ({ children }) => {
         dispatch({ type: GET_PRODUCT_DETAILS, payload: res.data });
       }
     } catch (error) {
-      dispatch({ type: GET_PRODUCTS_ERROR, payload: error.message });
+      dispatch({ type: GET_PRODUCTS_ERROR, payload: error.response.data.error });
     }
   };
 
@@ -59,7 +59,7 @@ const ProductContextProvider = ({ children }) => {
         dispatch({ type: PRODUCTS_BY_BRAND, payload: res.data });
       }
     } catch (error) {
-      dispatch({ type: GET_PRODUCTS_ERROR, payload: error.message });
+      dispatch({ type: GET_PRODUCTS_ERROR, payload: error.response.data.error });
     }
   };
 
@@ -70,7 +70,7 @@ const ProductContextProvider = ({ children }) => {
         dispatch({ type: PRODUCTS_BY_CATEGORY, payload: res.data });
       }
     } catch (error) {
-      dispatch({ type: GET_PRODUCTS_ERROR, payload: error.message });
+      dispatch({ type: GET_PRODUCTS_ERROR, payload: error.response.data.error });
     }
   };
 
@@ -81,7 +81,7 @@ const ProductContextProvider = ({ children }) => {
         dispatch({ type: GET_PRODUCT_SEARCH, payload: res.data });
       }
     } catch (error) {
-      dispatch({ type: GET_PRODUCTS_ERROR, payload: error.message });
+      dispatch({ type: GET_PRODUCTS_ERROR, payload: error.response.data.error });
     }
   };
 
@@ -99,7 +99,7 @@ const ProductContextProvider = ({ children }) => {
       );
       dispatch({ type: GET_PRODUCTS_FILTERED, payload: res.data });
     } catch (error) {
-      dispatch({ type: GET_PRODUCTS_ERROR, payload: error.message });
+      dispatch({ type: GET_PRODUCTS_ERROR, payload: error.response.data.error });
     }
   };
 
@@ -108,7 +108,7 @@ const ProductContextProvider = ({ children }) => {
       const res = await api.get(`/api/getCartPrice/${productsId}/${productsAmount}`);
       dispatch({ type: GET_CART_DATA, payload: res.data });
     } catch (error) {
-      dispatch({ type: GET_PRODUCTS_ERROR, payload: error.message });
+      dispatch({ type: GET_PRODUCTS_ERROR, payload: error.response.data.error });
     }
   };
   return (
