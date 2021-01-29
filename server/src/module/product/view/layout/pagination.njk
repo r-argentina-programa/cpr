@@ -1,0 +1,4 @@
+<nav class="pagination is-centered" role="navigation" aria-label="pagination">
+  <a class="pagination-previous" href="/admin/product/{{page if page === 1 else page - 1}}" {{'disabled' if page === 1 else ''}}>Previous</a>
+  <a class="pagination-next" href="/admin/product/{{page + 1}}">Next page</a>
+</nav>

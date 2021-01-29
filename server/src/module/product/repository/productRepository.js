@@ -154,6 +154,10 @@ module.exports = class ProductRepository {
     });
   }
 
+  async getAllCount() {
+    return this.productModel.count();
+  }
+
   /**
    * @param {string} term
    */

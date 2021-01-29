@@ -88,6 +88,10 @@ module.exports = class ProductService {
     return this.ProductRepository.getAll(offset, limit);
   }
 
+  async getAllCount() {
+    return this.ProductRepository.getAllCount();
+  }
+
   /**
    * @param {string} term
    */

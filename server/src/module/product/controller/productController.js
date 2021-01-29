@@ -32,7 +32,7 @@ module.exports = class ProductController {
     );
     app.get(`${ROUTE}/delete/:id`, this.auth.bind(this), this.delete.bind(this));
     app.get(`${ROUTE}/edit/:id`, this.auth.bind(this), this.edit.bind(this));
-    app.get(`${ROUTE}/`, this.auth.bind(this), this.index.bind(this));
+    app.get(`${ROUTE}/:page?`, this.auth.bind(this), this.index.bind(this));
     app.get(`${ROUTE}/create`, this.auth.bind(this), this.create.bind(this));
   }
 
@@ -55,12 +55,18 @@ module.exports = class ProductController {
    * @param  {import("express").Response} res
    */
   async index(req, res) {
-    const productsList = await this.productService.getAll();
+    const page = req.params.page ? Number(req.params.page) : 1;
+    const limit = 10;
+    const offset = limit * (page - 1);
+    const productsList = await this.productService.getAll(offset, limit);
+    /* const productsCount = await this.productService.getAllCount();
+    console.log(productsCount); */
     const { errors, messages } = req.session;
     res.render(`${this.PRODUCT_VIEWS}/index.njk`, {
       productsList,
       messages,
       errors,
+      page,
     });
     req.session.errors = [];
     req.session.messages = [];
