@@ -30,8 +30,8 @@ module.exports = class BrandService {
     return this.brandRepository.delete(brand);
   }
 
-  async getAll(offset, limit) {
-    return this.brandRepository.getAll(offset, limit);
+  async getAll() {
+    return this.brandRepository.getAll();
   }
 
   /**
