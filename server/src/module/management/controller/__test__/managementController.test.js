@@ -110,7 +110,7 @@ describe('ManagementController methods', () => {
     );
     expect(appMock.get).toHaveBeenNthCalledWith(
       12,
-      `${ROUTE}/products/all/:brands/:categories/:price`,
+      `${ROUTE}/products/all/:brands/:categories/:price/:page/:search`,
       expect.any(Function)
     );
     expect(appMock.get).toHaveBeenNthCalledWith(
