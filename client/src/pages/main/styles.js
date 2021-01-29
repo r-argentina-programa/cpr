@@ -20,7 +20,6 @@ export const SidebarContainer = styled.div`
     padding: 0;
     > li {
       padding: 1rem;
-      margin-top: 1rem;
       &:hover {
         ul {
           display: block;
