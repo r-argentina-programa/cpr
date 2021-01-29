@@ -86,7 +86,7 @@ export const ProductPrice = styled.div`
     color: #43474d;
     margin-right: 20px;
   }
-  a {
+  button.add-cart {
     display: inline-block;
     background-color: rgb(13, 101, 114);
     font-weight: 500;

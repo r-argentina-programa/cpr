@@ -84,8 +84,8 @@ module.exports = class ProductService {
     return this.ProductRepository.delete(product);
   }
 
-  async getAll() {
-    return this.ProductRepository.getAll();
+  async getAll(offset, limit) {
+    return this.ProductRepository.getAll(offset, limit);
   }
 
   /**

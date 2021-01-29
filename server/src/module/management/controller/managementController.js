@@ -31,7 +31,7 @@ module.exports = class ManagementController {
     app.get(`${ROUTE}/brand/:id`, this.brand.bind(this));
     app.get(`${ROUTE}/categories/all`, this.allCategories.bind(this));
     app.get(`${ROUTE}/category/:id`, this.category.bind(this));
-    app.get(`${ROUTE}/products/all`, this.allProducts.bind(this));
+    app.get(`${ROUTE}/products/all/:offset?/:limit?`, this.allProducts.bind(this));
     app.get(`${ROUTE}/product/:id`, this.product.bind(this));
     app.get(`${ROUTE}/search/:term`, this.search.bind(this));
     app.get(`${ROUTE}/brand/:id/viewProducts`, this.viewProductsByBrand.bind(this));
@@ -144,7 +144,7 @@ module.exports = class ManagementController {
       const brands = await this.BrandService.getAll();
       res.status(200).json(brands);
     } catch (e) {
-      res.status(500).send(e);
+      res.status(500).send({ error: 'Sorry, an error occurred' });
     }
   }
 
@@ -158,7 +158,7 @@ module.exports = class ManagementController {
       const brand = await this.BrandService.getById(id);
       res.status(200).json(brand);
     } catch (e) {
-      res.status(500).send(e);
+      res.status(500).send({ error: 'Brand not Found' });
     }
   }
 
@@ -171,7 +171,7 @@ module.exports = class ManagementController {
       const categories = await this.CategoryService.getAll();
       res.status(200).json(categories);
     } catch (e) {
-      res.status(500).send(e);
+      res.status(500).send({ error: 'Sorry, an error occurred' });
     }
   }
 
@@ -185,7 +185,7 @@ module.exports = class ManagementController {
       const category = await this.CategoryService.getById(id);
       res.status(200).json(category);
     } catch (e) {
-      res.status(500).send(e);
+      res.status(500).send({ error: 'Category not found' });
     }
   }
 
@@ -195,10 +195,11 @@ module.exports = class ManagementController {
    */
   async allProducts(req, res) {
     try {
-      const products = await this.ProductService.getAll();
+      const { offset, limit } = req.params;
+      const products = await this.ProductService.getAll(offset, limit);
       res.status(200).json(products);
     } catch (e) {
-      res.status(500).send(e);
+      res.status(500).send({ error: 'Error Loading Products' });
     }
   }
 
@@ -212,7 +213,7 @@ module.exports = class ManagementController {
       const product = await this.ProductService.getById(id);
       res.status(200).json(product);
     } catch (e) {
-      res.status(500).send(e);
+      res.status(500).send({ error: 'Product Not found' });
     }
   }
 
@@ -226,7 +227,7 @@ module.exports = class ManagementController {
       const products = await this.ProductService.getAllProductsSearch(term);
       res.status(200).json(products);
     } catch (e) {
-      res.status(500).send(e);
+      res.status(500).send({ error: 'Sorry, an error occurred' });
     }
   }
 
@@ -248,7 +249,7 @@ module.exports = class ManagementController {
       );
       res.status(200).json(products);
     } catch (e) {
-      res.status(500).send(e);
+      res.status(500).send({ error: 'Sorry, an error occurred' });
     }
   }
 
@@ -269,7 +270,7 @@ module.exports = class ManagementController {
       const cartPrice = calculateCartPrice(productsIdsAndQuantity, products);
       res.status(200).json(cartPrice);
     } catch (e) {
-      res.status(500).send(e);
+      res.status(500).send({ error: 'Sorry, an error occurred' });
     }
   }
 };
