@@ -8,7 +8,6 @@ import buildFormatter from 'react-timeago/lib/formatters/buildFormatter';
 import englishString from 'react-timeago/lib/language-strings/en';
 import { useEffect, useState } from 'react';
 import ab2str from 'arraybuffer-to-string';
-import { Link } from 'react-router-dom';
 import { TimeStyle, Container } from './styles';
 
 const formatter = buildFormatter(englishString);
@@ -90,7 +89,7 @@ export default function CardsList({ item, imageSrc, link }) {
             <TimeAgo date={`${item.createdAt}`} formatter={formatter} />
             <br />
           </TimeStyle>
-          <Link to={link}>
+          <a href={link}>
             <Button
               style={{
                 width: '100%',
@@ -102,7 +101,7 @@ export default function CardsList({ item, imageSrc, link }) {
             >
               See Details
             </Button>
-          </Link>
+          </a>
         </Card.Body>
       </Card>
     </Container>
