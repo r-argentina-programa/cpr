@@ -45,7 +45,6 @@ export default function Header() {
       setCart(localCart);
     }
   }, []);
-  console.log(cart.length);
 
   return (
     <header>
