@@ -71,4 +71,5 @@ export const Container = styled.div`
 
 export const ContentContainer = styled.div`
   overflow: scroll;
+  width: 100%;
 `;
