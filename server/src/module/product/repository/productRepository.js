@@ -113,7 +113,7 @@ module.exports = class ProductRepository {
     return this.productModel.destroy({ where: { id: product.id } });
   }
 
-  async getAll() {
+  async getAll(offset, limit) {
     const productsInstance = await this.productModel.findAll({
       include: [
         {
@@ -136,6 +136,8 @@ module.exports = class ProductRepository {
           as: 'discounts',
         },
       ],
+      offset,
+      limit,
     });
 
     return productsInstance.map((product) => {

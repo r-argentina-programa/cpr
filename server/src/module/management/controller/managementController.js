@@ -30,7 +30,7 @@ module.exports = class ManagementController {
     app.get(`${ROUTE}/brand/:id`, this.brand.bind(this));
     app.get(`${ROUTE}/categories/all`, this.allCategories.bind(this));
     app.get(`${ROUTE}/category/:id`, this.category.bind(this));
-    app.get(`${ROUTE}/products/all`, this.allProducts.bind(this));
+    app.get(`${ROUTE}/products/all/:offset/:limit`, this.allProducts.bind(this));
     app.get(`${ROUTE}/product/:id`, this.product.bind(this));
     app.get(`${ROUTE}/search/:term`, this.search.bind(this));
     app.get(`${ROUTE}/brand/:id/viewProducts`, this.viewProductsByBrand.bind(this));
@@ -194,7 +194,8 @@ module.exports = class ManagementController {
    */
   async allProducts(req, res) {
     try {
-      const products = await this.ProductService.getAll();
+      const { offset, limit } = req.params;
+      const products = await this.ProductService.getAll(offset, limit);
       res.status(200).json(products);
     } catch (e) {
       res.status(500).send(e);
