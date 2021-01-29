@@ -155,11 +155,13 @@ describe('CategoryController methods', () => {
   test('create renders form to add a new category', async () => {
     await mockController.create(reqMock, resMock);
     const discounts = discountServiceMock.getAll();
+    const { categories } = reqMock.session;
     expect(discountServiceMock.getAll).toHaveBeenCalledTimes(2);
     expect(resMock.render).toHaveBeenCalledTimes(1);
     expect(resMock.render).toHaveBeenCalledWith('category/view/form.njk', {
       discounts,
       category: { discounts: [] },
+      categories,
     });
   });
 
