@@ -15,6 +15,7 @@ import {
   GET_PRODUCTS_FILTERED,
   GET_CART_DATA,
   GET_PRODUCTS_ERROR,
+  PRODUCT_SEARCH_ERROR,
 } from './productTypes';
 
 export const ProductContext = createContext();
@@ -78,7 +79,15 @@ const ProductContextProvider = ({ children }) => {
     try {
       const res = await api.get(`/api/search/${term}`);
       if (res.status === 200) {
-        dispatch({ type: GET_PRODUCT_SEARCH, payload: res.data });
+        console.log(res.data);
+        if (res.data.length === 0) {
+          dispatch({
+            type: PRODUCT_SEARCH_ERROR,
+            payload: "We couldn't find any results for this term",
+          });
+        } else {
+          dispatch({ type: GET_PRODUCT_SEARCH, payload: res.data });
+        }
       }
     } catch (error) {
       dispatch({ type: GET_PRODUCTS_ERROR, payload: error.response.data.error });

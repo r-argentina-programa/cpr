@@ -7,6 +7,7 @@ import {
   GET_PRODUCTS_FILTERED,
   GET_PRODUCTS_ERROR,
   GET_CART_DATA,
+  PRODUCT_SEARCH_ERROR,
 } from './productTypes';
 
 export default function productReducer(state, action) {
@@ -37,6 +38,12 @@ export default function productReducer(state, action) {
       return {
         ...state,
         error: action.payload,
+      };
+    case PRODUCT_SEARCH_ERROR:
+      return {
+        ...state,
+        error: action.payload,
+        products: [],
       };
     default:
       return state;

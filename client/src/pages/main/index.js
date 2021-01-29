@@ -64,7 +64,6 @@ export default function Main() {
   function handleFilter() {
     setPriceRange(`${price.minPrice}-${price.maxPrice}`);
   }
-
   return (
     <>
       <Header />
@@ -147,10 +146,9 @@ export default function Main() {
             </div>
           </ul>
         </SidebarContainer>
-        {error && <Alert variant="danger">{error}</Alert>}
-
         <ContentContainer>
           <ListContainer className="container-fluid">
+            {error && <Alert variant="danger">{error}</Alert>}
             {products.map((product) => (
               <CardsList
                 key={product.id}
