@@ -21,7 +21,7 @@ module.exports = class BrandController {
   configureRoutes(app) {
     const ROUTE = this.ROUTE_BASE;
 
-    app.get(`${ROUTE}/`, this.auth.bind(this), this.index.bind(this));
+    app.get(`${ROUTE}/:page?`, this.auth.bind(this), this.index.bind(this));
     app.get(`${ROUTE}/create`, this.auth.bind(this), this.create.bind(this));
     app.get(`${ROUTE}/edit/:id`, this.auth.bind(this), this.edit.bind(this));
     app.get(`${ROUTE}/product/:id`, this.auth.bind(this), this.viewProducts.bind(this));
@@ -52,9 +52,12 @@ module.exports = class BrandController {
    * @param {import('express').Response} res
    */
   async index(req, res) {
-    const brands = await this.brandService.getAll();
+    const page = req.params.page ? Number(req.params.page) : 1;
+    const limit = 10;
+    const offset = limit * (page - 1);
+    const brands = await this.brandService.getAll(offset, limit);
     const { errors, messages } = req.session;
-    res.render(`${this.BRAND_VIEW_DIR}/index.njk`, { brands, messages, errors });
+    res.render(`${this.BRAND_VIEW_DIR}/index.njk`, { brands, messages, errors, page });
     req.session.errors = [];
     req.session.messages = [];
   }

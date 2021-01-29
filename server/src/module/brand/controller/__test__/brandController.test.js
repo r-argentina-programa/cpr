@@ -76,6 +76,7 @@ describe('BrandController methods', () => {
   test('brand renders index.njk with a list of brands', async () => {
     const brands = serviceMock.getAll();
     await mockController.index(reqMock, resMock);
+    const page = reqMock.params.page ? Number(reqMock.params.page) : 1;
 
     expect(serviceMock.getAll).toHaveBeenCalledTimes(2);
     expect(resMock.render).toHaveBeenCalledTimes(1);
@@ -84,6 +85,7 @@ describe('BrandController methods', () => {
       brands,
       errors,
       messages,
+      page,
     });
   });
 

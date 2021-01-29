@@ -60,12 +60,14 @@ module.exports = class BrandRepository {
     return Boolean(await this.brandModel.destroy({ where: { id: brand.id } }));
   }
 
-  async getAll() {
+  async getAll(offset, limit) {
     const brandInstances = await this.brandModel.findAll({
       include: {
         model: this.discountModel,
         as: 'discounts',
       },
+      offset,
+      limit,
     });
 
     return brandInstances.map(fromModelToEntity);

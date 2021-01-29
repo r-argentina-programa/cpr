@@ -1,80 +1,86 @@
-{% extends 'management/view/layout/base.njk' %} {% block body %}
-<h1 class="title is-1">Brand Managment</h1>
+{% extends 'management/view/layout/base.njk' %}
+{% block body %}
+  <h1 class="title is-1">Brand Managment</h1>
 
-{% for error in errors %}
-<div class="notification is-danger">
-  {{error}}
-</div>
-{% endfor %}
+  {% for error in errors %}
+    <div class="notification is-danger">
+      {{error}}
+    </div>
+  {% endfor %}
 
-{% for message in messages %}
-<div class="notification is-success">
-  {{message}}
-</div>
-{% endfor %}
+  {% for message in messages %}
+    <div class="notification is-success">
+      {{message}}
+    </div>
+  {% endfor %}
 
-<nav class="level-right">
-  <div class="level-item">
-    <a href="/admin/brand/create" class="button is-primary is-medium is-light">
-      <span class="icon"><i class="fas fa-plus"></i></span>
-      <span>Add new Brand</span>
-    </a>
-  </div>
-</nav>
+  <nav class="level-right">
+    <div class="level-item">
+      <a href="/admin/brand/create" class="button is-primary is-medium is-light">
+        <span class="icon">
+          <i class="fas fa-plus"></i>
+        </span>
+        <span>Add new Brand</span>
+      </a>
+    </div>
+  </nav>
 
-<div class="panel-block">
-  <table class="table is-striped is-narrow is-hoverable is-fullwidth">
-    <thead>
-      <tr>
-        <th>Id</th>
-        <th>Brand</th>
-        <th>Logo</th>
-        <th>Discounts</th>
-        <th></th>
-        <th></th>
-        <th></th>
-        <th></th>
-      </tr>
-    </thead>
+  <div class="panel-block">
+    <table class="table is-striped is-narrow is-hoverable is-fullwidth">
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Brand</th>
+          <th>Logo</th>
+          <th>Discounts</th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
 
-    <tbody>
-      {% for brand in brands %}
-      <tr>
-        <td>{{ brand.id }}</td>
-        <td>{{ brand.name }}</td>
-        <td>
-          <figure class="image is-128x128">
-            <img src="data:image/png;base64, {{ brand.logo }}" width="128" height="128" alt="Brand Logo"/>
-          </figure>
-        </td>
-        <td>
-          {% for discount in brand.discounts %}
-            {{ discount.value + '%' if discount.type === 'Percentage' else '$' + discount.value}}
-          {% endfor %}
-        </td>
-        <td>
-          <a class="button is-link is-fullwidth is-light" href="/admin/brand/edit/{{ brand.id }}">
-            <span>Edit</span>
-          </a>
-        </td>
-        <td>
-          <a class="button is-danger is-fullwidth is-light" href="/admin/brand/delete/{{ brand.id }}">
-            <span>Delete</span>
-          </a>
-        </td>
-        <td>
-          <a href="/admin/product/create" class="button is-primary is-fullwidth is-light"
+      <tbody>
+        {% for brand in brands %}
+          <tr>
+            <td>{{ brand.id }}</td>
+            <td>{{ brand.name }}</td>
+            <td>
+              <figure class="image is-128x128">
+                <img src="data:image/png;base64, {{ brand.logo }}" width="128" height="128" alt="Brand Logo"/>
+              </figure>
+            </td>
+            <td>
+              {% for discount in brand.discounts %}
+                {{ discount.value + '%' if discount.type === 'Percentage' else '$' + discount.value}}
+              {% endfor %}
+            </td>
+            <td>
+              <a class="button is-link is-fullwidth is-light" href="/admin/brand/edit/{{ brand.id }}">
+                <span>Edit</span>
+              </a>
+            </td>
+            <td>
+              <a class="button is-danger is-fullwidth is-light" href="/admin/brand/delete/{{ brand.id }}">
+                <span>Delete</span>
+              </a>
+            </td>
+            <td>
+              <a href="/admin/product/create" class="button is-primary is-fullwidth is-light"
             >Create New Product</a
           >
-        </td>
-         <td>
-          <a href="/admin/brand/product/{{brand.id}}" class="button is-light is-fullwidth is-light"
+            </td>
+            <td>
+              <a href="/admin/brand/product/{{brand.id}}" class="button is-light is-fullwidth is-light"
             >View Products</a
           >
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-</div>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <section class="section">
+    {% include "management/view/layout/pagination.njk" %}
+  </section>
 {% endblock %}
