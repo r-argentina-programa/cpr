@@ -53,6 +53,7 @@ module.exports = class BrandController {
    */
   async index(req, res) {
     const brands = await this.brandService.getAll();
+    req.session.brands = brands;
     const { errors, messages } = req.session;
     res.render(`${this.BRAND_VIEW_DIR}/index.njk`, { brands, messages, errors });
     req.session.errors = [];
@@ -66,10 +67,12 @@ module.exports = class BrandController {
   async create(req, res) {
     try {
       const discounts = await this.discountService.getAll();
+      const { brands } = req.session;
       if (discounts.length > 0) {
         res.render(`${this.BRAND_VIEW_DIR}/form.njk`, {
           discounts,
           brand: { discounts: [] },
+          brands,
         });
       } else {
         throw new Error('To create a brand you must first create a discount');
@@ -93,10 +96,12 @@ module.exports = class BrandController {
     try {
       const brand = await this.brandService.getById(id);
       const discounts = await this.discountService.getAll();
+      const { brands } = req.session;
 
       res.render(`${this.BRAND_VIEW_DIR}/form.njk`, {
         brand,
         discounts,
+        brands,
       });
     } catch (e) {
       req.session.errors = [e.message, e.stack];
