@@ -14,6 +14,8 @@ import {
   GET_PRODUCT_SEARCH,
   GET_PRODUCTS_FILTERED,
   GET_CART_DATA,
+  GET_NUMBER_OF_PRODUCTS,
+  GET_NUMBER_OF_PRODUCTS_ERROR,
   GET_PRODUCTS_ERROR,
   PRODUCT_SEARCH_ERROR,
   PRODUCTS_LOAD,
@@ -27,6 +29,7 @@ const ProductContextProvider = ({ children }) => {
     product: {},
     search: [],
     cartData: {},
+    numberOfProducts: 0,
     error: false,
     loading: true,
   };
@@ -82,7 +85,6 @@ const ProductContextProvider = ({ children }) => {
   };
 
   const getProductBySearch = async (term) => {
-    dispatch({ type: PRODUCTS_LOAD });
     try {
       const res = await api.get(`/api/search/${term}`);
       if (res.status === 200) {
@@ -98,6 +100,10 @@ const ProductContextProvider = ({ children }) => {
     } catch (error) {
       dispatch({ type: GET_PRODUCTS_ERROR, payload: error.response.data.error });
     }
+  };
+
+  const removeProductsBySearch = () => {
+    dispatch({ type: GET_PRODUCT_SEARCH, payload: [] });
   };
 
   const getFilteredProducts = async (brands, categories, price, page, search) => {
@@ -128,6 +134,17 @@ const ProductContextProvider = ({ children }) => {
     }
   };
 
+  const getNumberOfProducts = async (query) => {
+    try {
+      const res = await api.get(`/api/products/numberOfProducts/?${query}`);
+      if (res.status === 200) {
+        dispatch({ type: GET_NUMBER_OF_PRODUCTS, payload: res.data });
+      }
+    } catch (error) {
+      dispatch({ type: GET_NUMBER_OF_PRODUCTS_ERROR, payload: error.response.data.error });
+    }
+  };
+
   const getCartFinalDiscounts = async (productsId, productsAmount) => {
     try {
       dispatch({ type: PRODUCTS_LOAD });
@@ -146,13 +163,16 @@ const ProductContextProvider = ({ children }) => {
         cartData: state.cartData,
         error: state.error,
         loading: state.loading,
+        numberOfProducts: state.numberOfProducts,
         getAllProducts,
         getProductDetails,
         getProductsByBrand,
         getProductsByCategory,
         getProductBySearch,
+        removeProductsBySearch,
         getFilteredProducts,
         getCartFinalDiscounts,
+        getNumberOfProducts,
       }}
     >
       {children}

@@ -96,7 +96,8 @@ module.exports = class ProductService {
    * @param {string} term
    */
   async getAllProductsSearch(term) {
-    return this.ProductRepository.getAllProductsSearch(term);
+    const products = await this.ProductRepository.getAllProductsSearch(term);
+    return products.filter((v, i, a) => a.findIndex((t) => t.id === v.id) === i);
   }
 
   async getAllByCategoryAndBrand(categories, brands, price, page, search) {
@@ -105,6 +106,16 @@ module.exports = class ProductService {
       brands,
       price,
       page,
+      search
+    );
+    return data;
+  }
+
+  async getNumberOfProducts(categories, brands, price, search) {
+    const data = await this.ProductRepository.getNumberOfProducts(
+      categories,
+      brands,
+      price,
       search
     );
     return data;

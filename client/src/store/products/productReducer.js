@@ -6,6 +6,8 @@ import {
   GET_PRODUCT_SEARCH,
   GET_PRODUCTS_FILTERED,
   GET_PRODUCTS_ERROR,
+  GET_NUMBER_OF_PRODUCTS_ERROR,
+  GET_NUMBER_OF_PRODUCTS,
   GET_CART_DATA,
   PRODUCT_SEARCH_ERROR,
   PRODUCTS_LOAD,
@@ -17,7 +19,6 @@ export default function productReducer(state, action) {
     case GET_PRODUCTS_FILTERED:
     case PRODUCTS_BY_BRAND:
     case PRODUCTS_BY_CATEGORY:
-    case GET_PRODUCT_SEARCH:
       return {
         ...state,
         products: [...action.payload],
@@ -44,11 +45,31 @@ export default function productReducer(state, action) {
         error: action.payload,
         loading: false,
       };
+    case GET_NUMBER_OF_PRODUCTS_ERROR:
+      return {
+        ...state,
+        error: action.payload,
+        loading: false,
+      };
+    case GET_NUMBER_OF_PRODUCTS:
+      return {
+        ...state,
+        numberOfProducts: action.payload,
+        error: false,
+        loading: false,
+      };
+    case GET_PRODUCT_SEARCH:
+      return {
+        ...state,
+        search: action.payload,
+        error: false,
+        loading: false,
+      };
     case PRODUCT_SEARCH_ERROR:
       return {
         ...state,
         error: action.payload,
-        products: [],
+        search: [],
         loading: false,
       };
     case PRODUCTS_LOAD:
