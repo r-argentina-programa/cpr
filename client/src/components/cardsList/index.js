@@ -30,9 +30,11 @@ export default function CardsList({ item, imageSrc, link }) {
 
   return (
     <Container>
-      <Card className="card" style={{ height: '400px' }}>
+      <Card className="card" style={{ height: '400px', width: '320px' }}>
         <Card.Body>
-          <Card.Title style={{ textAlign: 'center' }}>{item.name}</Card.Title>
+          <Card.Title style={{ textAlign: 'center', height: '20px', overflow: 'hidden' }}>
+            {item.name}
+          </Card.Title>
           <div className="img-container">
             <span className="item-span" />
             <Card.Img
