@@ -4,6 +4,7 @@ import { useContext, useEffect, useState } from 'react';
 import Alert from 'react-bootstrap/Alert';
 import ab2str from 'arraybuffer-to-string';
 import { Table } from 'react-bootstrap';
+import Spinner from 'react-bootstrap/Spinner';
 import { ProductContext } from '../../store/products/productContext';
 import {
   Container,
@@ -19,7 +20,9 @@ import CardsList from '../../components/cardsList';
 export default function ProductDetail() {
   const { id } = useParams();
   const [image, setImage] = useState('');
-  const { product, getProductDetails, error, getProductsByBrand } = useContext(ProductContext);
+  const { product, getProductDetails, error, getProductsByBrand, loading } = useContext(
+    ProductContext
+  );
   let { products: productsByBrand } = useContext(ProductContext);
   const [cart, setCart] = useState([]);
   const [status, setStatus] = useState('');
@@ -80,8 +83,10 @@ export default function ProductDetail() {
         </Alert>
       )}
 
-      {!product.brand ? (
-        <p>Loading.. Please wait</p>
+      {loading ? (
+        <Spinner animation="border" role="status" style={{ margin: '2rem auto', display: 'block' }}>
+          <span className="sr-only">Loading...</span>
+        </Spinner>
       ) : (
         <>
           <Container>
