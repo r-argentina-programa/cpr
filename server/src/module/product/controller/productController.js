@@ -65,9 +65,7 @@ module.exports = class ProductController {
       const { errors, messages } = req.session;
       const productsList = await this.productService.getAll(offset, limit);
 
-      if (productsList.length === 0) {
-        res.status(404).render('management/view/layout/404.njk');
-      } else {
+      if (!(productsList.length === 0)) {
         res.render(`${this.PRODUCT_VIEWS}/index.njk`, {
           productsList,
           messages,
@@ -76,10 +74,11 @@ module.exports = class ProductController {
         });
         req.session.errors = [];
         req.session.messages = [];
+      } else {
+        throw new Error();
       }
     } catch (e) {
-      req.session.errors = [e.message];
-      res.redirect(this.ROUTE_BASE);
+      res.status(404).render('management/view/layout/404.njk');
     }
   }
 
