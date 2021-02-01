@@ -30,10 +30,10 @@ module.exports = class ProductController {
       this.uploadMiddleware.single('file'),
       this.save.bind(this)
     );
+    app.get(`${ROUTE}/create`, this.auth.bind(this), this.create.bind(this));
     app.get(`${ROUTE}/delete/:id`, this.auth.bind(this), this.delete.bind(this));
     app.get(`${ROUTE}/edit/:id`, this.auth.bind(this), this.edit.bind(this));
-    app.get(`${ROUTE}/`, this.auth.bind(this), this.index.bind(this));
-    app.get(`${ROUTE}/create`, this.auth.bind(this), this.create.bind(this));
+    app.get(`${ROUTE}/:page?`, this.auth.bind(this), this.index.bind(this));
   }
 
   /**
@@ -55,15 +55,32 @@ module.exports = class ProductController {
    * @param  {import("express").Response} res
    */
   async index(req, res) {
-    const productsList = await this.productService.getAll();
-    const { errors, messages } = req.session;
-    res.render(`${this.PRODUCT_VIEWS}/index.njk`, {
-      productsList,
-      messages,
-      errors,
-    });
-    req.session.errors = [];
-    req.session.messages = [];
+    try {
+      const limit = 10;
+      const pageData = {
+        selected: req.params.page ? Number(req.params.page) : 1,
+        pages: Math.ceil((await this.productService.getAllCount()) / limit),
+      };
+      const offset = limit * (pageData.selected - 1);
+      const { errors, messages } = req.session;
+      const productsList = await this.productService.getAll(offset, limit);
+
+      if (productsList.length === 0) {
+        res.status(404).render('management/view/layout/404.njk');
+      } else {
+        res.render(`${this.PRODUCT_VIEWS}/index.njk`, {
+          productsList,
+          messages,
+          errors,
+          pageData,
+        });
+        req.session.errors = [];
+        req.session.messages = [];
+      }
+    } catch (e) {
+      req.session.errors = [e.message];
+      res.redirect(this.ROUTE_BASE);
+    }
   }
 
   /**
