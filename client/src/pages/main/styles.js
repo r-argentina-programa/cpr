@@ -66,10 +66,9 @@ export const Title = styled.h1`
 export const Container = styled.div`
   display: flex;
   flex: 1;
-  height: 100vh;
+  min-height: calc(100vh - 78px);
 `;
 
 export const ContentContainer = styled.div`
-  overflow: scroll;
   width: 100%;
 `;
