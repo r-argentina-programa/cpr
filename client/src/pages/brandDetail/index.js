@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import ab2str from 'arraybuffer-to-string';
 import { useContext, useEffect, useState } from 'react';
 import Spinner from 'react-bootstrap/Spinner';
@@ -26,10 +27,8 @@ const formatter = buildFormatter(englishString);
 export default function BrandDetail() {
   const { id } = useParams();
   const [image, setImage] = useState('');
-  const { products, getProductsByBrand, error, loading: loadingProduct } = useContext(
-    ProductContext
-  );
-  const { getBrandById, brand, loading: loadingBrand } = useContext(BrandContext);
+  const { products, getProductsByBrand, loading: loadingProduct } = useContext(ProductContext);
+  const { getBrandById, brand, loading: loadingBrand, error } = useContext(BrandContext);
 
   useEffect(() => {
     getProductsByBrand(id);
@@ -52,44 +51,45 @@ export default function BrandDetail() {
           <span className="sr-only">Loading...</span>
         </Spinner>
       ) : (
-        <>
-          {' '}
-          <Container>
-            <ImageContainer>
-              <img src={`data:image/png;base64, ${image}`} alt="Product" />
-            </ImageContainer>
+        brand.name && (
+          <>
+            <Container>
+              <ImageContainer>
+                <img src={`data:image/png;base64, ${image}`} alt="Product" />
+              </ImageContainer>
 
-            <RightColumnContainer>
-              <BrandDescription>
-                <h1>{brand.name}</h1>
-                <TimeStyle>
-                  <p>
-                    Created:
-                    <TimeAgo date={`${brand.createdAt}`} formatter={formatter} />
-                  </p>
-                  <p>
-                    Last Update:
-                    <TimeAgo date={`${brand.updatedAt}`} formatter={formatter} />
-                  </p>
-                </TimeStyle>
-              </BrandDescription>
-            </RightColumnContainer>
-          </Container>
-          <ProductsContainer>
-            <p>View more products from {brand.name}</p>
+              <RightColumnContainer>
+                <BrandDescription>
+                  <h1>{brand.name}</h1>
+                  <TimeStyle>
+                    <p>
+                      Created:
+                      <TimeAgo date={`${brand.createdAt}`} formatter={formatter} />
+                    </p>
+                    <p>
+                      Last Update:
+                      <TimeAgo date={`${brand.updatedAt}`} formatter={formatter} />
+                    </p>
+                  </TimeStyle>
+                </BrandDescription>
+              </RightColumnContainer>
+            </Container>
+            <ProductsContainer>
+              <p>View more products from {brand.name}</p>
 
-            <ListContainer>
-              {products.map((product) => (
-                <CardsList
-                  key={product.id}
-                  item={product}
-                  imageSrc={product.imageSrc.data}
-                  link={`/product/${product.id}`}
-                />
-              ))}
-            </ListContainer>
-          </ProductsContainer>
-        </>
+              <ListContainer>
+                {products.map((product) => (
+                  <CardsList
+                    key={product.id}
+                    item={product}
+                    imageSrc={product.imageSrc.data}
+                    link={`/product/${product.id}`}
+                  />
+                ))}
+              </ListContainer>
+            </ProductsContainer>
+          </>
+        )
       )}
     </>
   );
