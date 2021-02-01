@@ -84,7 +84,7 @@ describe('ManagementController methods', () => {
 
     expect(appMock.post).toHaveBeenCalledTimes(1);
     expect(appMock.post).toHaveBeenCalledWith(`${ADMIN_ROUTE}/login`, expect.any(Function));
-    expect(appMock.get).toHaveBeenCalledTimes(13);
+    expect(appMock.get).toHaveBeenCalledTimes(15);
     expect(appMock.get).toHaveBeenNthCalledWith(1, `${ADMIN_ROUTE}`, expect.any(Function));
     expect(appMock.get).toHaveBeenNthCalledWith(2, `${ADMIN_ROUTE}/logout`, expect.any(Function));
     expect(appMock.get).toHaveBeenNthCalledWith(3, `${ROUTE}/brands/all`, expect.any(Function));
@@ -115,6 +115,16 @@ describe('ManagementController methods', () => {
     );
     expect(appMock.get).toHaveBeenNthCalledWith(
       13,
+      `${ROUTE}/products/numberOfProducts`,
+      expect.any(Function)
+    );
+    expect(appMock.get).toHaveBeenNthCalledWith(
+      14,
+      `${ROUTE}/products/relatedProducts`,
+      expect.any(Function)
+    );
+    expect(appMock.get).toHaveBeenNthCalledWith(
+      15,
       `${ROUTE}/getCartPrice/:productsId/:productsAmount`,
       expect.any(Function)
     );
