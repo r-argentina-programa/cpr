@@ -7,6 +7,8 @@ import ab2str from 'arraybuffer-to-string';
 import { Table } from 'react-bootstrap';
 import Spinner from 'react-bootstrap/Spinner';
 import { ProductContext } from '../../store/products/productContext';
+import { CategoryContext } from '../../store/category/categoryContext';
+
 import {
   Container,
   ImageContainer,
@@ -25,6 +27,7 @@ export default function ProductDetail() {
     ProductContext
   );
   let { products: productsByBrand } = useContext(ProductContext);
+  const { products: productsByCategory, getProductsByCategories } = useContext(CategoryContext);
   const [cart, setCart] = useState([]);
   const [status, setStatus] = useState('');
 
@@ -41,6 +44,10 @@ export default function ProductDetail() {
     getProductDetails(id);
     if (product.brand) {
       getProductsByBrand(product.brand.id);
+    }
+    if (product.categories) {
+      const query = product.categories.map((e) => `category=${e.name}`).join('&');
+      getProductsByCategories(query);
     }
   }, [id, product.id]);
 
@@ -69,7 +76,6 @@ export default function ProductDetail() {
   }
 
   productsByBrand = productsByBrand.filter((productItem) => productItem.id !== Number(id));
-  console.log(product);
   return (
     <>
       <Header />
@@ -184,6 +190,22 @@ export default function ProductDetail() {
                       item={productByBrand}
                       imageSrc={productByBrand.imageSrc.data}
                       link={`/product/${productByBrand.id}`}
+                    />
+                  ))}
+                </div>
+              </ListContainer>
+            )}
+
+            {productsByCategory.length > 1 && (
+              <ListContainer>
+                <h2 style={{ marginTop: '3rem' }}>Related Products</h2>
+                <div className="products-list">
+                  {productsByCategory.map((productByCategory) => (
+                    <CardsList
+                      key={productByCategory.id}
+                      item={productByCategory}
+                      imageSrc={productByCategory.imageSrc.data}
+                      link={`/product/${productByCategory.id}`}
                     />
                   ))}
                 </div>
