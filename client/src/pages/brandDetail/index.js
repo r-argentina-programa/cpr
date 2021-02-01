@@ -1,5 +1,6 @@
 import ab2str from 'arraybuffer-to-string';
 import { useContext, useEffect, useState } from 'react';
+import Spinner from 'react-bootstrap/Spinner';
 import { useParams } from 'react-router-dom';
 import TimeAgo from 'react-timeago';
 import Alert from 'react-bootstrap/Alert';
@@ -25,8 +26,10 @@ const formatter = buildFormatter(englishString);
 export default function BrandDetail() {
   const { id } = useParams();
   const [image, setImage] = useState('');
-  const { products, getProductsByBrand, error } = useContext(ProductContext);
-  const { getBrandById, brand } = useContext(BrandContext);
+  const { products, getProductsByBrand, error, loading: loadingProduct } = useContext(
+    ProductContext
+  );
+  const { getBrandById, brand, loading: loadingBrand } = useContext(BrandContext);
 
   useEffect(() => {
     getProductsByBrand(id);
@@ -44,41 +47,50 @@ export default function BrandDetail() {
     <>
       <Header />
       {error && <Alert variant="danger">{error}</Alert>}
-      <Container>
-        <ImageContainer>
-          <img src={`data:image/png;base64, ${image}`} alt="Product" />
-        </ImageContainer>
+      {loadingProduct || loadingBrand ? (
+        <Spinner animation="border" role="status" style={{ margin: '2rem auto', display: 'block' }}>
+          <span className="sr-only">Loading...</span>
+        </Spinner>
+      ) : (
+        <>
+          {' '}
+          <Container>
+            <ImageContainer>
+              <img src={`data:image/png;base64, ${image}`} alt="Product" />
+            </ImageContainer>
 
-        <RightColumnContainer>
-          <BrandDescription>
-            <h1>{brand.name}</h1>
-            <TimeStyle>
-              <p>
-                Created:
-                <TimeAgo date={`${brand.createdAt}`} formatter={formatter} />
-              </p>
-              <p>
-                Last Update:
-                <TimeAgo date={`${brand.updatedAt}`} formatter={formatter} />
-              </p>
-            </TimeStyle>
-          </BrandDescription>
-        </RightColumnContainer>
-      </Container>
-      <ProductsContainer>
-        <p>View more products from {brand.name}</p>
+            <RightColumnContainer>
+              <BrandDescription>
+                <h1>{brand.name}</h1>
+                <TimeStyle>
+                  <p>
+                    Created:
+                    <TimeAgo date={`${brand.createdAt}`} formatter={formatter} />
+                  </p>
+                  <p>
+                    Last Update:
+                    <TimeAgo date={`${brand.updatedAt}`} formatter={formatter} />
+                  </p>
+                </TimeStyle>
+              </BrandDescription>
+            </RightColumnContainer>
+          </Container>
+          <ProductsContainer>
+            <p>View more products from {brand.name}</p>
 
-        <ListContainer>
-          {products.map((product) => (
-            <CardsList
-              key={product.id}
-              item={product}
-              imageSrc={product.imageSrc.data}
-              link={`/product/${product.id}`}
-            />
-          ))}
-        </ListContainer>
-      </ProductsContainer>
+            <ListContainer>
+              {products.map((product) => (
+                <CardsList
+                  key={product.id}
+                  item={product}
+                  imageSrc={product.imageSrc.data}
+                  link={`/product/${product.id}`}
+                />
+              ))}
+            </ListContainer>
+          </ProductsContainer>
+        </>
+      )}
     </>
   );
 }

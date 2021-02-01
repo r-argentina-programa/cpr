@@ -1,4 +1,6 @@
 import { useContext, useEffect } from 'react';
+import Alert from 'react-bootstrap/Alert';
+import Spinner from 'react-bootstrap/Spinner';
 import styled from 'styled-components';
 import CardsList from '../../components/cardsList';
 import Header from '../../components/header';
@@ -17,26 +19,34 @@ const ListContainer = styled.div`
 `;
 
 export default function Brands() {
-  const { getAllBrands, brands } = useContext(BrandContext);
+  const { getAllBrands, brands, error, loading } = useContext(BrandContext);
 
   useEffect(() => {
     getAllBrands();
   }, []);
-
   return (
     <>
       <Header />
-      <Title>See all brands Here!</Title>
-      <ListContainer className="container-fluid">
-        {brands.map((brand) => (
-          <CardsList
-            item={brand}
-            imageSrc={brand.logo.data}
-            link={`/brand/${brand.id}`}
-            key={brand.id}
-          />
-        ))}
-      </ListContainer>
+      {error && <Alert variant="danger">{error}</Alert>}
+      {loading ? (
+        <Spinner animation="border" role="status" style={{ margin: '2rem auto', display: 'block' }}>
+          <span className="sr-only">Loading...</span>
+        </Spinner>
+      ) : (
+        <>
+          <Title>See all brands Here!</Title>
+          <ListContainer className="container-fluid">
+            {brands.map((brand) => (
+              <CardsList
+                item={brand}
+                imageSrc={brand.logo.data}
+                link={`/brand/${brand.id}`}
+                key={brand.id}
+              />
+            ))}
+          </ListContainer>
+        </>
+      )}
     </>
   );
 }
