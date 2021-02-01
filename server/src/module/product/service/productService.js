@@ -111,13 +111,30 @@ module.exports = class ProductService {
     return data;
   }
 
-  async getNumberOfProducts(categories, brands, price, search) {
+  async getNumberOfProducts(category, brand, price, search) {
+    let categories = category;
+    let brands = brand;
+    if (typeof categories === 'string') {
+      categories = [categories];
+    }
+    if (typeof brands === 'string') {
+      brands = [brands];
+    }
     const data = await this.ProductRepository.getNumberOfProducts(
       categories,
       brands,
       price,
       search
     );
+    return data;
+  }
+
+  async getRelatedProducts(category) {
+    let categories = category;
+    if (typeof categories === 'string') {
+      categories = [categories];
+    }
+    const data = await this.ProductRepository.getNumberOfProducts(categories);
     return data;
   }
 };
