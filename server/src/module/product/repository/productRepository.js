@@ -158,12 +158,38 @@ module.exports = class ProductRepository {
    * @param {string} term
    */
   async getAllProductsSearch(term) {
-    const products = await this.productModel.findAll({
+    const matchingNameProducts = await this.productModel.findAll({
       where: {
-        [Op.or]: [{ name: { [Op.iLike]: `%${term}%` } }],
+        [Op.or]: [
+          { name: { [Op.iLike]: `%${term}%` } },
+          { description: { [Op.iLike]: `%${term}%` } },
+        ],
       },
     });
-    return products;
+    const matchingBrandNameProducts = await this.productModel.findAll({
+      include: [
+        {
+          model: this.brandModel,
+          where: {
+            name: { [Op.iLike]: `%${term}%` },
+          },
+        },
+      ],
+    });
+    const matchingCategoryNameProducts = await this.productModel.findAll({
+      include: [
+        {
+          model: this.categoryModel,
+          as: 'categories',
+          where: {
+            name: { [Op.iLike]: `%${term}%` },
+          },
+        },
+      ],
+    });
+    matchingNameProducts.push(...matchingBrandNameProducts);
+    matchingNameProducts.push(...matchingCategoryNameProducts);
+    return matchingNameProducts;
   }
 
   async getAllByCategoryAndBrand(
@@ -173,7 +199,7 @@ module.exports = class ProductRepository {
     page = 0,
     search
   ) {
-    const limit = 4;
+    const limit = 12;
     let conditions;
     let categoriesConditions;
     let brandsConditions;
@@ -246,6 +272,81 @@ module.exports = class ProductRepository {
       }
       return product.defaultPrice >= price[0] && product.defaultPrice <= Number(price[1]);
     });
+  }
+
+  async getNumberOfProducts(categories, brands, price = [0, Infinity], search) {
+    let conditions;
+    let categoriesConditions;
+    let brandsConditions;
+    if (search) {
+      conditions = {
+        name: { [Op.iLike]: `%${search}%` },
+      };
+    }
+    if (brands) {
+      brandsConditions = {
+        name: {
+          [Op.like]: { [Op.any]: brands },
+        },
+      };
+    }
+    if (categories) {
+      categoriesConditions = {
+        name: {
+          [Op.like]: { [Op.any]: categories },
+        },
+      };
+    }
+
+    const products = await this.productModel.findAll({
+      where: conditions,
+      include: [
+        {
+          model: this.categoryModel,
+          as: 'categories',
+          where: categoriesConditions,
+          include: {
+            model: this.discountModel,
+            as: 'discounts',
+          },
+        },
+        { model: this.discountModel, as: 'discounts' },
+        {
+          model: this.brandModel,
+          where: brandsConditions,
+          include: {
+            model: this.discountModel,
+            as: 'discounts',
+          },
+        },
+      ],
+    });
+
+    const productsEntities = products.map((product) => {
+      if (Array.isArray(product.categories)) {
+        product.categories.forEach((category) => {
+          product.discounts.push(...category.discounts);
+        });
+      }
+      const brandDiscounts = product.Brand.discounts;
+      if (Array.isArray(brandDiscounts)) {
+        product.discounts.push(...brandDiscounts);
+      }
+      return fromModelToEntity(product);
+    });
+
+    const numberOfProducts = productsEntities.filter((product) => {
+      const { discount } = product;
+      const minPrice = Number(price[0]);
+      const maxPrice = Number(price[1]);
+      if (discount) {
+        const priceWithDiscount = Number(discount.finalPrice);
+        return priceWithDiscount >= minPrice && priceWithDiscount <= maxPrice;
+      }
+      const defaultPrice = Number(product.defaultPrice);
+      return defaultPrice >= minPrice && defaultPrice <= maxPrice;
+    }).length;
+    return numberOfProducts;
   }
 
   /**
