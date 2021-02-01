@@ -4,6 +4,7 @@ import { useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components/macro';
 import { ProductContext } from '../../store/products/productContext';
+import SearchContainer from '../search';
 
 const ContainerSearch = styled.div`
   display: flex;
@@ -23,19 +24,24 @@ const ContainerSearch = styled.div`
 
 export default function Header() {
   const [term, setTerm] = useState('');
-  const { getProductBySearch } = useContext(ProductContext);
+  const { getProductBySearch, removeProductsBySearch } = useContext(ProductContext);
   const [cart, setCart] = useState([]);
   const history = useHistory();
-  let time = null;
 
   useEffect(() => {
-    clearTimeout(time);
+    let timerId;
     if (term.trim()) {
-      // eslint-disable-next-line
-      time = setTimeout(() => {
-        getProductBySearch(term);
-      }, 2000);
+      const timer = () =>
+        setTimeout(() => {
+          getProductBySearch(term);
+        }, 500);
+      timerId = timer();
+    } else {
+      removeProductsBySearch();
     }
+    return () => {
+      clearTimeout(timerId);
+    };
   }, [term]);
 
   let localCart = localStorage.getItem('cart');
@@ -87,6 +93,8 @@ export default function Header() {
             onSubmit={(e) => {
               e.preventDefault();
               if (term.trim()) {
+                removeProductsBySearch();
+                setTerm('');
                 history.push(`/?search=${term}`);
               }
             }}
@@ -103,6 +111,7 @@ export default function Header() {
               />
             </label>
           </form>
+          <SearchContainer />
         </ContainerSearch>
       </Navbar>
     </header>
