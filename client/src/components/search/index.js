@@ -68,11 +68,11 @@ const ContainerProduct = styled.div`
 export default function SearchContainer() {
   const { search: products } = useContext(ProductContext);
   return (
-    <Container>
+    <Container style={{ display: `${products.length ? 'block' : 'none'}` }}>
       <ContainerResults>
         {products.length > 0 ? (
           products.map((product) => (
-            <ContainerProduct>
+            <ContainerProduct key={product.id}>
               <Link to={`/product/${product.id}`}>
                 <span>{product.name}</span>{' '}
                 <img
