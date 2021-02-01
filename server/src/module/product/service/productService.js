@@ -134,7 +134,7 @@ module.exports = class ProductService {
     if (typeof categories === 'string') {
       categories = [categories];
     }
-    const data = await this.ProductRepository.getNumberOfProducts(categories);
+    const data = await this.ProductRepository.getRelatedProducts(categories);
     return data;
   }
 };
