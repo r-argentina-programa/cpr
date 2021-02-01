@@ -2,14 +2,14 @@ import { useEffect, useState } from 'react';
 import Pagination from 'react-bootstrap/Pagination';
 
 export default function PaginationComponent({ numberOfProducts, page, setCurrentPage }) {
-  const PRODUCTS_PER_PAGE = 12;
+  const PRODUCTS_PER_PAGE = 3;
   const [paginationItems, setPaginationItems] = useState([]);
-  let numberOfPaginationItems = Math.floor(numberOfProducts / PRODUCTS_PER_PAGE);
+  let numberOfPaginationItems = Math.ceil(numberOfProducts / PRODUCTS_PER_PAGE);
 
   function setUpPagination() {
     const items = [];
     const MAX_PAGINATION_ITEMS = 2;
-    numberOfPaginationItems = Math.floor(numberOfProducts / PRODUCTS_PER_PAGE);
+    numberOfPaginationItems = Math.ceil(numberOfProducts / PRODUCTS_PER_PAGE);
     let leftOffset = Number(page) - MAX_PAGINATION_ITEMS / 2;
     let leftOffsetAux = 0;
     if (leftOffset <= 0) {
@@ -18,9 +18,9 @@ export default function PaginationComponent({ numberOfProducts, page, setCurrent
       leftOffset = 0;
     }
     const rightOffset = Number(page) + MAX_PAGINATION_ITEMS / 2 + leftOffsetAux;
+    const rightOffsetAux = rightOffset > numberOfPaginationItems ? -1 : 0;
     const n = rightOffset <= numberOfPaginationItems ? rightOffset : numberOfPaginationItems;
-    console.log(n);
-    for (let i = leftOffset || 1; i <= n; i += 1) {
+    for (let i = leftOffset + rightOffsetAux || 1; i <= n; i += 1) {
       items.push(
         <Pagination.Item key={i} active={Number(page) === i} onClick={() => setCurrentPage(i)}>
           {i}
