@@ -9,6 +9,7 @@ export const TimeStyle = styled.span`
 `;
 
 export const Container = styled.div`
+  max-width: 400px;
   .img-container {
     width: 200px;
     height: 200px;

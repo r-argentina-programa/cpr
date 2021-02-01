@@ -1,8 +1,9 @@
 import styled from 'styled-components/macro';
 
 export const ListContainer = styled.div`
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-gap: 1rem;
 `;
 
 export const SidebarContainer = styled.div`
