@@ -278,6 +278,48 @@ module.exports = class ProductRepository {
     });
   }
 
+  async getRelatedProducts(categories) {
+    const categoriesConditions = {
+      name: {
+        [Op.like]: { [Op.any]: categories },
+      },
+    };
+    const products = await this.productModel.findAll({
+      include: [
+        {
+          model: this.categoryModel,
+          as: 'categories',
+          where: categoriesConditions,
+          include: {
+            model: this.discountModel,
+            as: 'discounts',
+          },
+        },
+        { model: this.discountModel, as: 'discounts' },
+        {
+          model: this.brandModel,
+          include: {
+            model: this.discountModel,
+            as: 'discounts',
+          },
+        },
+      ],
+    });
+
+    return products.map((product) => {
+      if (Array.isArray(product.categories)) {
+        product.categories.forEach((category) => {
+          product.discounts.push(...category.discounts);
+        });
+      }
+      const brandDiscounts = product.Brand.discounts;
+      if (Array.isArray(brandDiscounts)) {
+        product.discounts.push(...brandDiscounts);
+      }
+      return fromModelToEntity(product);
+    });
+  }
+
   async getNumberOfProducts(categories, brands, price = [0, Infinity], search) {
     let conditions;
     let categoriesConditions;

@@ -15,6 +15,14 @@ import { ListContainer, SidebarContainer, Container, ContentContainer } from './
 
 export default function Main() {
   const { search } = useLocation();
+  const searchParams = new URLSearchParams(search);
+  const searchWord = searchParams.get('search');
+  const brandsQuery = searchParams.getAll('brand');
+  const categoriesQuery = searchParams.getAll('category');
+  const priceRangeQuery = searchParams.get('priceRange');
+  const splittedPriceRange = priceRangeQuery ? priceRangeQuery.split('-') : [];
+  const pageQuery = searchParams.get('page');
+
   const {
     products,
     getFilteredProducts,
@@ -25,13 +33,16 @@ export default function Main() {
   } = useContext(ProductContext);
   const { getAllBrands, brands } = useContext(BrandContext);
   const { getAllCategories, categories } = useContext(CategoryContext);
-  const [activeBrands, setActiveBrands] = useState([]);
-  const [activeCategories, setActiveCategories] = useState([]);
-  const [price, setPrice] = useState({});
-  const [priceRange, setPriceRange] = useState('');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [page, setPage] = useState(1);
-  const [query, setQuery] = useState();
+  const [activeBrands, setActiveBrands] = useState(brandsQuery);
+  const [activeCategories, setActiveCategories] = useState(categoriesQuery);
+  const [price, setPrice] = useState({
+    minPrice: splittedPriceRange[0] || 0,
+    maxPrice: splittedPriceRange[1] || 0,
+  });
+  const [priceRange, setPriceRange] = useState(priceRangeQuery || '');
+  const [searchTerm, setSearchTerm] = useState(searchWord || '');
+  const [page, setPage] = useState(pageQuery || 1);
+  let query;
 
   function handleQueries() {
     const newSearchParams = new URLSearchParams();
@@ -47,7 +58,7 @@ export default function Main() {
     const refresh = `${window.location.protocol}//${window.location.host}${
       window.location.pathname
     }${newSearchParams.toString() ? `?${newSearchParams.toString()}` : ''}`;
-    setQuery(newSearchParams.toString());
+    query = newSearchParams.toString();
     window.history.pushState({ path: refresh }, '', refresh);
   }
 
@@ -59,34 +70,8 @@ export default function Main() {
   useEffect(() => {
     handleQueries();
     getFilteredProducts(activeBrands, activeCategories, priceRange, page, searchTerm);
-  }, [activeBrands, activeCategories, priceRange, page]);
-
-  useEffect(() => {
     getNumberOfProducts(query);
-  }, [activeBrands, activeCategories, priceRange]);
-
-  function getQueryStringAndSetStates() {
-    const searchParams = new URLSearchParams(search);
-    const searchWord = searchParams.get('search');
-    const brandsQuery = searchParams.getAll('brand');
-    const categoriesQuery = searchParams.getAll('category');
-    const priceRangeQuery = searchParams.get('priceRange');
-    const splittedPriceRange = priceRangeQuery ? priceRangeQuery.split('-') : [];
-    const pageQuery = searchParams.get('page');
-    setActiveBrands(brandsQuery);
-    setActiveCategories(categoriesQuery);
-    setPrice({
-      minPrice: splittedPriceRange[0] || 0,
-      maxPrice: splittedPriceRange[1] || 0,
-    });
-    setPriceRange(priceRangeQuery || '');
-    setSearchTerm(searchWord || '');
-    setPage(pageQuery || 1);
-    setQuery(searchParams.toString());
-  }
-  useEffect(() => {
-    getQueryStringAndSetStates();
-  }, [search]);
+  }, [activeBrands, activeCategories, priceRange, page]);
 
   function setCurrentPage(newPage) {
     setPage(newPage);

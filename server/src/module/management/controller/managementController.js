@@ -41,6 +41,7 @@ module.exports = class ManagementController {
       this.getAllByCategoryAndBrand.bind(this)
     );
     app.get(`${ROUTE}/products/numberOfProducts`, this.getNumberOfProducts.bind(this));
+    app.get(`${ROUTE}/products/relatedProducts`, this.getRelatedProducts.bind(this));
     app.get(`${ROUTE}/getCartPrice/:productsId/:productsAmount`, this.getCartPrice.bind(this));
   }
 
@@ -256,7 +257,7 @@ module.exports = class ManagementController {
 
   async getNumberOfProducts(req, res) {
     try {
-      const { brands, categories, priceRange, search } = req.query;
+      const { brand, category, priceRange, search } = req.query;
       let price;
       if (priceRange) {
         price = priceRange.split('-');
@@ -264,12 +265,22 @@ module.exports = class ManagementController {
         price[1] = price[1] == false ? Infinity : price[1];
       }
       const numberOfProducts = await this.ProductService.getNumberOfProducts(
-        categories,
-        brands,
+        category,
+        brand,
         price,
         search
       );
       res.status(200).json(numberOfProducts);
+    } catch (e) {
+      res.status(500).send({ error: 'Sorry, an error occurred' });
+    }
+  }
+
+  async getRelatedProducts(req, res) {
+    try {
+      const { category } = req.query;
+      const relatedProducts = await this.ProductService.getRelatedProducts(category);
+      res.status(200).json(relatedProducts);
     } catch (e) {
       res.status(500).send({ error: 'Sorry, an error occurred' });
     }

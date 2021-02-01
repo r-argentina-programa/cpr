@@ -65,7 +65,7 @@ module.exports = class ProductController {
       const { errors, messages } = req.session;
       const productsList = await this.productService.getAll(offset, limit);
 
-      if (!(productsList.length === 0)) {
+      if (productsList.length !== 0 || pageData.selected === 1) {
         res.render(`${this.PRODUCT_VIEWS}/index.njk`, {
           productsList,
           messages,
@@ -75,10 +75,11 @@ module.exports = class ProductController {
         req.session.errors = [];
         req.session.messages = [];
       } else {
-        throw new Error();
+        throw new Error('That page was not found');
       }
     } catch (e) {
-      res.status(404).render('management/view/layout/404.njk');
+      req.session.errors = [e.message];
+      res.redirect(this.ROUTE_BASE);
     }
   }
 
