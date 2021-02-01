@@ -69,7 +69,6 @@ export default function ProductDetail() {
   }
 
   productsByBrand = productsByBrand.filter((productItem) => productItem.id !== Number(id));
-  console.log(product);
   return (
     <>
       <Header />

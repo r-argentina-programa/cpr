@@ -145,7 +145,7 @@ export default function Main() {
               ))}
             </li>
             <div className="price-filter">
-              <p>Precio</p>
+              <p>Price</p>
               <input
                 type="number"
                 id="min-price"
