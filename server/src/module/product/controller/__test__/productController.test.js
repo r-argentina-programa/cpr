@@ -10,6 +10,7 @@ const serviceMock = {
   getAll: jest.fn(() => Array.from({ length: 3 }, (id) => createTestProduct(id + 1))),
   getById: jest.fn((id) => createTestProduct(id)),
   delete: jest.fn(),
+  getAllCount: jest.fn(() => 1),
 };
 
 const brandServiceMock = {
@@ -29,7 +30,7 @@ const uploadMock = {
 };
 
 const reqMock = {
-  params: { id: 1 },
+  params: { id: 1, page: 1 },
   session: {
     errors: [],
     messages: [],
@@ -93,16 +94,21 @@ describe('ProductController methods', () => {
   test('index renders index.njk with a list of products', async () => {
     const productsList = serviceMock.getAll();
     await mockController.index(reqMock, resMock);
-    const page = reqMock.params.page ? Number(reqMock.params.page) : 1;
+    const limit = 10;
+    const pageData = {
+      selected: reqMock.params.page ? Number(reqMock.params.page) : 1,
+      pages: Math.ceil(serviceMock.getAllCount() / limit),
+    };
 
     const { errors, messages } = reqMock.session;
     expect(serviceMock.getAll).toHaveBeenCalledTimes(2);
+    expect(serviceMock.getAllCount).toHaveBeenCalledTimes(2);
     expect(resMock.render).toHaveBeenCalledTimes(1);
     expect(resMock.render).toHaveBeenCalledWith('product/view/index.njk', {
       productsList,
       errors,
       messages,
-      page,
+      pageData,
     });
   });
 

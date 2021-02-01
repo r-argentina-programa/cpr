@@ -96,7 +96,7 @@ module.exports = class ProductService {
    * @param {string} term
    */
   async getAllProductsSearch(term) {
-    const products = await this.ProductRepository.getAllProductsSearch(term);
+    const products = (await this.ProductRepository.getAllProductsSearch(term)) || [];
     return products.filter((v, i, a) => a.findIndex((t) => t.id === v.id) === i);
   }
 
