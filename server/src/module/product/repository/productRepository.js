@@ -304,6 +304,7 @@ module.exports = class ProductRepository {
           },
         },
       ],
+      limit: 5,
     });
 
     return products.map((product) => {
