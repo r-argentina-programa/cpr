@@ -34,6 +34,7 @@ module.exports = class ProductController {
     app.get(`${ROUTE}/delete/:id`, this.auth.bind(this), this.delete.bind(this));
     app.get(`${ROUTE}/edit/:id`, this.auth.bind(this), this.edit.bind(this));
     app.get(`${ROUTE}/:page?`, this.auth.bind(this), this.index.bind(this));
+    app.get(`${ROUTE}/search/:term`, this.auth.bind(this), this.search.bind(this));
   }
 
   /**
@@ -187,6 +188,24 @@ module.exports = class ProductController {
           'To create a product you must first create a brand, a category and a discount'
         );
       }
+    } catch (e) {
+      req.session.errors = [e.message];
+      res.redirect(this.ROUTE_BASE);
+    }
+  }
+
+  async search(req, res) {
+    try {
+      const { term } = req.params;
+      const { errors, messages } = req.session;
+      const productsList = await this.productService.getAllProductsSearch(term);
+      res.render(`${this.PRODUCT_VIEWS}/search.njk`, {
+        productsList,
+        messages,
+        errors,
+      });
+      req.session.errors = [];
+      req.session.messages = [];
     } catch (e) {
       req.session.errors = [e.message];
       res.redirect(this.ROUTE_BASE);

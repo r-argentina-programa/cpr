@@ -1,6 +1,6 @@
 {% extends 'management/view/layout/base.njk' %}
 {% block body %}
-  <h1 class="title is-1">Product Management</h1>
+  <h1 class="title is-1">Search Results</h1>
 
   {% for error in errors %}
     <div class="notification is-danger">
@@ -45,20 +45,7 @@
     {% endif %}
   {% else %}
     <div class="panel-block">
-      <p class="subtitle is-5">Oops it seems that you do not have any product created. <a href="/admin/product/create">Create one</a></p>
+      <p class="subtitle is-5">Oops it seems that no results were found for your search. <a href="/admin/product"> Previous page</a></p>
     </div>
   {% endif %}
-{% endblock %}
-
-{% block footerScripts %}
-  <script>
-    const inputSearch = document.querySelector('input[name=search]');
-    const buttonSearch = document.getElementById('search-button');
-    const products = {{ productsList | dump | safe }};
-      
-    if(!(products.length > 0)) {
-      inputSearch.setAttribute("disabled", true);
-      buttonSearch.setAttribute("disabled", true);
-    }
-  </script>
 {% endblock %}
