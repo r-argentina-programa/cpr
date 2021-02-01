@@ -6,7 +6,7 @@ export default function Providers({ children }) {
   return (
     <CategoryContextProvider>
       <BrandContextProvider>
-        <ProductContextProvider>{children}</ProductContextProvider>;
+        <ProductContextProvider>{children}</ProductContextProvider>
       </BrandContextProvider>
     </CategoryContextProvider>
   );

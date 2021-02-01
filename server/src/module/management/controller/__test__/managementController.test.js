@@ -84,14 +84,18 @@ describe('ManagementController methods', () => {
 
     expect(appMock.post).toHaveBeenCalledTimes(1);
     expect(appMock.post).toHaveBeenCalledWith(`${ADMIN_ROUTE}/login`, expect.any(Function));
-    expect(appMock.get).toHaveBeenCalledTimes(13);
+    expect(appMock.get).toHaveBeenCalledTimes(15);
     expect(appMock.get).toHaveBeenNthCalledWith(1, `${ADMIN_ROUTE}`, expect.any(Function));
     expect(appMock.get).toHaveBeenNthCalledWith(2, `${ADMIN_ROUTE}/logout`, expect.any(Function));
     expect(appMock.get).toHaveBeenNthCalledWith(3, `${ROUTE}/brands/all`, expect.any(Function));
     expect(appMock.get).toHaveBeenNthCalledWith(4, `${ROUTE}/brand/:id`, expect.any(Function));
     expect(appMock.get).toHaveBeenNthCalledWith(5, `${ROUTE}/categories/all`, expect.any(Function));
     expect(appMock.get).toHaveBeenNthCalledWith(6, `${ROUTE}/category/:id`, expect.any(Function));
-    expect(appMock.get).toHaveBeenNthCalledWith(7, `${ROUTE}/products/all`, expect.any(Function));
+    expect(appMock.get).toHaveBeenNthCalledWith(
+      7,
+      `${ROUTE}/products/all/:offset?/:limit?`,
+      expect.any(Function)
+    );
     expect(appMock.get).toHaveBeenNthCalledWith(8, `${ROUTE}/product/:id`, expect.any(Function));
     expect(appMock.get).toHaveBeenNthCalledWith(9, `${ROUTE}/search/:term`, expect.any(Function));
     expect(appMock.get).toHaveBeenNthCalledWith(
@@ -106,11 +110,21 @@ describe('ManagementController methods', () => {
     );
     expect(appMock.get).toHaveBeenNthCalledWith(
       12,
-      `${ROUTE}/products/all/:brands/:categories/:price`,
+      `${ROUTE}/products/all/:brands/:categories/:price/:page/:search`,
       expect.any(Function)
     );
     expect(appMock.get).toHaveBeenNthCalledWith(
       13,
+      `${ROUTE}/products/numberOfProducts`,
+      expect.any(Function)
+    );
+    expect(appMock.get).toHaveBeenNthCalledWith(
+      14,
+      `${ROUTE}/products/relatedProducts`,
+      expect.any(Function)
+    );
+    expect(appMock.get).toHaveBeenNthCalledWith(
+      15,
       `${ROUTE}/getCartPrice/:productsId/:productsAmount`,
       expect.any(Function)
     );

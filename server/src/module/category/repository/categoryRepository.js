@@ -136,6 +136,7 @@ module.exports = class CategoryRepository {
           as: 'discounts',
         },
       ],
+      limit: 5,
     });
 
     return products.products.map((product) => {

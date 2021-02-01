@@ -86,7 +86,7 @@ export const ProductPrice = styled.div`
     color: #43474d;
     margin-right: 20px;
   }
-  a {
+  button.add-cart {
     display: inline-block;
     background-color: rgb(13, 101, 114);
     font-weight: 500;
@@ -125,7 +125,7 @@ export const ListContainer = styled.div`
 
   .products-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     grid-gap: 0.2rem;
   }
 `;

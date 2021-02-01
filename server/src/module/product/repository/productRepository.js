@@ -113,7 +113,7 @@ module.exports = class ProductRepository {
     return this.productModel.destroy({ where: { id: product.id } });
   }
 
-  async getAll() {
+  async getAll(offset = 0, limit = 20) {
     const productsInstance = await this.productModel.findAll({
       include: [
         {
@@ -136,6 +136,8 @@ module.exports = class ProductRepository {
           as: 'discounts',
         },
       ],
+      offset,
+      limit,
     });
 
     return productsInstance.map((product) => {
@@ -152,27 +154,76 @@ module.exports = class ProductRepository {
     });
   }
 
+  async getAllCount() {
+    return this.productModel.count();
+  }
+
   /**
    * @param {string} term
    */
   async getAllProductsSearch(term) {
-    const products = await this.productModel.findAll({
+    const matchingNameProducts = await this.productModel.findAll({
       where: {
-        [Op.or]: [{ name: { [Op.iLike]: `%${term}%` } }],
+        [Op.or]: [
+          { name: { [Op.iLike]: `%${term}%` } },
+          { description: { [Op.iLike]: `%${term}%` } },
+        ],
       },
     });
-    return products;
+    const matchingBrandNameProducts = await this.productModel.findAll({
+      include: [
+        {
+          model: this.brandModel,
+          where: {
+            name: { [Op.iLike]: `%${term}%` },
+          },
+        },
+      ],
+    });
+    const matchingCategoryNameProducts = await this.productModel.findAll({
+      include: [
+        {
+          model: this.categoryModel,
+          as: 'categories',
+          where: {
+            name: { [Op.iLike]: `%${term}%` },
+          },
+        },
+      ],
+    });
+    matchingNameProducts.push(...matchingBrandNameProducts);
+    matchingNameProducts.push(...matchingCategoryNameProducts);
+    return matchingNameProducts;
   }
 
-  async getAllByCategoryAndBrand(categories = [], brands = [], price = [0, 999999]) {
-    const conditions = {};
+  async getAllByCategoryAndBrand(
+    categories = [],
+    brands = [],
+    price = [0, 999999],
+    page = 0,
+    search
+  ) {
+    const limit = 12;
+    let conditions;
     let categoriesConditions;
+    let brandsConditions;
+    if (search !== '0') {
+      conditions = {
+        name: { [Op.iLike]: `%${search}%` },
+      };
+    }
     if (brands[0] !== '0') {
-      conditions.brand_fk = brands;
+      brandsConditions = {
+        name: {
+          [Op.like]: { [Op.any]: brands },
+        },
+      };
     }
     if (categories[0] !== '0') {
       categoriesConditions = {
-        id: categories,
+        name: {
+          [Op.like]: { [Op.any]: categories },
+        },
       };
     }
 
@@ -191,6 +242,125 @@ module.exports = class ProductRepository {
         { model: this.discountModel, as: 'discounts' },
         {
           model: this.brandModel,
+          where: brandsConditions,
+          include: {
+            model: this.discountModel,
+            as: 'discounts',
+          },
+        },
+      ],
+      limit,
+      offset: (page - 1) * limit,
+    });
+
+    const productsEntities = products.map((product) => {
+      if (Array.isArray(product.categories)) {
+        product.categories.forEach((category) => {
+          product.discounts.push(...category.discounts);
+        });
+      }
+      const brandDiscounts = product.Brand.discounts;
+      if (Array.isArray(brandDiscounts)) {
+        product.discounts.push(...brandDiscounts);
+      }
+      return fromModelToEntity(product);
+    });
+
+    return productsEntities.filter((product) => {
+      const { discount } = product;
+      if (price[1] === 'Infinity') {
+        price[1] = 99999999999;
+      }
+      if (discount) {
+        return discount.finalPrice >= price[0] && discount.finalPrice <= Number(price[1]);
+      }
+      return product.defaultPrice >= price[0] && product.defaultPrice <= Number(price[1]);
+    });
+  }
+
+  async getRelatedProducts(categories) {
+    const categoriesConditions = {
+      name: {
+        [Op.like]: { [Op.any]: categories },
+      },
+    };
+    const products = await this.productModel.findAll({
+      include: [
+        {
+          model: this.categoryModel,
+          as: 'categories',
+          where: categoriesConditions,
+          include: {
+            model: this.discountModel,
+            as: 'discounts',
+          },
+        },
+        { model: this.discountModel, as: 'discounts' },
+        {
+          model: this.brandModel,
+          include: {
+            model: this.discountModel,
+            as: 'discounts',
+          },
+        },
+      ],
+      limit: 5,
+    });
+
+    return products.map((product) => {
+      if (Array.isArray(product.categories)) {
+        product.categories.forEach((category) => {
+          product.discounts.push(...category.discounts);
+        });
+      }
+      const brandDiscounts = product.Brand.discounts;
+      if (Array.isArray(brandDiscounts)) {
+        product.discounts.push(...brandDiscounts);
+      }
+      return fromModelToEntity(product);
+    });
+  }
+
+  async getNumberOfProducts(categories, brands, price = [0, Infinity], search) {
+    let conditions;
+    let categoriesConditions;
+    let brandsConditions;
+    if (search) {
+      conditions = {
+        name: { [Op.iLike]: `%${search}%` },
+      };
+    }
+    if (brands) {
+      brandsConditions = {
+        name: {
+          [Op.like]: { [Op.any]: brands },
+        },
+      };
+    }
+    if (categories) {
+      categoriesConditions = {
+        name: {
+          [Op.like]: { [Op.any]: categories },
+        },
+      };
+    }
+
+    const products = await this.productModel.findAll({
+      where: conditions,
+      include: [
+        {
+          model: this.categoryModel,
+          as: 'categories',
+          where: categoriesConditions,
+          include: {
+            model: this.discountModel,
+            as: 'discounts',
+          },
+        },
+        { model: this.discountModel, as: 'discounts' },
+        {
+          model: this.brandModel,
+          where: brandsConditions,
           include: {
             model: this.discountModel,
             as: 'discounts',
@@ -212,13 +382,18 @@ module.exports = class ProductRepository {
       return fromModelToEntity(product);
     });
 
-    return productsEntities.filter((product) => {
+    const numberOfProducts = productsEntities.filter((product) => {
       const { discount } = product;
+      const minPrice = Number(price[0]);
+      const maxPrice = Number(price[1]);
       if (discount) {
-        return discount.finalPrice >= price[0] && discount.finalPrice <= price[1];
+        const priceWithDiscount = Number(discount.finalPrice);
+        return priceWithDiscount >= minPrice && priceWithDiscount <= maxPrice;
       }
-      return product.defaultPrice >= price[0] && product.defaultPrice <= price[1];
-    });
+      const defaultPrice = Number(product.defaultPrice);
+      return defaultPrice >= minPrice && defaultPrice <= maxPrice;
+    }).length;
+    return numberOfProducts;
   }
 
   /**

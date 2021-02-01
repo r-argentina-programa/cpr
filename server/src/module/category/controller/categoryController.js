@@ -45,6 +45,7 @@ module.exports = class CategoryController {
    */
   async index(req, res) {
     const categoriesList = await this.categoryService.getAll();
+    req.session.categories = categoriesList;
     const { errors, messages } = req.session;
     res.render(`${this.CATEGORY_VIEWS}/index.njk`, {
       categoriesList,
@@ -81,7 +82,7 @@ module.exports = class CategoryController {
    * @param {import('express').Response} res
    */
   async edit(req, res) {
-    const { id } = req.params;
+    const { id, categories } = req.params;
     if (!Number(id)) {
       throw new CategoryIdNotDefinedError();
     }
@@ -93,6 +94,7 @@ module.exports = class CategoryController {
       res.render(`${this.CATEGORY_VIEWS}/form.njk`, {
         category,
         discounts,
+        categories,
       });
     } catch (e) {
       req.session.errors = [e.message, e.stack];
@@ -106,11 +108,13 @@ module.exports = class CategoryController {
    */
   async create(req, res) {
     try {
+      const { categories } = req.session;
       const discounts = await this.discountService.getAll();
       if (discounts.length > 0) {
         res.render(`${this.CATEGORY_VIEWS}/form.njk`, {
           discounts,
           category: { discounts: [] },
+          categories,
         });
       } else {
         throw new Error('To create a category you must first create a discount');

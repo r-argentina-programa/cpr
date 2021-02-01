@@ -91,6 +91,7 @@ describe('BrandController methods', () => {
     const brand = serviceMock.getById(1);
     const discounts = discountServiceMock.getAll();
     await mockController.edit(reqMock, resMock);
+    const { brands } = reqMock.session;
 
     expect(serviceMock.getById).toHaveBeenCalledTimes(2);
     expect(discountServiceMock.getAll).toHaveBeenCalledTimes(2);
@@ -99,6 +100,7 @@ describe('BrandController methods', () => {
     expect(resMock.render).toHaveBeenCalledWith('brand/view/form.njk', {
       brand,
       discounts,
+      brands,
     });
     expect(reqMock.session.errors.length).toBe(0);
   });
@@ -128,11 +130,13 @@ describe('BrandController methods', () => {
   test('create renders a form to add a new brand', async () => {
     await mockController.create(reqMock, resMock);
     const discounts = discountServiceMock.getAll();
+    const { brands } = reqMock.session;
     expect(discountServiceMock.getAll).toHaveBeenCalledTimes(2);
     expect(resMock.render).toHaveBeenCalledTimes(1);
     expect(resMock.render).toHaveBeenCalledWith('brand/view/form.njk', {
       discounts,
       brand: { discounts: [] },
+      brands,
     });
   });
 

@@ -2,6 +2,7 @@
 /* eslint-disable class-methods-use-this */
 const { fromDataToEntity } = require('../mapper/adminMapper');
 const { calculateCartPrice } = require('../utils/calculateCartPrice');
+
 module.exports = class ManagementController {
   /**
    * @param  {import("../../brand/service/brandService")} BrandService
@@ -30,15 +31,17 @@ module.exports = class ManagementController {
     app.get(`${ROUTE}/brand/:id`, this.brand.bind(this));
     app.get(`${ROUTE}/categories/all`, this.allCategories.bind(this));
     app.get(`${ROUTE}/category/:id`, this.category.bind(this));
-    app.get(`${ROUTE}/products/all`, this.allProducts.bind(this));
+    app.get(`${ROUTE}/products/all/:offset?/:limit?`, this.allProducts.bind(this));
     app.get(`${ROUTE}/product/:id`, this.product.bind(this));
     app.get(`${ROUTE}/search/:term`, this.search.bind(this));
     app.get(`${ROUTE}/brand/:id/viewProducts`, this.viewProductsByBrand.bind(this));
     app.get(`${ROUTE}/category/:id/viewProducts`, this.viewProductsByCategory.bind(this));
     app.get(
-      `${ROUTE}/products/all/:brands/:categories/:price`,
+      `${ROUTE}/products/all/:brands/:categories/:price/:page/:search`,
       this.getAllByCategoryAndBrand.bind(this)
     );
+    app.get(`${ROUTE}/products/numberOfProducts`, this.getNumberOfProducts.bind(this));
+    app.get(`${ROUTE}/products/relatedProducts`, this.getRelatedProducts.bind(this));
     app.get(`${ROUTE}/getCartPrice/:productsId/:productsAmount`, this.getCartPrice.bind(this));
   }
 
@@ -143,7 +146,7 @@ module.exports = class ManagementController {
       const brands = await this.BrandService.getAll();
       res.status(200).json(brands);
     } catch (e) {
-      res.status(500).send(e);
+      res.status(500).send({ error: 'Sorry, an error occurred' });
     }
   }
 
@@ -157,7 +160,7 @@ module.exports = class ManagementController {
       const brand = await this.BrandService.getById(id);
       res.status(200).json(brand);
     } catch (e) {
-      res.status(500).send(e);
+      res.status(500).send({ error: 'Brand not Found' });
     }
   }
 
@@ -170,7 +173,7 @@ module.exports = class ManagementController {
       const categories = await this.CategoryService.getAll();
       res.status(200).json(categories);
     } catch (e) {
-      res.status(500).send(e);
+      res.status(500).send({ error: 'Sorry, an error occurred' });
     }
   }
 
@@ -184,7 +187,7 @@ module.exports = class ManagementController {
       const category = await this.CategoryService.getById(id);
       res.status(200).json(category);
     } catch (e) {
-      res.status(500).send(e);
+      res.status(500).send({ error: 'Category not found' });
     }
   }
 
@@ -194,10 +197,11 @@ module.exports = class ManagementController {
    */
   async allProducts(req, res) {
     try {
-      const products = await this.ProductService.getAll();
+      const { offset, limit } = req.params;
+      const products = await this.ProductService.getAll(offset, limit);
       res.status(200).json(products);
     } catch (e) {
-      res.status(500).send(e);
+      res.status(500).send({ error: 'Error Loading Products' });
     }
   }
 
@@ -211,7 +215,7 @@ module.exports = class ManagementController {
       const product = await this.ProductService.getById(id);
       res.status(200).json(product);
     } catch (e) {
-      res.status(500).send(e);
+      res.status(500).send({ error: 'Product Not found' });
     }
   }
 
@@ -225,13 +229,13 @@ module.exports = class ManagementController {
       const products = await this.ProductService.getAllProductsSearch(term);
       res.status(200).json(products);
     } catch (e) {
-      res.status(500).send(e);
+      res.status(500).send({ error: 'Sorry, an error occurred' });
     }
   }
 
   async getAllByCategoryAndBrand(req, res) {
     try {
-      let { brands, categories, price } = req.params;
+      let { brands, categories, price, page, search } = req.params;
       price = price.split('-');
       price[0] = price[0] == false ? 0 : price[0];
       price[1] = price[1] == false ? Infinity : price[1];
@@ -241,11 +245,44 @@ module.exports = class ManagementController {
       const products = await this.ProductService.getAllByCategoryAndBrand(
         categories,
         brands,
-        price
+        price,
+        page,
+        search
       );
       res.status(200).json(products);
     } catch (e) {
-      res.status(500).send(e);
+      res.status(500).send({ error: 'Sorry, an error occurred' });
+    }
+  }
+
+  async getNumberOfProducts(req, res) {
+    try {
+      const { brand, category, priceRange, search } = req.query;
+      let price;
+      if (priceRange) {
+        price = priceRange.split('-');
+        price[0] = price[0] == false ? 0 : price[0];
+        price[1] = price[1] == false ? Infinity : price[1];
+      }
+      const numberOfProducts = await this.ProductService.getNumberOfProducts(
+        category,
+        brand,
+        price,
+        search
+      );
+      res.status(200).json(numberOfProducts);
+    } catch (e) {
+      res.status(500).send({ error: 'Sorry, an error occurred' });
+    }
+  }
+
+  async getRelatedProducts(req, res) {
+    try {
+      const { category } = req.query;
+      const relatedProducts = await this.ProductService.getRelatedProducts(category);
+      res.status(200).json(relatedProducts);
+    } catch (e) {
+      res.status(500).send({ error: 'Sorry, an error occurred' });
     }
   }
 
@@ -266,7 +303,7 @@ module.exports = class ManagementController {
       const cartPrice = calculateCartPrice(productsIdsAndQuantity, products);
       res.status(200).json(cartPrice);
     } catch (e) {
-      res.status(500).send(e);
+      res.status(500).send({ error: 'Sorry, an error occurred' });
     }
   }
 };

@@ -107,13 +107,23 @@ describe('ProductService methods', () => {
     const categoriesMock = ['category1', 'category2'];
     const brandsMock = ['brand1', 'brand2'];
     const priceMock = 100;
+    const pageMock = undefined;
+    const searchMock = undefined;
 
-    await mockService.getAllByCategoryAndBrand(categoriesMock, brandsMock, priceMock);
+    await mockService.getAllByCategoryAndBrand(
+      categoriesMock,
+      brandsMock,
+      priceMock,
+      pageMock,
+      searchMock
+    );
     expect(repositoryMock.getAllByCategoryAndBrand).toHaveBeenCalledTimes(1);
     expect(repositoryMock.getAllByCategoryAndBrand).toHaveBeenCalledWith(
       categoriesMock,
       brandsMock,
-      priceMock
+      priceMock,
+      pageMock,
+      searchMock
     );
   });
 });
