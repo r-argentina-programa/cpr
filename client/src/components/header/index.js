@@ -51,7 +51,7 @@ export default function Header() {
     if (localCart) {
       setCart(localCart);
     }
-  }, []);
+  }, [localCart]);
 
   return (
     <header>
