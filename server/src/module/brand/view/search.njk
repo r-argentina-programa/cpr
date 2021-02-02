@@ -23,7 +23,7 @@
       </div>
       <div class="navbar-end">
         <div class="navbar-item">
-          <a href="/admin/product/create" class="button is-primary is-medium is-light">
+          <a href="/admin/brand/create" class="button is-primary is-medium is-light">
             <span class="icon">
               <i class="fas fa-plus"></i>
             </span>
@@ -34,7 +34,7 @@
     </div>
   </nav>
 
-  {% if (productsList | length) > 0 %}
+  {% if (brands | length) > 0 %}
     <div class="panel-block">
       {% include "./layout/table.njk" %}
     </div>
@@ -45,7 +45,7 @@
     {% endif %}
   {% else %}
     <div class="panel-block">
-      <p class="subtitle is-5">Oops it seems that no results were found for your search. <a href="/admin/product"> Previous page</a></p>
+      <p class="subtitle is-5">Oops it seems that no results were found for your search. <a href="/admin/brand"> Previous page</a></p>
     </div>
   {% endif %}
 {% endblock %}

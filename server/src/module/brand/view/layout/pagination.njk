@@ -1,0 +1,14 @@
+{% set page = pageData %}
+<nav class="pagination is-centered" role="navigation" aria-label="pagination">
+  <a class="pagination-previous" href="/admin/brand/{{page.selected if page.selected === 1 else page.selected - 1}}" {{'disabled' if page.selected === 1 else ''}}>Previous</a>
+  <a class="pagination-next" href="/admin/brand/{{page.selected + 1}}" {{'disabled' if (page.selected + 1) > page.pages else ''}}>Next page</a>
+  <ul class="pagination-list">
+    <li><a class="pagination-link" href="/admin/brand/1" {{'disabled' if page.selected === 1 else ''}}>1</a></li>
+    <li><span class="pagination-ellipsis">&hellip;</span></li>
+    <li><a class="pagination-link" href="/admin/brand/{{page.selected - 1}}" {{'disabled' if page.selected === 1 else ''}}>{{'-' if page.selected === 1 else page.selected - 1}}</a></li>
+    <li><a class="pagination-link is-current" aria-current="page">{{page.selected}}</a></li>
+    <li><a class="pagination-link" href="/admin/brand/{{page.selected + 1}}" {{'disabled' if (page.selected + 1) > page.pages else ''}}>{{'-' if (page.selected + 1) > page.pages else page.selected + 1}}</a></li>
+    <li><span class="pagination-ellipsis">&hellip;</span></li>
+    <li><a class="pagination-link" href="/admin/brand/{{page.pages}}" {{'disabled' if page.pages === page.selected else ''}}>{{page.pages}}</a></li>
+  </ul>
+</nav>

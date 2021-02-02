@@ -63,8 +63,8 @@ module.exports = class ProductController {
         pages: Math.ceil((await this.productService.getAllCount()) / limit),
       };
       const offset = limit * (pageData.selected - 1);
-      const { errors, messages } = req.session;
       const productsList = await this.productService.getAll(offset, limit);
+      const { errors, messages } = req.session;
 
       if (productsList.length !== 0 || pageData.selected === 1) {
         res.render(`${this.PRODUCT_VIEWS}/index.njk`, {

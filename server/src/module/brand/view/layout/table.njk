@@ -1,0 +1,57 @@
+<table class="table is-striped is-narrow is-hoverable is-fullwidth">
+  <thead>
+    <tr>
+      <th>Id</th>
+      <th>Brand</th>
+      <th>Logo</th>
+      <th>Discounts</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {% for brand in brands %}
+    <tr id="brand-{{ brand.id }}">
+      <td>{{ brand.id }}</td>
+      <td>{{ brand.name }}</td>
+      <td>
+        <figure class="image is-128x128">
+          <img
+            src="data:image/png;base64, {{ brand.logo }}"
+            width="128"
+            height="128"
+            alt="Brand Logo"
+          />
+        </figure>
+      </td>
+      <td>
+        {% for discount in brand.discounts %} {{ discount.value + '%' if discount.type ===
+        'Percentage' else '$' + discount.value}} {% endfor %}
+      </td>
+      <td>
+        <a class="button is-link is-fullwidth is-light" href="/admin/brand/edit/{{ brand.id }}">
+          <span>Edit</span>
+        </a>
+      </td>
+      <td>
+        <a class="button is-danger is-fullwidth is-light" href="/admin/brand/delete/{{ brand.id }}">
+          <span>Delete</span>
+        </a>
+      </td>
+      <td>
+        <a href="/admin/product/create" class="button is-primary is-fullwidth is-light"
+          >Create New Product</a
+        >
+      </td>
+      <td>
+        <a href="/admin/brand/product/{{brand.id}}" class="button is-light is-fullwidth is-light"
+          >View Products</a
+        >
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>

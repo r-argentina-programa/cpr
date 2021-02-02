@@ -36,11 +36,11 @@
 
   {% if (productsList | length) > 0 %}
     <div class="panel-block">
-      {% include "product/view/layout/table.njk" %}
+      {% include "./layout/table.njk" %}
     </div>
     {% if pageData %}
       <section class="section">
-        {% include "product/view/layout/pagination.njk" %}
+        {% include "./layout/pagination.njk" %}
       </section>
     {% endif %}
   {% else %}
