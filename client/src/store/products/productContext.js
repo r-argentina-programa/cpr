@@ -32,6 +32,7 @@ const ProductContextProvider = ({ children }) => {
     numberOfProducts: 0,
     error: false,
     loading: true,
+    searchError: false,
   };
 
   const [state, dispatch] = useReducer(productReducer, initialState);
@@ -164,6 +165,7 @@ const ProductContextProvider = ({ children }) => {
         error: state.error,
         loading: state.loading,
         numberOfProducts: state.numberOfProducts,
+        searchError: state.searchError,
         getAllProducts,
         getProductDetails,
         getProductsByBrand,
