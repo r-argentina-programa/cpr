@@ -64,6 +64,7 @@ export default function productReducer(state, action) {
         search: action.payload,
         error: false,
         loading: false,
+        searchError: false,
       };
     case PRODUCT_SEARCH_ERROR:
       return {
@@ -71,11 +72,13 @@ export default function productReducer(state, action) {
         error: action.payload,
         search: [],
         loading: false,
+        searchError: true,
       };
     case PRODUCTS_LOAD:
       return {
         ...state,
         loading: true,
+        products: [],
       };
     default:
       return state;

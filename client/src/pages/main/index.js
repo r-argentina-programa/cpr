@@ -111,7 +111,7 @@ export default function Main() {
 
   return (
     <>
-      <Header setCurrentSearchTerm={setCurrentSearchTerm} />
+      <Header setCurrentSearchTerm={setCurrentSearchTerm} currentTerm={searchTerm} />
       <Container clasName="container">
         <SidebarContainer>
           <Accordion allowMultipleExpanded allowZeroExpanded>
