@@ -31,7 +31,7 @@ export default function Header({ setCurrentSearchTerm, currentTerm }) {
 
   useEffect(() => {
     let timerId;
-    if (term.trim()) {
+    if (term && term.trim()) {
       const timer = () =>
         setTimeout(() => {
           getProductBySearch(term);
