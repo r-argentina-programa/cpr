@@ -6,6 +6,11 @@ export const Container = styled.div`
     max-width: 100%;
     max-height: 10rem;
   }
+  .title {
+    text-align: center;
+    color: rgb(13, 101, 110);
+    margin: 2rem 0;
+  }
   .price {
     font-size: 1.5rem;
     text-align: center;

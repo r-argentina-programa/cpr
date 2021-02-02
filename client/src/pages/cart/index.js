@@ -31,9 +31,7 @@ export default function ProductDetail() {
       <Header />
       {error && <Alert variant="danger">{error}</Alert>}
       {!products || products.length === 0 ? (
-        <h2 style={{ textAlign: 'center', color: 'rgb(13, 101, 114)', marginTop: '3rem' }}>
-          You do not have any products added to the cart!
-        </h2>
+        <h2 className="title">You do not have any products added to the cart!</h2>
       ) : (
         <Container className="table-responsive">
           <h1 className="title">Manage your cart and let us calculate the Final Price</h1>
@@ -45,7 +43,7 @@ export default function ProductDetail() {
                 <th>Brand</th>
                 <th>Categories</th>
                 <th>Default Price</th>
-                <th>Discounts Applied</th>
+                {cartData.bestPrice ? <th>Discounts Applied</th> : <th>Discounts</th>}
                 <th>Price with Discount Applied</th>
                 <th>Actions</th>
               </tr>
@@ -79,7 +77,7 @@ export default function ProductDetail() {
 
           {cartData.bestPrice ? (
             <div className="cart-result">
-              <h2>
+              <h2 className="title" style={{ color: 'steelBlue', fontWeight: '600' }}>
                 The final Price is: <span className="final-price">${cartData.bestPrice}</span>
               </h2>
             </div>
