@@ -107,8 +107,6 @@ export default function Main() {
   function handleFilter() {
     setPriceRange(`${price.minPrice}-${price.maxPrice}`);
   }
-  console.log(products);
-
   return (
     <>
       <Header setCurrentSearchTerm={setCurrentSearchTerm} currentTerm={searchTerm} />
