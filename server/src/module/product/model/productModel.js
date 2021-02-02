@@ -53,6 +53,7 @@ module.exports = class ProductModel extends Model {
         underscored: true,
         paranoid: true,
         timestamps: false,
+        tableName: 'products',
       }
     );
 
@@ -71,5 +72,7 @@ module.exports = class ProductModel extends Model {
       as: 'discounts',
     });
     ProductModel.belongsTo(BrandModel, { foreignKey: 'brandFk' });
+
+    return ProductModel;
   }
 };

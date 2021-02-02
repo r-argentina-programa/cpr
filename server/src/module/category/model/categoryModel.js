@@ -34,6 +34,7 @@ module.exports = class CategoryModel extends Model {
         underscored: true,
         paranoid: true,
         timestamps: false,
+        tableName: 'categories',
       }
     );
 
@@ -51,5 +52,7 @@ module.exports = class CategoryModel extends Model {
       foreignKey: 'category_id',
       as: 'discounts',
     });
+
+    return CategoryModel;
   }
 };

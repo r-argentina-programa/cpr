@@ -55,5 +55,7 @@ module.exports = class BrandModel extends Model {
       foreignKey: 'brand_id',
       as: 'discounts',
     });
+
+    return BrandModel;
   }
 };

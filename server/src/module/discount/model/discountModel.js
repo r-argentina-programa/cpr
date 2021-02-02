@@ -38,6 +38,7 @@ module.exports = class DiscountModel extends Model {
         underscored: true,
         paranoid: true,
         timestamps: false,
+        tableName: 'discounts',
       }
     );
 
@@ -48,5 +49,7 @@ module.exports = class DiscountModel extends Model {
     DiscountModel.belongsToMany(ProductModel, { through: 'discount_products' });
     DiscountModel.belongsToMany(CategoryModel, { through: 'discount_category' });
     DiscountModel.belongsToMany(BrandModel, { through: 'discount_brand' });
+
+    return DiscountModel;
   }
 };
