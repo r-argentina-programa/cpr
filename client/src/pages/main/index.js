@@ -3,6 +3,15 @@
 import { useContext, useEffect, useState } from 'react';
 import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/esm/Button';
+import {
+  Accordion,
+  AccordionItem,
+  AccordionItemHeading,
+  AccordionItemButton,
+  AccordionItemPanel,
+} from 'react-accessible-accordion';
+import 'react-accessible-accordion/dist/fancy-example.css';
+
 import { useLocation } from 'react-router-dom';
 import Spinner from 'react-bootstrap/Spinner';
 import CardsList from '../../components/cardsList';
@@ -97,80 +106,100 @@ export default function Main() {
       <Header setCurrentSearchTerm={setCurrentSearchTerm} />
       <Container clasName="container">
         <SidebarContainer>
-          <ul className="filters">
-            <li>
-              Brands:
-              {brands.map((brand) => (
-                <ul className="item" key={brand.id}>
-                  <label htmlFor={`brand-${brand.id}`}>{brand.name}</label>
-                  <input
-                    type="checkbox"
-                    id={`brand-${brand.id}`}
-                    value={brand.name}
-                    checked={activeBrands.includes(brand.name)}
-                    onChange={(e) => {
-                      if (activeBrands.includes(e.target.value)) {
-                        setActiveBrands(activeBrands.filter((name) => name !== e.target.value));
-                      } else {
-                        setActiveBrands([...activeBrands, e.target.value]);
-                      }
-                    }}
-                  />
-                </ul>
-              ))}
-            </li>
-            <li>
-              Categories:
-              {categories.map((category) => (
-                <ul className="item" key={category.id}>
-                  <label htmlFor={`category-${category.id}`}>{category.name}</label>
-                  <input
-                    type="checkbox"
-                    id={`category-${category.id}`}
-                    value={category.name}
-                    checked={activeCategories.includes(category.name)}
-                    onChange={(e) => {
-                      if (activeCategories.includes(e.target.value)) {
-                        setActiveCategories(
-                          activeCategories.filter((name) => name !== e.target.value)
-                        );
-                      } else {
-                        setActiveCategories([...activeCategories, e.target.value]);
-                      }
-                    }}
-                  />
-                </ul>
-              ))}
-            </li>
-            <div className="price-filter">
-              <p>Price</p>
-              <input
-                type="number"
-                id="min-price"
-                name="min-price"
-                min="0"
-                value={price.minPrice}
-                style={{ width: '40%' }}
-                onChange={(e) => setPrice({ ...price, minPrice: e.target.value })}
-              />
-              <span>-</span>
-              <input
-                type="number"
-                id="max-price"
-                min="0"
-                name="max-price"
-                style={{ width: '40%' }}
-                value={price.maxPrice}
-                onChange={(e) => setPrice({ ...price, maxPrice: e.target.value })}
-              />
+          <Accordion allowMultipleExpanded allowZeroExpanded>
+            <AccordionItem>
+              <AccordionItemHeading>
+                <AccordionItemButton style={{ background: 'inherit', color: 'white' }}>
+                  Brands
+                </AccordionItemButton>
+              </AccordionItemHeading>
+              <AccordionItemPanel style={{ textAlign: 'left' }}>
+                {brands.map((brand) => (
+                  <div className="item" key={brand.id}>
+                    <input
+                      type="checkbox"
+                      id={`brand-${brand.id}`}
+                      value={brand.name}
+                      checked={activeBrands.includes(brand.name)}
+                      onChange={(e) => {
+                        if (activeBrands.includes(e.target.value)) {
+                          setActiveBrands(activeBrands.filter((name) => name !== e.target.value));
+                        } else {
+                          setActiveBrands([...activeBrands, e.target.value]);
+                        }
+                      }}
+                    />
+                    <label htmlFor={`brand-${brand.id}`}>{brand.name}</label>
+                  </div>
+                ))}
+              </AccordionItemPanel>
+            </AccordionItem>
+
+            <AccordionItem>
+              <AccordionItemHeading>
+                <AccordionItemButton style={{ background: 'inherit', color: 'white' }}>
+                  Categories
+                </AccordionItemButton>
+              </AccordionItemHeading>
+              <AccordionItemPanel style={{ textAlign: 'left' }}>
+                {categories.map((category) => (
+                  <div className="item" key={category.id}>
+                    <input
+                      type="checkbox"
+                      id={`category-${category.id}`}
+                      value={category.name}
+                      checked={activeCategories.includes(category.name)}
+                      onChange={(e) => {
+                        if (activeCategories.includes(e.target.value)) {
+                          setActiveCategories(
+                            activeCategories.filter((name) => name !== e.target.value)
+                          );
+                        } else {
+                          setActiveCategories([...activeCategories, e.target.value]);
+                        }
+                      }}
+                    />
+                    <label htmlFor={`category-${category.id}`}>{category.name}</label>
+                  </div>
+                ))}
+              </AccordionItemPanel>
+            </AccordionItem>
+          </Accordion>
+          <div className="price-filter">
+            <p>Price</p>
+            <div>
+              <label htmlFor="min-price">
+                <span>Min Price</span>
+                <input
+                  type="number"
+                  id="min-price"
+                  name="min-price"
+                  min="0"
+                  value={price.minPrice}
+                  style={{ width: '30%' }}
+                  onChange={(e) => setPrice({ ...price, minPrice: e.target.value })}
+                />
+              </label>
+              <label htmlFor="max-price">
+                <span>Max Price</span>
+                <input
+                  type="number"
+                  id="max-price"
+                  min="0"
+                  name="max-price"
+                  style={{ width: '30%' }}
+                  value={price.maxPrice}
+                  onChange={(e) => setPrice({ ...price, maxPrice: e.target.value })}
+                />
+              </label>
               <Button
                 style={{ backgroundColor: '#0D6572', borderColor: '#0D6572' }}
                 onClick={() => handleFilter()}
               >
-                Filter Products
+                Filter
               </Button>
             </div>
-          </ul>
+          </div>
         </SidebarContainer>
         {loading ? (
           <Spinner animation="border" role="status" style={{ margin: '2rem auto' }}>

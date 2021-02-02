@@ -17,6 +17,12 @@ export const SidebarContainer = styled.div`
   text-align: center;
   min-height: 100%;
 
+  .item {
+    > label {
+      padding-left: 5px;
+    }
+  }
+
   .filters {
     padding: 0;
     > li {
@@ -54,7 +60,17 @@ export const SidebarContainer = styled.div`
     }
   }
   .price-filter {
-    margin-top: 2rem;
+    margin-top: 0.8rem;
+    padding: 18px;
+    text-align: left;
+    span {
+      width: 80px;
+      display: inline-block;
+    }
+    button {
+      margin-top: 0.8rem;
+      width: 100%;
+    }
   }
 `;
 
