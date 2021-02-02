@@ -203,6 +203,7 @@ module.exports = class ProductController {
         productsList,
         messages,
         errors,
+        term,
       });
       req.session.errors = [];
       req.session.messages = [];
