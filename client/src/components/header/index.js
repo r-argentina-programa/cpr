@@ -22,8 +22,9 @@ const ContainerSearch = styled.div`
   }
 `;
 
-export default function Header({ setCurrentSearchTerm }) {
-  const [term, setTerm] = useState('');
+export default function Header({ setCurrentSearchTerm, currentTerm }) {
+  const [term, setTerm] = useState(currentTerm);
+  const [isSearching, setIsSearching] = useState(false);
   const { getProductBySearch, removeProductsBySearch } = useContext(ProductContext);
   const [cart, setCart] = useState([]);
   const history = useHistory();
@@ -40,6 +41,7 @@ export default function Header({ setCurrentSearchTerm }) {
       removeProductsBySearch();
     }
     return () => {
+      removeProductsBySearch();
       clearTimeout(timerId);
     };
   }, [term]);
@@ -94,7 +96,6 @@ export default function Header({ setCurrentSearchTerm }) {
               e.preventDefault();
               if (term.trim()) {
                 removeProductsBySearch();
-                setTerm('');
                 setCurrentSearchTerm(term);
                 history.push(`/?search=${term}`);
               }
@@ -109,11 +110,13 @@ export default function Header({ setCurrentSearchTerm }) {
                 value={term}
                 id="Search"
                 onChange={(e) => setTerm(e.target.value)}
+                onFocus={() => setIsSearching(true)}
+                onBlur={() => setIsSearching(false)}
                 autoComplete="off"
               />
             </label>
           </form>
-          <SearchContainer />
+          <SearchContainer isSearching={isSearching && term} />
         </ContainerSearch>
       </Navbar>
     </header>
