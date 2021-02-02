@@ -30,11 +30,12 @@ export const Container = styled.div`
     }
   }
 
-  @media (max-width: 480px) {
+  @media (max-width: 700px) {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-gap: 1rem;
+    justify-items: center;
     .img-container {
-      margin: 0 auto;
-      width: 100%;
-      height: 100%;
+      max-height: 200px;
     }
   }
 `;
