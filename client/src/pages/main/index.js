@@ -41,7 +41,7 @@ export default function Main() {
   });
   const [priceRange, setPriceRange] = useState(priceRangeQuery || '');
   const [searchTerm, setSearchTerm] = useState(searchWord || '');
-  const [page, setPage] = useState(pageQuery || 1);
+  const [page, setPage] = useState(Number(pageQuery) || 1);
   let query;
 
   function handleQueries() {
@@ -69,19 +69,32 @@ export default function Main() {
 
   useEffect(() => {
     handleQueries();
-    getFilteredProducts(activeBrands, activeCategories, priceRange, page, searchTerm);
     getNumberOfProducts(query);
-  }, [activeBrands, activeCategories, priceRange, page]);
+    getFilteredProducts(activeBrands, activeCategories, priceRange, page, searchTerm);
+    if (page !== 1) {
+      setPage(1);
+    }
+  }, [activeBrands, activeCategories, priceRange, searchTerm]);
+
+  useEffect(() => {
+    handleQueries();
+    getFilteredProducts(activeBrands, activeCategories, priceRange, page, searchTerm);
+  }, [page]);
 
   function setCurrentPage(newPage) {
     setPage(newPage);
   }
+
+  function setCurrentSearchTerm(newTerm) {
+    setSearchTerm(newTerm);
+  }
+
   function handleFilter() {
     setPriceRange(`${price.minPrice}-${price.maxPrice}`);
   }
   return (
     <>
-      <Header />
+      <Header setCurrentSearchTerm={setCurrentSearchTerm} />
       <Container clasName="container">
         <SidebarContainer>
           <ul className="filters">

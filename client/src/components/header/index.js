@@ -22,7 +22,7 @@ const ContainerSearch = styled.div`
   }
 `;
 
-export default function Header() {
+export default function Header({ setCurrentSearchTerm }) {
   const [term, setTerm] = useState('');
   const { getProductBySearch, removeProductsBySearch } = useContext(ProductContext);
   const [cart, setCart] = useState([]);
@@ -95,6 +95,7 @@ export default function Header() {
               if (term.trim()) {
                 removeProductsBySearch();
                 setTerm('');
+                setCurrentSearchTerm(term);
                 history.push(`/?search=${term}`);
               }
             }}
