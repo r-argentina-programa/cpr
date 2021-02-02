@@ -3,7 +3,15 @@ import styled from 'styled-components/macro';
 export const ListContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  grid-gap: 1rem;
+
+  @media (max-width: 700px) {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-gap: 1rem;
+    justify-items: center;
+    .img-container {
+      max-height: 200px;
+    }
+  }
 `;
 
 export const SidebarContainer = styled.div`
@@ -17,48 +25,6 @@ export const SidebarContainer = styled.div`
   text-align: center;
   min-height: 100%;
 
-  .item {
-    > label {
-      padding-left: 5px;
-    }
-  }
-
-  .filters {
-    padding: 0;
-    > li {
-      padding: 1rem;
-      &:hover {
-        ul {
-          display: block;
-        }
-      }
-      label {
-        padding: 0.5rem;
-        color: white;
-        text-decoration: none;
-        transition: padding-left 0.3s ease;
-        border-bottom: 1px solid grey;
-        &:hover {
-          background-color: #2f2f2f;
-          padding-left: 2rem;
-          cursor: pointer;
-        }
-      }
-      ul {
-        margin-top: 1rem;
-        display: none;
-        list-style: none;
-        background-color: #343a40;
-        li {
-          margin-bottom: 1rem;
-
-          &:last-of-type {
-            margin-bottom: 0;
-          }
-        }
-      }
-    }
-  }
   .price-filter {
     margin-top: 0.8rem;
     padding: 18px;
@@ -78,11 +44,13 @@ export const Container = styled.div`
   display: flex;
   flex: 1;
   min-height: calc(100vh - 78px);
+  @media (max-width: 700px) {
+    display: block;
+  }
 `;
 
 export const ContentContainer = styled.div`
   width: 100%;
-
   .title {
     text-align: center;
     color: rgb(13, 101, 110);
