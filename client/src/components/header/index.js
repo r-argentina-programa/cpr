@@ -95,7 +95,7 @@ export default function Header({ setCurrentSearchTerm, currentTerm }) {
             onSubmit={(e) => {
               e.preventDefault();
               if (term.trim()) {
-                removeProductsBySearch();
+                setIsSearching(false);
                 setCurrentSearchTerm(term);
                 history.push(`/?search=${term}`);
               }
