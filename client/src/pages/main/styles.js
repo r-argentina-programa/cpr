@@ -25,6 +25,12 @@ export const SidebarContainer = styled.div`
   text-align: center;
   min-height: 100%;
 
+  .item {
+    label {
+      margin-left: 5px;
+    }
+  }
+
   .price-filter {
     margin-top: 0.8rem;
     padding: 18px;
