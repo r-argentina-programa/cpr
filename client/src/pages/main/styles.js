@@ -72,4 +72,10 @@ export const Container = styled.div`
 
 export const ContentContainer = styled.div`
   width: 100%;
+
+  .title {
+    text-align: center;
+    color: rgb(13, 101, 110);
+    margin: 2rem 0;
+  }
 `;

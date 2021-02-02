@@ -179,6 +179,7 @@ export default function Main() {
         ) : (
           <ContentContainer>
             {error && <Alert variant="danger">{error}</Alert>}
+            <h1 className="title">See all the products here!</h1>
             <ListContainer className="container-fluid">
               {products.map((product) => (
                 <CardsList

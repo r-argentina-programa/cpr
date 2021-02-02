@@ -109,6 +109,7 @@ export default function Header({ setCurrentSearchTerm }) {
                 value={term}
                 id="Search"
                 onChange={(e) => setTerm(e.target.value)}
+                autoComplete="off"
               />
             </label>
           </form>
