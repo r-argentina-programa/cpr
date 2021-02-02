@@ -17,16 +17,7 @@
     <div class="navbar-menu">
       <div class="navbar-start">
         <div class="navbar-item">
-          <div class="field has-addons">
-            <div class="control">
-              <input class="input" type="text" name="search" placeholder="Find a brand">
-            </div>
-            <div class="control">
-              <a class="button is-info is-outlined">
-                Search
-              </a>
-            </div>
-          </div>
+          {% include "./layout/search-form.njk" %}
         </div>
       </div>
       <div class="navbar-end">
@@ -42,80 +33,30 @@
     </div>
   </nav>
 
-  <div class="panel-block">
-    <table class="table is-striped is-narrow is-hoverable is-fullwidth">
-      <thead>
-        <tr>
-          <th>Id</th>
-          <th>Brand</th>
-          <th>Logo</th>
-          <th>Discounts</th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
-        </tr>
-      </thead>
-
-      <tbody>
-        {% for brand in brands %}
-        <tr id="brand-{{ brand.id }}">
-          <td>{{ brand.id }}</td>
-          <td>{{ brand.name }}</td>
-          <td>
-            <figure class="image is-128x128">
-              <img src="data:image/png;base64, {{ brand.logo }}" width="128" height="128" alt="Brand Logo"/>
-            </figure>
-          </td>
-          <td>
-            {% for discount in brand.discounts %}
-              {{ discount.value + '%' if discount.type === 'Percentage' else '$' + discount.value}}
-            {% endfor %}
-          </td>
-          <td>
-            <a class="button is-link is-fullwidth is-light" href="/admin/brand/edit/{{ brand.id }}">
-              <span>Edit</span>
-            </a>
-          </td>
-          <td>
-            <a class="button is-danger is-fullwidth is-light" href="/admin/brand/delete/{{ brand.id }}">
-              <span>Delete</span>
-            </a>
-          </td>
-          <td>
-            <a href="/admin/product/create" class="button is-primary is-fullwidth is-light"
-              >Create New Product</a
-            >
-          </td>
-          <td>
-            <a href="/admin/brand/product/{{brand.id}}" class="button is-light is-fullwidth is-light"
-              >View Products</a
-            >
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
+  {% if (brands | length) > 0 %}
+    <div class="panel-block">
+      {% include "./layout/table.njk" %}
+    </div>
+    {% if pageData %}
+      <section class="section">
+        {% include "./layout/pagination.njk" %}
+      </section>
+    {% endif %}
+  {% else %}
+    <div class="panel-block">
+      <p class="subtitle is-5">Oops it seems that you do not have any brand created. <a href="/admin/brand/create">Create one</a></p>
+    </div>
+  {% endif %}
 {% endblock %}
 {% block footerScripts %}
   <script>
-    const inputName = document.querySelector('input[name=search]');
-
-    inputName.addEventListener('input', checkName);
-
-    function checkName(event) {
-      const searchValue = event.target.value.toLowerCase();
-      const brands = {{ brands | dump | safe }};
-      brands.forEach((brand) => {
-        const name = brand.name.toLowerCase();
-        const brandTr = document.getElementById(`brand-${brand.id}`);
-        if (name.indexOf(searchValue) > -1) {
-          brandTr.classList.remove('is-hidden');
-        } else {
-          brandTr.classList.add('is-hidden');
-        }
-      });
+    const inputSearch = document.querySelector('input[name=search]');
+    const buttonSearch = document.getElementById('search-button');
+    const brands = {{ brands | dump | safe }};
+      
+    if(!(brands.length > 0)) {
+      inputSearch.setAttribute("disabled", true);
+      buttonSearch.setAttribute("disabled", true);
     }
   </script>
 {% endblock %}

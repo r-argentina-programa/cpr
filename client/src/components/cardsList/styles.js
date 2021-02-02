@@ -10,8 +10,10 @@ export const TimeStyle = styled.span`
 
 export const Container = styled.div`
   max-width: 400px;
+  margin: 0 auto;
   .img-container {
     width: 200px;
+    margin: 0 auto;
     height: 200px;
     .item-span {
       display: inline-block;

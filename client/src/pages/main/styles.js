@@ -17,6 +17,12 @@ export const SidebarContainer = styled.div`
   text-align: center;
   min-height: 100%;
 
+  .item {
+    > label {
+      padding-left: 5px;
+    }
+  }
+
   .filters {
     padding: 0;
     > li {
@@ -54,14 +60,18 @@ export const SidebarContainer = styled.div`
     }
   }
   .price-filter {
-    margin-top: 2rem;
+    margin-top: 0.8rem;
+    padding: 18px;
+    text-align: left;
+    span {
+      width: 80px;
+      display: inline-block;
+    }
+    button {
+      margin-top: 0.8rem;
+      width: 100%;
+    }
   }
-`;
-
-export const Title = styled.h1`
-  margin: 1rem 0;
-  text-align: center;
-  font-size: 2rem;
 `;
 
 export const Container = styled.div`
@@ -72,4 +82,10 @@ export const Container = styled.div`
 
 export const ContentContainer = styled.div`
   width: 100%;
+
+  .title {
+    text-align: center;
+    color: rgb(13, 101, 110);
+    margin: 2rem 0;
+  }
 `;

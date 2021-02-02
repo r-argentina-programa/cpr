@@ -8,4 +8,7 @@ export default createGlobalStyle`
     #root{
         min-height: 100vh;
     }
+    h1,h2,h3,h4,h5,div{
+        font-family: 'Roboto', sans-serif;
+    }
 `;

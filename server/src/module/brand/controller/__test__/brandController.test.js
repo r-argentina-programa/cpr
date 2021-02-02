@@ -8,6 +8,7 @@ const serviceMock = {
   getAll: jest.fn(() => Array.from({ length: 3 }, (id) => createTestBrand(id + 1))),
   getById: jest.fn((id) => createTestBrand(id)),
   delete: jest.fn(),
+  getAllCount: jest.fn(() => 1),
   viewProducts: jest.fn(),
 };
 
@@ -76,14 +77,21 @@ describe('BrandController methods', () => {
   test('brand renders index.njk with a list of brands', async () => {
     const brands = serviceMock.getAll();
     await mockController.index(reqMock, resMock);
+    const limit = 10;
+    const pageData = {
+      selected: reqMock.params.page ? Number(reqMock.params.page) : 1,
+      pages: Math.ceil(serviceMock.getAllCount() / limit),
+    };
 
-    expect(serviceMock.getAll).toHaveBeenCalledTimes(2);
-    expect(resMock.render).toHaveBeenCalledTimes(1);
     const { errors, messages } = reqMock.session;
+    expect(serviceMock.getAll).toHaveBeenCalledTimes(2);
+    expect(serviceMock.getAllCount).toHaveBeenCalledTimes(2);
+    expect(resMock.render).toHaveBeenCalledTimes(1);
     expect(resMock.render).toHaveBeenCalledWith('brand/view/index.njk', {
       brands,
       errors,
       messages,
+      pageData,
     });
   });
 

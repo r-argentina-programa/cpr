@@ -21,8 +21,20 @@ module.exports = class CategoryService {
     return this.categoryRepository.save(category, discountsIds);
   }
 
-  async getAll() {
-    return this.categoryRepository.getAll();
+  async getAll(offset, limit) {
+    return this.categoryRepository.getAll(offset, limit);
+  }
+
+  async getAllCount() {
+    return this.categoryRepository.getAllCount();
+  }
+
+  /**
+   * @param {string} term
+   */
+  async getAllCategoriesSearch(term) {
+    const categories = (await this.categoryRepository.getAllCategoriesSearch(term)) || [];
+    return categories.filter((v, i, a) => a.findIndex((t) => t.id === v.id) === i);
   }
 
   /**

@@ -1,3 +1,4 @@
+const { Op } = require('sequelize');
 const { fromModelToEntity } = require('../mapper/brandMapper');
 const {
   fromModelToEntity: fromModelToProductEntity,
@@ -60,15 +61,33 @@ module.exports = class BrandRepository {
     return Boolean(await this.brandModel.destroy({ where: { id: brand.id } }));
   }
 
-  async getAll() {
+  async getAll(offset = 0, limit = 20) {
     const brandInstances = await this.brandModel.findAll({
       include: {
         model: this.discountModel,
         as: 'discounts',
       },
+      offset,
+      limit,
     });
 
     return brandInstances.map(fromModelToEntity);
+  }
+
+  async getAllCount() {
+    return this.brandModel.count();
+  }
+
+  /**
+   * @param {string} term
+   */
+  async getAllBrandsSearch(term) {
+    const matchingNameBrands = await this.brandModel.findAll({
+      where: {
+        name: { [Op.iLike]: `%${term}%` },
+      },
+    });
+    return matchingNameBrands;
   }
 
   /**

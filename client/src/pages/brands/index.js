@@ -7,14 +7,14 @@ import Header from '../../components/header';
 import { BrandContext } from '../../store/brand/brandContext';
 
 const Title = styled.h1`
-  margin: 1rem 0;
   text-align: center;
-  font-size: 2rem;
+  color: rgb(13, 101, 110);
+  margin: 2rem 0;
 `;
 
 const ListContainer = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   grid-gap: 0.2rem;
 `;
 
