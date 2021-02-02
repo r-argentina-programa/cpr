@@ -26,8 +26,12 @@ export default function Main() {
   const { search } = useLocation();
   const searchParams = new URLSearchParams(search);
   const searchWord = searchParams.get('search');
-  const brandsQuery = searchParams.getAll('brand');
-  const categoriesQuery = searchParams.getAll('category');
+  const brandsQuery = searchParams.get('brand')
+    ? searchParams.getAll('brand')
+    : searchParams.getAll('brand[]');
+  const categoriesQuery = searchParams.get('category')
+    ? searchParams.getAll('category')
+    : searchParams.getAll('category[]');
   const priceRangeQuery = searchParams.get('priceRange');
   const splittedPriceRange = priceRangeQuery ? priceRangeQuery.split('-') : [];
   const pageQuery = searchParams.get('page');
@@ -56,10 +60,12 @@ export default function Main() {
   function handleQueries() {
     const newSearchParams = new URLSearchParams();
     activeBrands.forEach((brand) => {
-      newSearchParams.append('brand', brand);
+      const prefix = activeBrands.length === 1 ? 'brand' : 'brand[]';
+      newSearchParams.append(prefix, brand);
     });
     activeCategories.forEach((category) => {
-      newSearchParams.append('category', category);
+      const prefix = activeCategories.length === 1 ? 'category' : 'category[]';
+      newSearchParams.append(prefix, category);
     });
     if (searchTerm) newSearchParams.set('search', searchTerm);
     if (page) newSearchParams.set('page', page);
