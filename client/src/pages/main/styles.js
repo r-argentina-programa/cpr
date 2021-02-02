@@ -58,12 +58,6 @@ export const SidebarContainer = styled.div`
   }
 `;
 
-export const Title = styled.h1`
-  margin: 1rem 0;
-  text-align: center;
-  font-size: 2rem;
-`;
-
 export const Container = styled.div`
   display: flex;
   flex: 1;
