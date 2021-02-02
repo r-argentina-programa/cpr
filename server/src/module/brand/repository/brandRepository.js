@@ -130,7 +130,7 @@ module.exports = class BrandRepository {
           as: 'discounts',
         },
       ],
-      limit: 6,
+      limit: 5,
     });
     return products.map((product) => {
       if (Array.isArray(product.categories)) {
