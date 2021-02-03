@@ -196,30 +196,24 @@ module.exports = class ProductRepository {
     return matchingNameProducts;
   }
 
-  async getAllByCategoryAndBrand(
-    categories = [],
-    brands = [],
-    price = [0, 999999],
-    page = 0,
-    search
-  ) {
+  async getFilteredProducts(categories = [], brands = [], price = [0, 999999], page = 0, search) {
     const limit = 12;
     let conditions;
     let categoriesConditions;
     let brandsConditions;
-    if (search !== '0') {
+    if (search) {
       conditions = {
         name: { [Op.iLike]: `%${search}%` },
       };
     }
-    if (brands[0] !== '0') {
+    if (brands.length) {
       brandsConditions = {
         name: {
           [Op.like]: { [Op.any]: brands },
         },
       };
     }
-    if (categories[0] !== '0') {
+    if (categories.length) {
       categoriesConditions = {
         name: {
           [Op.like]: { [Op.any]: categories },

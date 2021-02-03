@@ -1,6 +1,6 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-unused-vars */
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState, useRef } from 'react';
 import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/esm/Button';
 import {
@@ -35,7 +35,6 @@ export default function Main() {
   const priceRangeQuery = searchParams.get('priceRange');
   const splittedPriceRange = priceRangeQuery ? priceRangeQuery.split('-') : [];
   const pageQuery = searchParams.get('page');
-
   const {
     products,
     getFilteredProducts,
@@ -55,7 +54,8 @@ export default function Main() {
   const [priceRange, setPriceRange] = useState(priceRangeQuery || '');
   const [searchTerm, setSearchTerm] = useState(searchWord || '');
   const [page, setPage] = useState(Number(pageQuery) || 1);
-  let query;
+  const firstUpdate = useRef(true);
+  let query = searchParams.toString();
 
   function handleQueries() {
     const newSearchParams = new URLSearchParams();
@@ -74,6 +74,7 @@ export default function Main() {
       window.location.pathname
     }${newSearchParams.toString() ? `?${newSearchParams.toString()}` : ''}`;
     query = newSearchParams.toString();
+    getFilteredProducts(query);
     window.history.pushState({ path: refresh }, '', refresh);
   }
 
@@ -85,15 +86,15 @@ export default function Main() {
   useEffect(() => {
     handleQueries();
     getNumberOfProducts(query);
-    getFilteredProducts(activeBrands, activeCategories, priceRange, page, searchTerm);
-    if (page !== 1) {
+    if (page !== 1 && firstUpdate.current === false) {
       setPage(1);
+    } else {
+      firstUpdate.current = false;
     }
   }, [activeBrands, activeCategories, priceRange, searchTerm]);
 
   useEffect(() => {
     handleQueries();
-    getFilteredProducts(activeBrands, activeCategories, priceRange, page, searchTerm);
   }, [page]);
 
   function setCurrentPage(newPage) {
