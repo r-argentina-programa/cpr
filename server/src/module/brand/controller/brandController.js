@@ -195,21 +195,16 @@ module.exports = class BrandController {
   }
 
   async search(req, res) {
-    try {
-      const { term } = req.params;
-      const { errors, messages } = req.session;
-      const brands = await this.brandService.getAllBrandsSearch(term);
-      res.render(`${this.BRAND_VIEW_DIR}/search.njk`, {
-        brands,
-        messages,
-        errors,
-        term,
-      });
-      req.session.errors = [];
-      req.session.messages = [];
-    } catch (e) {
-      req.session.errors = [e.message];
-      res.redirect(this.ROUTE_BASE);
-    }
+    const { term } = req.params;
+    const { errors, messages } = req.session;
+    const brands = await this.brandService.getAllBrandsSearch(term);
+    res.render(`${this.BRAND_VIEW_DIR}/search.njk`, {
+      brands,
+      messages,
+      errors,
+      term,
+    });
+    req.session.errors = [];
+    req.session.messages = [];
   }
 };
