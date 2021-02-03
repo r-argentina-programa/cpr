@@ -5,7 +5,7 @@ module.exports = {
     'jest/globals': true,
   },
   extends: ['airbnb', 'prettier'],
-  plugins: ['prettier', 'jest'],
+  plugins: ['prettier', 'jest', 'plugin:cypress/recommended'],
   rules: {
     'prettier/prettier': [
       'error',
