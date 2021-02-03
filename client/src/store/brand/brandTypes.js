@@ -1,2 +1,4 @@
 export const GET_ALL_BRANDS = 'GET_ALL_BRANDS';
 export const GET_BRAND_ID = 'GET_BRAND_ID';
+export const GET_BRANDS_ERROR = 'GET_BRANDS_ERROR';
+export const BRANDS_LOADING = 'BRANDS_LOADING';

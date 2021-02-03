@@ -18,12 +18,13 @@ module.exports = class CategoryController {
    */
   configureRoutes(app) {
     const ROUTE = this.ROUTE_BASE;
-    app.get(`${ROUTE}`, this.auth.bind(this), this.index.bind(this));
     app.get(`${ROUTE}/view/:id`, this.auth.bind(this), this.view.bind(this));
     app.get(`${ROUTE}/edit/:id`, this.auth.bind(this), this.edit.bind(this));
     app.get(`${ROUTE}/create`, this.auth.bind(this), this.create.bind(this));
     app.post(`${ROUTE}/save`, this.auth.bind(this), this.save.bind(this));
     app.get(`${ROUTE}/delete/:id`, this.auth.bind(this), this.delete.bind(this));
+    app.get(`${ROUTE}/:page?`, this.auth.bind(this), this.index.bind(this));
+    app.get(`${ROUTE}/search/:term`, this.auth.bind(this), this.search.bind(this));
   }
 
   /**
@@ -44,15 +45,32 @@ module.exports = class CategoryController {
    * @param {import('express').Response} res
    */
   async index(req, res) {
-    const categoriesList = await this.categoryService.getAll();
-    const { errors, messages } = req.session;
-    res.render(`${this.CATEGORY_VIEWS}/index.njk`, {
-      categoriesList,
-      messages,
-      errors,
-    });
-    req.session.errors = [];
-    req.session.messages = [];
+    try {
+      const limit = 10;
+      const pageData = {
+        selected: req.params.page ? Number(req.params.page) : 1,
+        pages: Math.ceil((await this.categoryService.getAllCount()) / limit),
+      };
+      const offset = limit * (pageData.selected - 1);
+      const categoriesList = await this.categoryService.getAll(offset, limit);
+      const { errors, messages } = req.session;
+
+      if (categoriesList.length !== 0 || pageData.selected === 1) {
+        res.render(`${this.CATEGORY_VIEWS}/index.njk`, {
+          categoriesList,
+          messages,
+          errors,
+          pageData,
+        });
+        req.session.errors = [];
+        req.session.messages = [];
+      } else {
+        throw new Error('That page was not found');
+      }
+    } catch (e) {
+      req.session.errors = [e.message];
+      res.redirect(this.ROUTE_BASE);
+    }
   }
 
   /**
@@ -81,7 +99,7 @@ module.exports = class CategoryController {
    * @param {import('express').Response} res
    */
   async edit(req, res) {
-    const { id } = req.params;
+    const { id, categories } = req.params;
     if (!Number(id)) {
       throw new CategoryIdNotDefinedError();
     }
@@ -93,6 +111,7 @@ module.exports = class CategoryController {
       res.render(`${this.CATEGORY_VIEWS}/form.njk`, {
         category,
         discounts,
+        categories,
       });
     } catch (e) {
       req.session.errors = [e.message, e.stack];
@@ -106,11 +125,13 @@ module.exports = class CategoryController {
    */
   async create(req, res) {
     try {
+      const { categories } = req.session;
       const discounts = await this.discountService.getAll();
       if (discounts.length > 0) {
         res.render(`${this.CATEGORY_VIEWS}/form.njk`, {
           discounts,
           category: { discounts: [] },
+          categories,
         });
       } else {
         throw new Error('To create a category you must first create a discount');
@@ -168,5 +189,24 @@ module.exports = class CategoryController {
       req.session.errors = [e.message, e.stack];
     }
     res.redirect(this.ROUTE_BASE);
+  }
+
+  async search(req, res) {
+    try {
+      const { term } = req.params;
+      const { errors, messages } = req.session;
+      const categoriesList = await this.categoryService.getAllCategoriesSearch(term);
+      res.render(`${this.CATEGORY_VIEWS}/search.njk`, {
+        categoriesList,
+        messages,
+        errors,
+        term,
+      });
+      req.session.errors = [];
+      req.session.messages = [];
+    } catch (e) {
+      req.session.errors = [e.message];
+      res.redirect(this.ROUTE_BASE);
+    }
   }
 };

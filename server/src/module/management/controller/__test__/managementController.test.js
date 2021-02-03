@@ -18,8 +18,14 @@ const categoryServiceMock = {
 
 const productServiceMock = {
   getById: jest.fn((id) => createTestProduct(id)),
+  getByIds: jest.fn(() => Array.from([0, 1, 2], (id) => createTestProduct(id))),
   getAll: jest.fn(() => Array.from({ length: 3 }, (id) => createTestProduct(id + 1))),
   getAllProductsSearch: jest.fn(() => Array.from({ length: 3 }, (id) => createTestProduct(id + 1))),
+  getAllByCategoryAndBrand: jest.fn(() =>
+    Array.from({ length: 3 }, (id) => createTestProduct(id + 1))
+  ),
+  getNumberOfProducts: jest.fn(() => 3),
+  getRelatedProducts: jest.fn(),
 };
 
 const controller = new ManagementController(
@@ -33,7 +39,23 @@ const reqMock = {
     password: 'password',
     username: 'admin',
   },
-  params: { id: 1, term: 'example search' },
+  params: {
+    id: 1,
+    term: 'example search',
+    brands: '0',
+    categories: '0',
+    price: '0-0',
+    productsId: '0,1,2',
+    productsAmount: '1,1,1',
+    page: '1',
+    search: '0',
+  },
+  query: {
+    brand: undefined,
+    category: undefined,
+    priceRange: '0-0',
+    search: undefined,
+  },
   password: 'password',
   session: {},
   username: 'admin',
@@ -84,14 +106,18 @@ describe('ManagementController methods', () => {
 
     expect(appMock.post).toHaveBeenCalledTimes(1);
     expect(appMock.post).toHaveBeenCalledWith(`${ADMIN_ROUTE}/login`, expect.any(Function));
-    expect(appMock.get).toHaveBeenCalledTimes(13);
+    expect(appMock.get).toHaveBeenCalledTimes(15);
     expect(appMock.get).toHaveBeenNthCalledWith(1, `${ADMIN_ROUTE}`, expect.any(Function));
     expect(appMock.get).toHaveBeenNthCalledWith(2, `${ADMIN_ROUTE}/logout`, expect.any(Function));
     expect(appMock.get).toHaveBeenNthCalledWith(3, `${ROUTE}/brands/all`, expect.any(Function));
     expect(appMock.get).toHaveBeenNthCalledWith(4, `${ROUTE}/brand/:id`, expect.any(Function));
     expect(appMock.get).toHaveBeenNthCalledWith(5, `${ROUTE}/categories/all`, expect.any(Function));
     expect(appMock.get).toHaveBeenNthCalledWith(6, `${ROUTE}/category/:id`, expect.any(Function));
-    expect(appMock.get).toHaveBeenNthCalledWith(7, `${ROUTE}/products/all`, expect.any(Function));
+    expect(appMock.get).toHaveBeenNthCalledWith(
+      7,
+      `${ROUTE}/products/all/:offset?/:limit?`,
+      expect.any(Function)
+    );
     expect(appMock.get).toHaveBeenNthCalledWith(8, `${ROUTE}/product/:id`, expect.any(Function));
     expect(appMock.get).toHaveBeenNthCalledWith(9, `${ROUTE}/search/:term`, expect.any(Function));
     expect(appMock.get).toHaveBeenNthCalledWith(
@@ -106,11 +132,21 @@ describe('ManagementController methods', () => {
     );
     expect(appMock.get).toHaveBeenNthCalledWith(
       12,
-      `${ROUTE}/products/all/:brands/:categories/:price`,
+      `${ROUTE}/products/all/:brands/:categories/:price/:page/:search`,
       expect.any(Function)
     );
     expect(appMock.get).toHaveBeenNthCalledWith(
       13,
+      `${ROUTE}/products/numberOfProducts`,
+      expect.any(Function)
+    );
+    expect(appMock.get).toHaveBeenNthCalledWith(
+      14,
+      `${ROUTE}/products/relatedProducts`,
+      expect.any(Function)
+    );
+    expect(appMock.get).toHaveBeenNthCalledWith(
+      15,
       `${ROUTE}/getCartPrice/:productsId/:productsAmount`,
       expect.any(Function)
     );
@@ -216,6 +252,14 @@ describe('ManagementController methods', () => {
     expect(resMock._json.length).toBe(3);
   });
 
+  test('search throws an error if service throws error', async () => {
+    const reqMockWithErrors = { ...reqMock, params: undefined };
+    await controller.search(reqMockWithErrors, resMock);
+
+    expect(resMock._status).not.toBe(200);
+    expect(resMock._error).not.toBe(null);
+  });
+
   test('allBrands fetchs and send all brands successfully', async () => {
     await controller.allBrands(reqMock, resMock);
     expect(brandServiceMock.getAll).toHaveBeenCalledTimes(1);
@@ -311,6 +355,49 @@ describe('ManagementController methods', () => {
       throw new Error();
     });
     await controller.product(reqMock, resMock);
+    expect(resMock._status).not.toBe(200);
+    expect(resMock._error).not.toBe(null);
+  });
+
+  test('getAllByCategoryAndBrand fetches all products by category and brand', async () => {
+    await controller.getAllByCategoryAndBrand(reqMock, resMock);
+
+    expect(productServiceMock.getAllByCategoryAndBrand).toHaveBeenCalledTimes(1);
+  });
+
+  test('getAllByCategoryAndBrand sends error if service throws error ', async () => {
+    reqMock.params.brands = undefined;
+    await controller.getAllByCategoryAndBrand(reqMock, resMock);
+    expect(resMock._status).not.toBe(200);
+    expect(resMock._error).not.toBe(null);
+  });
+
+  test("getNumberOfProducts calls productService's getNumberOfProducts method", async () => {
+    await controller.getNumberOfProducts(reqMock, resMock);
+
+    expect(productServiceMock.getNumberOfProducts).toHaveBeenCalledTimes(1);
+  });
+
+  test('getNumberOfProducts throws error if productService throws error', async () => {
+    const reqMockWithErrors = { ...reqMock, query: undefined };
+
+    await controller.getNumberOfProducts(reqMockWithErrors, resMock);
+
+    expect(resMock._status).not.toBe(200);
+    expect(resMock._error).not.toBe(null);
+  });
+
+  test("getRelatedProducts calls productService's getRelatedProducts method", async () => {
+    await controller.getRelatedProducts(reqMock, resMock);
+
+    expect(productServiceMock.getRelatedProducts).toHaveBeenCalledTimes(1);
+  });
+
+  test('getRelatedProducts throws error if productService throws error', async () => {
+    const reqMockWithErrors = { ...reqMock, query: undefined };
+
+    await controller.getRelatedProducts(reqMockWithErrors, resMock);
+
     expect(resMock._status).not.toBe(200);
     expect(resMock._error).not.toBe(null);
   });

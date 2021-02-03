@@ -1,9 +1,10 @@
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import { useContext, useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import styled from 'styled-components/macro';
-import SearchContainer from '../search';
 import { ProductContext } from '../../store/products/productContext';
+import SearchContainer from '../search';
 
 const ContainerSearch = styled.div`
   display: flex;
@@ -21,20 +22,38 @@ const ContainerSearch = styled.div`
   }
 `;
 
-export default function Header() {
-  const [term, setTerm] = useState('');
-  const { getProductBySearch } = useContext(ProductContext);
-  let time = null;
+export default function Header({ setCurrentSearchTerm, currentTerm }) {
+  const [term, setTerm] = useState(currentTerm);
+  const [isSearching, setIsSearching] = useState(false);
+  const { getProductBySearch, removeProductsBySearch } = useContext(ProductContext);
+  const [cart, setCart] = useState([]);
+  const history = useHistory();
 
   useEffect(() => {
-    clearTimeout(time);
-    if (term.trim()) {
-      // eslint-disable-next-line
-      time = setTimeout(() => {
-        getProductBySearch(term);
-      }, 2000);
+    let timerId;
+    if (term && term.trim()) {
+      const timer = () =>
+        setTimeout(() => {
+          getProductBySearch(term);
+        }, 500);
+      timerId = timer();
+    } else {
+      removeProductsBySearch();
     }
+    return () => {
+      removeProductsBySearch();
+      clearTimeout(timerId);
+    };
   }, [term]);
+
+  let localCart = localStorage.getItem('cart');
+
+  useEffect(() => {
+    localCart = JSON.parse(localCart);
+    if (localCart) {
+      setCart(localCart);
+    }
+  }, [localCart]);
 
   return (
     <header>
@@ -56,11 +75,32 @@ export default function Header() {
             >
               <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
             </svg>
+            <span
+              style={{
+                display: 'inline-block',
+                backgroundColor: '#5a7a99',
+                width: '21px',
+                borderRadius: '80%',
+              }}
+            >
+              <span style={{ color: 'white', textAlign: 'center', display: 'block' }}>
+                {cart.length}
+              </span>
+            </span>
           </Nav.Link>
         </Nav>
 
         <ContainerSearch>
-          <form>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (term.trim()) {
+                setIsSearching(false);
+                setCurrentSearchTerm(term);
+                history.push(`/?search=${term}`);
+              }
+            }}
+          >
             <label htmlFor="Search">
               Search Products:
               <input
@@ -70,10 +110,13 @@ export default function Header() {
                 value={term}
                 id="Search"
                 onChange={(e) => setTerm(e.target.value)}
+                onFocus={() => setIsSearching(true)}
+                onBlur={() => setIsSearching(false)}
+                autoComplete="off"
               />
             </label>
-            {term.length > 0 && <SearchContainer />}
           </form>
+          <SearchContainer isSearching={isSearching && term} />
         </ContainerSearch>
       </Navbar>
     </header>

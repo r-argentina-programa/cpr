@@ -1,0 +1,16 @@
+<form action="" method="get" id="search-form">
+  <div class="field has-addons">
+    <div class="control">
+      <input class="input" type="text" name="search" value="{{term}}" placeholder="Find a product" required />
+    </div>
+    <div class="control">
+      <input
+        id="search-button"
+        type="submit"
+        class="button is-info is-outlined"
+        value="Search"
+        onclick="document.getElementById('search-form').action='/admin/product/search/' + document.querySelector('input[name=search]').value"
+      />
+    </div>
+  </div>
+</form>

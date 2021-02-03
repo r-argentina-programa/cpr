@@ -1,3 +1,4 @@
+const { Op } = require('sequelize');
 const { fromModelToEntity } = require('../mapper/categoryMapper');
 const {
   fromModelToEntity: fromModelToProductEntity,
@@ -48,15 +49,33 @@ module.exports = class CategoryRepository {
     return fromModelToEntity(categoryModel);
   }
 
-  async getAll() {
+  async getAll(offset = 0, limit = 20) {
     const categoryInstances = await this.categoryModel.findAll({
       include: {
         model: this.discountModel,
         as: 'discounts',
       },
+      offset,
+      limit,
     });
 
     return categoryInstances.map(fromModelToEntity);
+  }
+
+  async getAllCount() {
+    return this.categoryModel.count();
+  }
+
+  /**
+   * @param {string} term
+   */
+  async getAllCategoriesSearch(term) {
+    const matchingNameCategories = await this.categoryModel.findAll({
+      where: {
+        name: { [Op.iLike]: `%${term}%` },
+      },
+    });
+    return matchingNameCategories;
   }
 
   /**
@@ -136,6 +155,7 @@ module.exports = class CategoryRepository {
           as: 'discounts',
         },
       ],
+      limit: 5,
     });
 
     return products.products.map((product) => {

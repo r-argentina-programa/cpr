@@ -30,10 +30,11 @@ module.exports = class ProductController {
       this.uploadMiddleware.single('file'),
       this.save.bind(this)
     );
+    app.get(`${ROUTE}/create`, this.auth.bind(this), this.create.bind(this));
     app.get(`${ROUTE}/delete/:id`, this.auth.bind(this), this.delete.bind(this));
     app.get(`${ROUTE}/edit/:id`, this.auth.bind(this), this.edit.bind(this));
-    app.get(`${ROUTE}/`, this.auth.bind(this), this.index.bind(this));
-    app.get(`${ROUTE}/create`, this.auth.bind(this), this.create.bind(this));
+    app.get(`${ROUTE}/:page?`, this.auth.bind(this), this.index.bind(this));
+    app.get(`${ROUTE}/search/:term`, this.auth.bind(this), this.search.bind(this));
   }
 
   /**
@@ -55,15 +56,32 @@ module.exports = class ProductController {
    * @param  {import("express").Response} res
    */
   async index(req, res) {
-    const productsList = await this.productService.getAll();
-    const { errors, messages } = req.session;
-    res.render(`${this.PRODUCT_VIEWS}/index.njk`, {
-      productsList,
-      messages,
-      errors,
-    });
-    req.session.errors = [];
-    req.session.messages = [];
+    try {
+      const limit = 10;
+      const pageData = {
+        selected: req.params.page ? Number(req.params.page) : 1,
+        pages: Math.ceil((await this.productService.getAllCount()) / limit),
+      };
+      const offset = limit * (pageData.selected - 1);
+      const productsList = await this.productService.getAll(offset, limit);
+      const { errors, messages } = req.session;
+
+      if (productsList.length !== 0 || pageData.selected === 1) {
+        res.render(`${this.PRODUCT_VIEWS}/index.njk`, {
+          productsList,
+          messages,
+          errors,
+          pageData,
+        });
+        req.session.errors = [];
+        req.session.messages = [];
+      } else {
+        throw new Error('That page was not found');
+      }
+    } catch (e) {
+      req.session.errors = [e.message];
+      res.redirect(this.ROUTE_BASE);
+    }
   }
 
   /**
@@ -170,6 +188,25 @@ module.exports = class ProductController {
           'To create a product you must first create a brand, a category and a discount'
         );
       }
+    } catch (e) {
+      req.session.errors = [e.message];
+      res.redirect(this.ROUTE_BASE);
+    }
+  }
+
+  async search(req, res) {
+    try {
+      const { term } = req.params;
+      const { errors, messages } = req.session;
+      const productsList = await this.productService.getAllProductsSearch(term);
+      res.render(`${this.PRODUCT_VIEWS}/search.njk`, {
+        productsList,
+        messages,
+        errors,
+        term,
+      });
+      req.session.errors = [];
+      req.session.messages = [];
     } catch (e) {
       req.session.errors = [e.message];
       res.redirect(this.ROUTE_BASE);

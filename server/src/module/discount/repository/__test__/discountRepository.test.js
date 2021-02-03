@@ -19,7 +19,7 @@ describe('discountRepository methods', () => {
   let BrandModel;
 
   beforeEach(async (done) => {
-    sequelize = new Sequelize('sqlite::memory');
+    sequelize = new Sequelize('sqlite::memory', { logging: false });
     DiscountModel = discountModel.setup(sequelize);
     CategoryModel = categoryModel.setup(sequelize);
     ProductModel = productModel.setup(sequelize);

@@ -1,16 +1,17 @@
-{% extends 'management/view/layout/base.njk' %} {% block body %}
-  <h1 class="title is-1">Brand Managment</h1>
+{% extends 'management/view/layout/base.njk' %}
+{% block body %}
+  <h1 class="title is-1">Search Results</h1>
 
   {% for error in errors %}
-  <div class="notification is-danger">
-    {{error}}
-  </div>
+    <div class="notification is-danger">
+      {{error}}
+    </div>
   {% endfor %}
 
   {% for message in messages %}
-  <div class="notification is-success">
-    {{message}}
-  </div>
+    <div class="notification is-success">
+      {{message}}
+    </div>
   {% endfor %}
 
   <nav class="navbar">
@@ -44,19 +45,7 @@
     {% endif %}
   {% else %}
     <div class="panel-block">
-      <p class="subtitle is-5">Oops it seems that you do not have any brand created. <a href="/admin/brand/create">Create one</a></p>
+      <p class="subtitle is-5">Oops it seems that no results were found for your search. <a href="/admin/brand"> Previous page</a></p>
     </div>
   {% endif %}
-{% endblock %}
-{% block footerScripts %}
-  <script>
-    const inputSearch = document.querySelector('input[name=search]');
-    const buttonSearch = document.getElementById('search-button');
-    const brands = {{ brands | dump | safe }};
-      
-    if(!(brands.length > 0)) {
-      inputSearch.setAttribute("disabled", true);
-      buttonSearch.setAttribute("disabled", true);
-    }
-  </script>
 {% endblock %}

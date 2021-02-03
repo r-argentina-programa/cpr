@@ -156,9 +156,10 @@
         },
         whitelist: cleanCategories,
         dropdown: {
-          enabled: 1, // suggest tags after a single character input
-          classname: 'extra-properties', // custom class for the suggestions dropdown
-        }, // map tags' values to this property name, so this property will be the actual value and not the printed value on the screen
+          enabled: 1,
+          classname: 'extra-properties',
+          maxItems: 100
+        },
       });
 
     tagify.addTags(cleanCurrentCategories);
@@ -167,14 +168,14 @@
   <script>
     function calculatePrice(discount, defaultPrice) {
       let finalPrice = defaultPrice;
-      const { type, value } = discount;
+      const { type, discountValue } = discount;
       switch (type) {
         case 'Fixed': {
-          finalPrice = defaultPrice - value;
+          finalPrice = defaultPrice - discountValue;
           break;
         }
         case 'Percentage': {
-          finalPrice = defaultPrice - defaultPrice * (value / 100);
+          finalPrice = defaultPrice - defaultPrice * (discountValue / 100);
           break;
         }
         default:
@@ -208,7 +209,7 @@
         templates: {
           tag: function (tagData) {
             const valueText =
-              tagData.type === 'Fixed' ? `$${tagData.discountValue}` : `${tagData.discountValue}%`;
+              tagData.type === 'Fixed' ? `$${tagData.discountValue}` : (tagData.type ==="Percentage" ? `${tagData.discountValue}%` : `${tagData.discountValue}`);
             try {
               return `<tag title='${tagData.id}' contenteditable='false' spellcheck="false" class='tagify__tag ${tagData.class ? tagData.class : ''}' ${this.getAttributes(tagData)}>
                         <x title='remove tag' class='tagify__tag__removeBtn'></x>
@@ -221,7 +222,7 @@
 
           dropdownItem: function (tagData) {
             const valueText =
-              tagData.type === 'Fixed' ? `$${tagData.discountValue}` : `${tagData.discountValue}%`;
+              tagData.type === 'Fixed' ? `$${tagData.discountValue}` : (tagData.type ==="Percentage" ? `${tagData.discountValue}%` : `${tagData.discountValue}`);
             try {
               return `<div class='tagify__dropdown__item ${tagData.class ? tagData.class : ''}' tagifySuggestionIdx="${tagData.tagifySuggestionIdx}">
                         <span>${valueText} Off</span>
@@ -233,11 +234,13 @@
         dropdown: {
           enabled: 1,
           classname: 'extra-properties',
-          searchKeys: ['value', 'type'],
+          searchKeys: ['value','type','discountValue'],
+          maxItems: 100
         },
         validate: (e) => {
           const price = document.querySelector('input[name=defaultPrice]').value;
           const discount = calculatePrice(e, price);
+          console.log(e,discount)
           if (discount.finalPrice > 0) {
             return true;
           }

@@ -84,19 +84,57 @@ module.exports = class ProductService {
     return this.ProductRepository.delete(product);
   }
 
-  async getAll() {
-    return this.ProductRepository.getAll();
+  async getAll(offset, limit) {
+    return this.ProductRepository.getAll(offset, limit);
+  }
+
+  async getAllCount() {
+    return this.ProductRepository.getAllCount();
   }
 
   /**
    * @param {string} term
    */
   async getAllProductsSearch(term) {
-    return this.ProductRepository.getAllProductsSearch(term);
+    const products = (await this.ProductRepository.getAllProductsSearch(term)) || [];
+    return products.filter((v, i, a) => a.findIndex((t) => t.id === v.id) === i);
   }
 
-  async getAllByCategoryAndBrand(categories, brands, price) {
-    const data = await this.ProductRepository.getAllByCategoryAndBrand(categories, brands, price);
+  async getAllByCategoryAndBrand(categories, brands, price, page, search) {
+    const data = await this.ProductRepository.getAllByCategoryAndBrand(
+      categories,
+      brands,
+      price,
+      page,
+      search
+    );
+    return data;
+  }
+
+  async getNumberOfProducts(category, brand, price, search) {
+    let categories = category;
+    let brands = brand;
+    if (typeof categories === 'string') {
+      categories = [categories];
+    }
+    if (typeof brands === 'string') {
+      brands = [brands];
+    }
+    const data = await this.ProductRepository.getNumberOfProducts(
+      categories,
+      brands,
+      price,
+      search
+    );
+    return data;
+  }
+
+  async getRelatedProducts(category) {
+    let categories = category;
+    if (typeof categories === 'string') {
+      categories = [categories];
+    }
+    const data = await this.ProductRepository.getRelatedProducts(categories);
     return data;
   }
 };

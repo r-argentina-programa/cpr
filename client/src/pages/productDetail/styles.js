@@ -22,6 +22,7 @@ export const ImageContainer = styled.div`
     left: 0;
     top: 0;
     transition: all 0.3s ease;
+    max-height: 500px;
   }
   @media (max-width: 940px) {
     width: 100%;
@@ -85,7 +86,7 @@ export const ProductPrice = styled.div`
     color: #43474d;
     margin-right: 20px;
   }
-  a {
+  button.add-cart {
     display: inline-block;
     background-color: rgb(13, 101, 114);
     font-weight: 500;
@@ -102,23 +103,29 @@ export const ProductPrice = styled.div`
 `;
 
 export const ListContainer = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  margin-top: 12rem;
   h2 {
     font-size: 3rem;
     width: 100%;
     color: cadetblue;
     text-align: center;
     font-weight: 250;
-    margin-bottom: 3rem;
+  }
+  .discount-table {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 10rem;
+    span {
+      border: 1px solid red;
+    }
+
+    tbody tr:nth-child(1) {
+      background-color: mediumaquamarine;
+    }
   }
 
-  span {
-    border: 1px solid red;
-  }
-
-  tbody tr:nth-child(1) {
-    background-color: mediumaquamarine;
+  .products-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-gap: 0.2rem;
   }
 `;

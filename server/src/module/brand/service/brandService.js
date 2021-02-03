@@ -30,8 +30,20 @@ module.exports = class BrandService {
     return this.brandRepository.delete(brand);
   }
 
-  async getAll() {
-    return this.brandRepository.getAll();
+  async getAll(offset, limit) {
+    return this.brandRepository.getAll(offset, limit);
+  }
+
+  async getAllCount() {
+    return this.brandRepository.getAllCount();
+  }
+
+  /**
+   * @param {string} term
+   */
+  async getAllBrandsSearch(term) {
+    const brands = (await this.brandRepository.getAllBrandsSearch(term)) || [];
+    return brands.filter((v, i, a) => a.findIndex((t) => t.id === v.id) === i);
   }
 
   /**

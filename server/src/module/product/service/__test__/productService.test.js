@@ -13,6 +13,9 @@ const repositoryMock = {
   delete: jest.fn(),
   getAllProductsSearch: jest.fn(),
   getAllByCategoryAndBrand: jest.fn(),
+  getAllCount: jest.fn(),
+  getNumberOfProducts: jest.fn(),
+  getRelatedProducts: jest.fn(),
 };
 
 const discountServiceMock = {
@@ -103,17 +106,57 @@ describe('ProductService methods', () => {
     await expect(mockService.validateCategoriesDiscounts(productMock, [1])).rejects.toThrowError();
   });
 
-  test("getAllByCategoryAndBrand calls repository's getAllByCategoryAndBrand", async () => {
+  test("getAllByCategoryAndBrand calls repository's getAllByCategoryAndBrand method", async () => {
     const categoriesMock = ['category1', 'category2'];
     const brandsMock = ['brand1', 'brand2'];
     const priceMock = 100;
+    const pageMock = undefined;
+    const searchMock = undefined;
 
-    await mockService.getAllByCategoryAndBrand(categoriesMock, brandsMock, priceMock);
+    await mockService.getAllByCategoryAndBrand(
+      categoriesMock,
+      brandsMock,
+      priceMock,
+      pageMock,
+      searchMock
+    );
     expect(repositoryMock.getAllByCategoryAndBrand).toHaveBeenCalledTimes(1);
     expect(repositoryMock.getAllByCategoryAndBrand).toHaveBeenCalledWith(
       categoriesMock,
       brandsMock,
-      priceMock
+      priceMock,
+      pageMock,
+      searchMock
     );
+  });
+
+  test("getAllCount calls repository's getAllCount method", async () => {
+    await mockService.getAllCount();
+
+    expect(repositoryMock.getAllCount).toHaveBeenCalledTimes(1);
+  });
+
+  test("getNumberOfProducts calls repository's getNumberOfProducts method", async () => {
+    const categoryMock = 'category';
+    const brandMock = 'brand';
+    const priceMock = 100;
+    const searchTerm = 'term';
+
+    await mockService.getNumberOfProducts(categoryMock, brandMock, priceMock, searchTerm);
+    expect(repositoryMock.getNumberOfProducts).toHaveBeenCalledTimes(1);
+    expect(repositoryMock.getNumberOfProducts).toHaveBeenCalledWith(
+      [categoryMock],
+      [brandMock],
+      priceMock,
+      searchTerm
+    );
+  });
+
+  test("getRelatedProducts calls repository's getRelatedProducts method", async () => {
+    const categoryMock = 'category';
+
+    await mockService.getRelatedProducts(categoryMock);
+    expect(repositoryMock.getRelatedProducts).toHaveBeenCalledTimes(1);
+    expect(repositoryMock.getRelatedProducts).toHaveBeenCalledWith([categoryMock]);
   });
 });

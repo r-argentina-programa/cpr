@@ -7,6 +7,7 @@ const serviceMock = {
   save: jest.fn((category) => createTestCategory(category.id)),
   getAll: jest.fn(() => Array.from({ length: 3 }, (id) => createTestCategory(id + 1))),
   getById: jest.fn((id) => createTestCategory(id)),
+  getAllCount: jest.fn(() => 1),
   delete: jest.fn(),
 };
 
@@ -71,14 +72,21 @@ describe('CategoryController methods', () => {
   test('index renders index.njk with a list of categories', async () => {
     const categoriesList = serviceMock.getAll();
     await mockController.index(reqMock, resMock);
+    const limit = 10;
+    const pageData = {
+      selected: reqMock.params.page ? Number(reqMock.params.page) : 1,
+      pages: Math.ceil(serviceMock.getAllCount() / limit),
+    };
 
     const { errors, messages } = reqMock.session;
     expect(serviceMock.getAll).toHaveBeenCalledTimes(2);
+    expect(serviceMock.getAllCount).toHaveBeenCalledTimes(2);
     expect(resMock.render).toHaveBeenCalledTimes(1);
     expect(resMock.render).toHaveBeenCalledWith('category/view/index.njk', {
       categoriesList,
       errors,
       messages,
+      pageData,
     });
   });
 
@@ -155,11 +163,13 @@ describe('CategoryController methods', () => {
   test('create renders form to add a new category', async () => {
     await mockController.create(reqMock, resMock);
     const discounts = discountServiceMock.getAll();
+    const { categories } = reqMock.session;
     expect(discountServiceMock.getAll).toHaveBeenCalledTimes(2);
     expect(resMock.render).toHaveBeenCalledTimes(1);
     expect(resMock.render).toHaveBeenCalledWith('category/view/form.njk', {
       discounts,
       category: { discounts: [] },
+      categories,
     });
   });
 
