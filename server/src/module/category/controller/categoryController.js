@@ -167,7 +167,11 @@ module.exports = class CategoryController {
         ];
       }
     } catch (e) {
-      req.session.errors = [e.message, e.stack];
+      if (e.message === 'llave duplicada viola restricción de unicidad «categories_name_key»') {
+        req.session.errors = ['That category is already registered'];
+      } else {
+        req.session.errors = [e.message, e.stack];
+      }
     }
     res.redirect(this.ROUTE_BASE);
   }

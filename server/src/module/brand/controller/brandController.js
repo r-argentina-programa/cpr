@@ -153,7 +153,11 @@ module.exports = class BrandController {
         ];
       }
     } catch (e) {
-      req.session.errors = [e.message, e.stack];
+      if (e.message === 'llave duplicada viola restricción de unicidad «brands_name_key»') {
+        req.session.errors = ['That brand is already registered'];
+      } else {
+        req.session.errors = [e.message, e.stack];
+      }
     }
     res.redirect(this.ROUTE_BASE);
   }
