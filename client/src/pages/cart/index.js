@@ -31,7 +31,9 @@ export default function ProductDetail() {
       <Header />
       {error && <Alert variant="danger">{error}</Alert>}
       {!products || products.length === 0 ? (
-        <h2 className="title">You do not have any products added to the cart!</h2>
+        <h2 style={{ textAlign: 'center', color: 'rgb(13, 101, 110)', margin: '2rem 0' }}>
+          You do not have any products added to the cart!
+        </h2>
       ) : (
         <Container className="table-responsive">
           <h1 className="title">Manage your cart and let us calculate the Final Price</h1>
