@@ -1,0 +1,59 @@
+[
+  {
+    "id": 1,
+    "name": "Cars",
+    "createdAt": "2021-01-27T01:57:08.562Z",
+    "updatedAt": "2021-01-27T01:57:08.562Z",
+    "discounts": []
+  },
+  {
+    "id": 6,
+    "name": "Drinks",
+    "createdAt": "2021-01-29T17:43:01.978Z",
+    "updatedAt": "2021-01-29T17:43:01.978Z",
+    "discounts": []
+  },
+  {
+    "id": 4,
+    "name": "Exclusive",
+    "createdAt": "2021-01-27T12:10:21.066Z",
+    "updatedAt": "2021-01-27T12:10:21.066Z",
+    "discounts": [
+      {
+        "id": 7,
+        "type": "Percentage",
+        "value": "30",
+        "updatedAt": "2021-01-27T12:10:09.406Z",
+        "createdAt": "2021-01-27T12:10:09.406Z",
+        "discount_category": {
+          "createdAt": "2021-01-27T12:10:21.076Z",
+          "updatedAt": "2021-01-27T12:10:21.076Z",
+          "category_id": 4,
+          "DiscountId": 7
+        },
+        "finalPrice": null
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Food",
+    "createdAt": "2021-01-27T12:06:39.925Z",
+    "updatedAt": "2021-01-27T12:06:39.925Z",
+    "discounts": []
+  },
+  {
+    "id": 5,
+    "name": "Dessert",
+    "createdAt": "2021-01-27T18:44:44.249Z",
+    "updatedAt": "2021-01-27T18:44:44.249Z",
+    "discounts": []
+  },
+  {
+    "id": 7,
+    "name": "Electronics",
+    "createdAt": "2021-02-01T20:56:22.041Z",
+    "updatedAt": "2021-02-01T20:56:22.041Z",
+    "discounts": []
+  }
+]
