@@ -84,15 +84,12 @@ module.exports = class BrandController {
     try {
       const discounts = await this.discountService.getAll();
       const { brands } = req.session;
-      if (discounts.length > 0) {
-        res.render(`${this.BRAND_VIEW_DIR}/form.njk`, {
-          discounts,
-          brand: { discounts: [] },
-          brands,
-        });
-      } else {
-        throw new Error('To create a brand you must first create a discount');
-      }
+
+      res.render(`${this.BRAND_VIEW_DIR}/form.njk`, {
+        discounts,
+        brand: { discounts: [] },
+        brands,
+      });
     } catch (e) {
       req.session.errors = [e.message];
       res.redirect(this.ROUTE_BASE);

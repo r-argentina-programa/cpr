@@ -127,15 +127,12 @@ module.exports = class CategoryController {
     try {
       const { categories } = req.session;
       const discounts = await this.discountService.getAll();
-      if (discounts.length > 0) {
-        res.render(`${this.CATEGORY_VIEWS}/form.njk`, {
-          discounts,
-          category: { discounts: [] },
-          categories,
-        });
-      } else {
-        throw new Error('To create a category you must first create a discount');
-      }
+
+      res.render(`${this.CATEGORY_VIEWS}/form.njk`, {
+        discounts,
+        category: { discounts: [] },
+        categories,
+      });
     } catch (e) {
       req.session.errors = [e.message];
       res.redirect(this.ROUTE_BASE);

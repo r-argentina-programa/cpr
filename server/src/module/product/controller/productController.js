@@ -176,7 +176,7 @@ module.exports = class ProductController {
       const categories = await this.categoryService.getAll();
       const discounts = await this.discountService.getAll();
 
-      if (brands.length > 0 && categories.length > 0 && discounts.length > 0) {
+      if (brands.length > 0 && categories.length > 0) {
         res.render(`${this.PRODUCT_VIEWS}/form.njk`, {
           brands,
           categories,
@@ -184,9 +184,7 @@ module.exports = class ProductController {
           product: { categories: [], discounts: [] },
         });
       } else {
-        throw new Error(
-          'To create a product you must first create a brand, a category and a discount'
-        );
+        throw new Error('To create a product you must first create a brand, ans a category');
       }
     } catch (e) {
       req.session.errors = [e.message];
