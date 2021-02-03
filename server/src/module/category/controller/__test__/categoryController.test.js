@@ -8,7 +8,12 @@ const serviceMock = {
   getAll: jest.fn(() => Array.from({ length: 3 }, (id) => createTestCategory(id + 1))),
   getById: jest.fn((id) => createTestCategory(id)),
   getAllCount: jest.fn(() => 1),
-  getAllCategoriesSearch: jest.fn(() => createTestCategory()),
+  getAllCategoriesSearch: jest.fn((term) => {
+    if (term === 'electronics') {
+      return [createTestCategory()];
+    }
+    return [];
+  }),
   delete: jest.fn(),
 };
 
@@ -60,7 +65,7 @@ describe('CategoryController methods', () => {
     const searchTerm = 'electronics';
     const categoryMock = createTestCategory();
     const reqSearchMock = {
-      params: { term: 'electronics' },
+      params: { term: searchTerm },
       session: {
         errors: [],
         messages: [],
@@ -73,7 +78,30 @@ describe('CategoryController methods', () => {
     expect(serviceMock.getAllCategoriesSearch).toHaveBeenCalledWith(searchTerm);
     expect(resMock.render).toHaveBeenCalledTimes(1);
     expect(resMock.render).toHaveBeenCalledWith('category/view/search.njk', {
-      categoriesList: categoryMock,
+      categoriesList: [categoryMock],
+      messages: [],
+      errors: [],
+      term: searchTerm,
+    });
+  });
+
+  test('search product by non-existent name', async () => {
+    const searchTerm = 'skin care';
+    const productMock = createTestCategory();
+    const reqSearchMock = {
+      params: { term: searchTerm },
+      session: {
+        errors: [],
+        messages: [],
+      },
+    };
+    await serviceMock.save(productMock);
+    await mockController.search(reqSearchMock, resMock);
+    expect(serviceMock.getAllCategoriesSearch).toHaveBeenCalledTimes(1);
+    expect(serviceMock.getAllCategoriesSearch).toHaveBeenCalledWith(searchTerm);
+    expect(resMock.render).toHaveBeenCalledTimes(1);
+    expect(resMock.render).toHaveBeenCalledWith('category/view/search.njk', {
+      categoriesList: [],
       messages: [],
       errors: [],
       term: searchTerm,

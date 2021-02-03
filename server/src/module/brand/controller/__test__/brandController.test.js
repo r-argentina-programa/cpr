@@ -10,7 +10,12 @@ const serviceMock = {
   delete: jest.fn(),
   getAllCount: jest.fn(() => 1),
   viewProducts: jest.fn(),
-  getAllBrandsSearch: jest.fn(() => createTestBrand()),
+  getAllBrandsSearch: jest.fn((term) => {
+    if (term === 'coca-cola') {
+      return [createTestBrand()];
+    }
+    return [];
+  }),
 };
 
 const discountServiceMock = {
@@ -308,7 +313,30 @@ describe('BrandController methods', () => {
     expect(serviceMock.getAllBrandsSearch).toHaveBeenCalledWith(searchTerm);
     expect(resMock.render).toHaveBeenCalledTimes(1);
     expect(resMock.render).toHaveBeenCalledWith('brand/view/search.njk', {
-      brands: brandMock,
+      brands: [brandMock],
+      messages: [],
+      errors: [],
+      term: searchTerm,
+    });
+  });
+
+  test('search product by non-existent name', async () => {
+    const searchTerm = 'pepsico';
+    const productMock = createTestBrand();
+    const reqSearchMock = {
+      params: { term: searchTerm },
+      session: {
+        errors: [],
+        messages: [],
+      },
+    };
+    await serviceMock.save(productMock);
+    await mockController.search(reqSearchMock, resMock);
+    expect(serviceMock.getAllBrandsSearch).toHaveBeenCalledTimes(1);
+    expect(serviceMock.getAllBrandsSearch).toHaveBeenCalledWith(searchTerm);
+    expect(resMock.render).toHaveBeenCalledTimes(1);
+    expect(resMock.render).toHaveBeenCalledWith('brand/view/search.njk', {
+      brands: [],
       messages: [],
       errors: [],
       term: searchTerm,
