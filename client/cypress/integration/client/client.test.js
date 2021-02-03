@@ -25,6 +25,18 @@ describe('<Main/>', () => {
     cy.get('h1.title').should('be.visible');
 
     cy.get('.card').should('be.visible').as('product');
-    console.log('@product');
+    cy.get('@product').children();
+  });
+
+  it('Shows error if term do not match ', () => {
+    cy.visit('/');
+
+    cy.get('[data-cy="error-message"]').should('not.exist');
+
+    cy.get('input#Search').type('saidjiasodjsaoidaois');
+
+    cy.get('[data-cy="error-message"]')
+      .should('be.visible')
+      .contains("We couldn't find any results for this term");
   });
 });

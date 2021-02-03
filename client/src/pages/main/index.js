@@ -220,7 +220,11 @@ export default function Main() {
           </Spinner>
         ) : (
           <ContentContainer>
-            {error && <Alert variant="danger">{error}</Alert>}
+            {error && (
+              <Alert variant="danger" data-cy="error-message">
+                {error}
+              </Alert>
+            )}
             <h1 className="title">See all the products here!</h1>
             <ListContainer className="container-fluid">
               {products.map((product) => (
