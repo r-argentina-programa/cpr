@@ -193,21 +193,16 @@ module.exports = class ProductController {
   }
 
   async search(req, res) {
-    try {
-      const { term } = req.params;
-      const { errors, messages } = req.session;
-      const productsList = await this.productService.getAllProductsSearch(term);
-      res.render(`${this.PRODUCT_VIEWS}/search.njk`, {
-        productsList,
-        messages,
-        errors,
-        term,
-      });
-      req.session.errors = [];
-      req.session.messages = [];
-    } catch (e) {
-      req.session.errors = [e.message];
-      res.redirect(this.ROUTE_BASE);
-    }
+    const { term } = req.params;
+    const { errors, messages } = req.session;
+    const productsList = await this.productService.getAllProductsSearch(term);
+    res.render(`${this.PRODUCT_VIEWS}/search.njk`, {
+      productsList,
+      messages,
+      errors,
+      term,
+    });
+    req.session.errors = [];
+    req.session.messages = [];
   }
 };

@@ -10,6 +10,7 @@ const serviceMock = {
   getAll: jest.fn(() => Array.from({ length: 3 }, (id) => createTestProduct(id + 1))),
   getById: jest.fn((id) => createTestProduct(id)),
   delete: jest.fn(),
+  getAllProductsSearch: jest.fn(() => createTestProduct()),
   getAllCount: jest.fn(() => 1),
 };
 
@@ -75,6 +76,30 @@ describe('ProductController methods', () => {
     expect(app.get).toHaveBeenCalled();
     expect(app.post).toHaveBeenCalled();
     expect(uploadMock.single).toHaveBeenCalled();
+  });
+
+  test('search product by existing name', async () => {
+    const searchTerm = 'coca-cola';
+    const productMock = createTestProduct();
+    const reqSearchMock = {
+      params: { term: 'coca-cola' },
+      session: {
+        errors: [],
+        messages: [],
+      },
+    };
+
+    await serviceMock.save(productMock);
+    await mockController.search(reqSearchMock, resMock);
+    expect(serviceMock.getAllProductsSearch).toHaveBeenCalledTimes(1);
+    expect(serviceMock.getAllProductsSearch).toHaveBeenCalledWith(searchTerm);
+    expect(resMock.render).toHaveBeenCalledTimes(1);
+    expect(resMock.render).toHaveBeenCalledWith('product/view/search.njk', {
+      productsList: productMock,
+      messages: [],
+      errors: [],
+      term: searchTerm,
+    });
   });
 
   test('Auth calls next because session username matches with admin username', () => {
