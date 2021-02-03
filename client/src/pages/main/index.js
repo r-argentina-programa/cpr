@@ -116,7 +116,10 @@ export default function Main() {
           <Accordion allowMultipleExpanded allowZeroExpanded>
             <AccordionItem>
               <AccordionItemHeading>
-                <AccordionItemButton style={{ background: 'inherit', color: 'white' }}>
+                <AccordionItemButton
+                  style={{ background: 'inherit', color: 'white' }}
+                  data-cy="filter-brands"
+                >
                   Brands
                 </AccordionItemButton>
               </AccordionItemHeading>
@@ -144,7 +147,10 @@ export default function Main() {
 
             <AccordionItem>
               <AccordionItemHeading>
-                <AccordionItemButton style={{ background: 'inherit', color: 'white' }}>
+                <AccordionItemButton
+                  style={{ background: 'inherit', color: 'white' }}
+                  data-cy="filter-categories"
+                >
                   Categories
                 </AccordionItemButton>
               </AccordionItemHeading>
@@ -173,7 +179,7 @@ export default function Main() {
             </AccordionItem>
           </Accordion>
           <div className="price-filter">
-            <p>Price</p>
+            <p data-cy="filter-price">Price</p>
             <div>
               <label htmlFor="min-price">
                 <span>Min Price</span>
