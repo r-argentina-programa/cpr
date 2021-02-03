@@ -23,14 +23,6 @@ module.exports = class BrandModel extends Model {
           type: DataTypes.BLOB,
           allowNull: false,
         },
-        updatedAt: {
-          type: DataTypes.DATE,
-          defaultValue: Sequelize.NOW,
-        },
-        createdAt: {
-          type: DataTypes.DATE,
-          defaultValue: Sequelize.NOW,
-        },
       },
       {
         sequelize: sequelizeInstance,
@@ -38,7 +30,7 @@ module.exports = class BrandModel extends Model {
         tableName: 'brands',
         underscored: true,
         paranoid: true,
-        timestamps: false,
+        timestamps: true,
       }
     );
 

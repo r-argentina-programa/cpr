@@ -34,17 +34,9 @@ module.exports = class ProductModel extends Model {
         brandFk: {
           type: DataTypes.INTEGER,
           references: {
-            model: 'brands',
+            model: { tableName: 'brands' },
             key: 'id',
           },
-        },
-        updatedAt: {
-          type: DataTypes.DATE,
-          defaultValue: Sequelize.NOW,
-        },
-        createdAt: {
-          type: DataTypes.DATE,
-          defaultValue: Sequelize.NOW,
         },
       },
       {
@@ -52,7 +44,7 @@ module.exports = class ProductModel extends Model {
         modelName: 'Product',
         underscored: true,
         paranoid: true,
-        timestamps: false,
+        timestamps: true,
         tableName: 'products',
       }
     );

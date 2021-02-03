@@ -19,21 +19,13 @@ module.exports = class CategoryModel extends Model {
           type: DataTypes.STRING,
           allowNull: false,
         },
-        updatedAt: {
-          type: DataTypes.DATE,
-          defaultValue: Sequelize.NOW,
-        },
-        createdAt: {
-          type: DataTypes.DATE,
-          defaultValue: Sequelize.NOW,
-        },
       },
       {
         sequelize: sequelizeInstance,
         modelName: 'Category',
         underscored: true,
         paranoid: true,
-        timestamps: false,
+        timestamps: true,
         tableName: 'categories',
       }
     );
