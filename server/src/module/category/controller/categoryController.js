@@ -193,21 +193,16 @@ module.exports = class CategoryController {
   }
 
   async search(req, res) {
-    try {
-      const { term } = req.params;
-      const { errors, messages } = req.session;
-      const categoriesList = await this.categoryService.getAllCategoriesSearch(term);
-      res.render(`${this.CATEGORY_VIEWS}/search.njk`, {
-        categoriesList,
-        messages,
-        errors,
-        term,
-      });
-      req.session.errors = [];
-      req.session.messages = [];
-    } catch (e) {
-      req.session.errors = [e.message];
-      res.redirect(this.ROUTE_BASE);
-    }
+    const { term } = req.params;
+    const { errors, messages } = req.session;
+    const categoriesList = await this.categoryService.getAllCategoriesSearch(term);
+    res.render(`${this.CATEGORY_VIEWS}/search.njk`, {
+      categoriesList,
+      messages,
+      errors,
+      term,
+    });
+    req.session.errors = [];
+    req.session.messages = [];
   }
 };

@@ -8,6 +8,7 @@ const serviceMock = {
   getAll: jest.fn(() => Array.from({ length: 3 }, (id) => createTestCategory(id + 1))),
   getById: jest.fn((id) => createTestCategory(id)),
   getAllCount: jest.fn(() => 1),
+  getAllCategoriesSearch: jest.fn(() => createTestCategory()),
   delete: jest.fn(),
 };
 
@@ -53,6 +54,30 @@ describe('CategoryController methods', () => {
 
     expect(app.get).toHaveBeenCalled();
     expect(app.post).toHaveBeenCalled();
+  });
+
+  test('search category by existing name', async () => {
+    const searchTerm = 'electronics';
+    const categoryMock = createTestCategory();
+    const reqSearchMock = {
+      params: { term: 'electronics' },
+      session: {
+        errors: [],
+        messages: [],
+      },
+    };
+
+    await serviceMock.save(categoryMock);
+    await mockController.search(reqSearchMock, resMock);
+    expect(serviceMock.getAllCategoriesSearch).toHaveBeenCalledTimes(1);
+    expect(serviceMock.getAllCategoriesSearch).toHaveBeenCalledWith(searchTerm);
+    expect(resMock.render).toHaveBeenCalledTimes(1);
+    expect(resMock.render).toHaveBeenCalledWith('category/view/search.njk', {
+      categoriesList: categoryMock,
+      messages: [],
+      errors: [],
+      term: searchTerm,
+    });
   });
 
   test('Auth calls next because session username matches with admin username', () => {
