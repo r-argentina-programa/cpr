@@ -5,16 +5,23 @@ const DiscountModel = require('../../module/discount/model/discountModel');
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    /** @param {import('sequelize').QueryInterface} queryInterface */
-    CategoryModel.setup(queryInterface.sequelize);
-    BrandModel.setup(queryInterface.sequelize);
-    ProductModel.setup(queryInterface.sequelize);
-    DiscountModel.setup(queryInterface.sequelize);
+    /** @param {import('sequelize').queryInterface} queryInterface */
+    return Promise.all([
+      ProductModel.setup(queryInterface.sequelize),
+      CategoryModel.setup(queryInterface.sequelize),
+      BrandModel.setup(queryInterface.sequelize),
+      DiscountModel.setup(queryInterface.sequelize),
 
-    CategoryModel.setupAssociation(ProductModel, DiscountModel).sync();
-    BrandModel.setupAssociation(ProductModel, DiscountModel).sync();
-    ProductModel.setupAssociation(CategoryModel, BrandModel, DiscountModel).sync();
-    DiscountModel.setupAssociation(ProductModel, CategoryModel, BrandModel).sync({ force: true });
+      ProductModel.setupAssociation(CategoryModel, BrandModel, DiscountModel),
+      CategoryModel.setupAssociation(ProductModel, DiscountModel),
+      BrandModel.setupAssociation(ProductModel, DiscountModel),
+      DiscountModel.setupAssociation(ProductModel, CategoryModel, BrandModel),
+
+      BrandModel.sync(),
+      CategoryModel.sync(),
+      ProductModel.sync(),
+      DiscountModel.sync(),
+    ]);
   },
 
   down: async (queryInterface, Sequelize) => {
