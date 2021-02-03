@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/app.js -e js,html,njk",
-    "migrations": "sequelize-cli db:migrate --config=./src/cli/config.js --migrations-path=./src/cli/migrations --env=development",
+    "migrations": "sequelize-cli db:migrate --config=./src/cli/config.js --migrations-path=./src/cli/migrations --env=production",
+    "seeds": "sequelize-cli db:seed:all --config=./src/cli/config.js --seeders-path=./src/cli/seeders --env=production",
     "test:watch": "jest --watch --rootDir=src",
     "test:coverage": "jest --coverage",
     "test": "jest",
