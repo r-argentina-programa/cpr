@@ -110,9 +110,7 @@ const ProductContextProvider = ({ children }) => {
   const getFilteredProducts = async (query) => {
     try {
       dispatch({ type: PRODUCTS_LOAD });
-      console.log('query from context', query);
       const res = await api.get(`/api/products/filter/?${query}`);
-      console.log('length from context', res.data.length);
       dispatch({ type: GET_PRODUCTS_FILTERED, payload: res.data });
     } catch (error) {
       dispatch({ type: GET_PRODUCTS_ERROR, payload: error.response.data.error });
