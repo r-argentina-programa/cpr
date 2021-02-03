@@ -157,5 +157,25 @@ module.exports = {
       cascade: true,
       restartIdentity: true,
     });
+    await queryInterface.bulkDelete('category_products', null, {
+      truncate: true,
+      cascade: true,
+      restartIdentity: true,
+    });
+    await queryInterface.bulkDelete('discount_brand', null, {
+      truncate: true,
+      cascade: true,
+      restartIdentity: true,
+    });
+    await queryInterface.bulkDelete('discount_category', null, {
+      truncate: true,
+      cascade: true,
+      restartIdentity: true,
+    });
+    await queryInterface.bulkDelete('discount_products', null, {
+      truncate: true,
+      cascade: true,
+      restartIdentity: true,
+    });
   },
 };
