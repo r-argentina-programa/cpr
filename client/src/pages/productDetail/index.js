@@ -97,9 +97,9 @@ export default function ProductDetail() {
       ) : (
         product.name && (
           <>
-            <Container>
+            <Container data-cy="product-container">
               <ImageContainer>
-                <img src={`data:image/png;base64, ${image}`} alt="Product" />
+                <img src={`data:image/png;base64, ${image}`} alt="product" />
               </ImageContainer>
 
               <RightColumnContainer>
