@@ -33,8 +33,7 @@ module.exports = class CategoryService {
    * @param {string} term
    */
   async getAllCategoriesSearch(term) {
-    const categories = (await this.categoryRepository.getAllCategoriesSearch(term)) || [];
-    return categories.filter((v, i, a) => a.findIndex((t) => t.id === v.id) === i);
+    return (await this.categoryRepository.getAllCategoriesSearch(term)) || [];
   }
 
   /**
