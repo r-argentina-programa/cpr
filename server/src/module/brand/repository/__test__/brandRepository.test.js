@@ -89,6 +89,16 @@ describe('BrandRepository methods', () => {
     expect(brands[1].id).toEqual(2);
   });
 
+  test('getAllCount returns a count of all brands stored in DB', async () => {
+    const brand1 = createTestBrand();
+    const brand2 = createTestBrand(undefined, 'pepsi');
+    await brandRepository.save(brand1);
+    await brandRepository.save(brand2);
+    const brandsCount = await brandRepository.getAllCount();
+
+    expect(brandsCount).toEqual(2);
+  });
+
   test('getById returns single brand', async () => {
     const brand = createTestBrand();
     await brandRepository.save(brand);
