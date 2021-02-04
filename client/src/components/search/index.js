@@ -108,7 +108,10 @@ export default function SearchContainer({ isSearching }) {
                 alignItems: 'center',
               }}
             >
-              <p style={{ fontSize: '24px', fontWeight: '500', color: '#721c24' }}>
+              <p
+                style={{ fontSize: '24px', fontWeight: '500', color: '#721c24' }}
+                data-cy="search-container-error-message"
+              >
                 No products found
               </p>
             </div>
