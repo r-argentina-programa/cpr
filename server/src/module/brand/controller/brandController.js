@@ -81,22 +81,12 @@ module.exports = class BrandController {
    * @param {import('express').Response} res
    */
   async create(req, res) {
-    try {
-      const discounts = await this.discountService.getAll();
-      const { brands } = req.session;
-      if (discounts.length > 0) {
-        res.render(`${this.BRAND_VIEW_DIR}/form.njk`, {
-          discounts,
-          brand: { discounts: [] },
-          brands,
-        });
-      } else {
-        throw new Error('To create a brand you must first create a discount');
-      }
-    } catch (e) {
-      req.session.errors = [e.message];
-      res.redirect(this.ROUTE_BASE);
-    }
+    const discounts = await this.discountService.getAll();
+
+    res.render(`${this.BRAND_VIEW_DIR}/form.njk`, {
+      discounts,
+      brand: { discounts: [] },
+    });
   }
 
   /**
@@ -153,7 +143,11 @@ module.exports = class BrandController {
         ];
       }
     } catch (e) {
-      req.session.errors = [e.message, e.stack];
+      if (e.message === 'llave duplicada viola restricción de unicidad «brands_name_key»') {
+        req.session.errors = ['That brand is already registered'];
+      } else {
+        req.session.errors = [e.message, e.stack];
+      }
     }
     res.redirect(this.ROUTE_BASE);
   }
@@ -194,21 +188,16 @@ module.exports = class BrandController {
   }
 
   async search(req, res) {
-    try {
-      const { term } = req.params;
-      const { errors, messages } = req.session;
-      const brands = await this.brandService.getAllBrandsSearch(term);
-      res.render(`${this.BRAND_VIEW_DIR}/search.njk`, {
-        brands,
-        messages,
-        errors,
-        term,
-      });
-      req.session.errors = [];
-      req.session.messages = [];
-    } catch (e) {
-      req.session.errors = [e.message];
-      res.redirect(this.ROUTE_BASE);
-    }
+    const { term } = req.params;
+    const { errors, messages } = req.session;
+    const brands = await this.brandService.getAllBrandsSearch(term);
+    res.render(`${this.BRAND_VIEW_DIR}/search.njk`, {
+      brands,
+      messages,
+      errors,
+      term,
+    });
+    req.session.errors = [];
+    req.session.messages = [];
   }
 };

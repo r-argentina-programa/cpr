@@ -22,7 +22,11 @@ import { BrandContext } from '../../store/brand/brandContext';
 import { CategoryContext } from '../../store/category/categoryContext';
 import { ListContainer, SidebarContainer, Container, ContentContainer } from './styles';
 
-export default function Main() {
+export default function Main({ title }) {
+  useEffect(() => {
+    document.title = 'Smarket - Main Page';
+  }, []);
+
   const { search } = useLocation();
   const searchParams = new URLSearchParams(search);
   const searchWord = searchParams.get('search');
@@ -84,6 +88,12 @@ export default function Main() {
   }, []);
 
   useEffect(() => {
+    if (firstUpdate.current === false) {
+      handleQueries();
+    }
+  }, [page]);
+
+  useEffect(() => {
     handleQueries();
     getNumberOfProducts(query);
     if (page !== 1 && firstUpdate.current === false) {
@@ -92,10 +102,6 @@ export default function Main() {
       firstUpdate.current = false;
     }
   }, [activeBrands, activeCategories, priceRange, searchTerm]);
-
-  useEffect(() => {
-    handleQueries();
-  }, [page]);
 
   function setCurrentPage(newPage) {
     setPage(newPage);

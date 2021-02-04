@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react';
 import Pagination from 'react-bootstrap/Pagination';
 
 export default function PaginationComponent({ numberOfProducts, page, setCurrentPage }) {
-  const PRODUCTS_PER_PAGE = 12;
+  const PRODUCTS_PER_PAGE = 9;
   const [paginationItems, setPaginationItems] = useState([]);
   let numberOfPaginationItems = Math.ceil(numberOfProducts / PRODUCTS_PER_PAGE);
 
-  function setUpPagination() {
+  const setUpPagination = () => {
     const items = [];
     const MAX_PAGINATION_ITEMS = 2;
     numberOfPaginationItems = Math.ceil(numberOfProducts / PRODUCTS_PER_PAGE);
@@ -35,11 +35,12 @@ export default function PaginationComponent({ numberOfProducts, page, setCurrent
       );
     }
     setPaginationItems(items);
-  }
+  };
 
   useEffect(() => {
     setUpPagination();
   }, [numberOfProducts, page]);
+
   return (
     <Pagination data-cy="pagination-container">
       <Pagination.First onClick={() => setCurrentPage(1)} />

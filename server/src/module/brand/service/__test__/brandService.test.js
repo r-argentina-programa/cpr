@@ -6,6 +6,8 @@ const BrandIdNotDefinedError = require('../../error/BrandIdNotDefinedError');
 const repositoryMock = {
   save: jest.fn(),
   getAll: jest.fn(),
+  getAllCount: jest.fn(),
+  getAllBrandsSearch: jest.fn(),
   getById: jest.fn(),
   delete: jest.fn(),
   viewProducts: jest.fn(),
@@ -31,6 +33,20 @@ describe('BrandService methods', () => {
     await mockService.getAll();
 
     expect(repositoryMock.getAll).toHaveBeenCalledTimes(1);
+  });
+
+  test("getAllCount calls repository's getAllCount method", async () => {
+    await mockService.getAllCount();
+
+    expect(repositoryMock.getAllCount).toHaveBeenCalledTimes(1);
+  });
+
+  test("getAllBrandsSearch calls repository's getAllBrandsSearch method", async () => {
+    const term = 'coca-cola';
+    await mockService.getAllBrandsSearch(term);
+
+    expect(repositoryMock.getAllBrandsSearch).toHaveBeenCalledTimes(1);
+    expect(repositoryMock.getAllBrandsSearch).toHaveBeenCalledWith(term);
   });
 
   test("getById calls repository's getById method", async () => {

@@ -57,32 +57,6 @@
 
 {% block footerScripts%}
   <script>
-    const inputName = document.querySelector('input[name=name]');
-    const placeholderValue = inputName.placeholder;
-
-    inputName.addEventListener('input', checkName);
-
-    function checkName(event) {
-      inputName.classList.remove("is-danger");
-      inputName.setAttribute("placeholder", placeholderValue);
-      const brandInputValue = event.target.value.toLowerCase();
-      const brands = {{ brands | dump | safe }};
-      const editBrand = {{ brand | dump | safe }};
-      
-      brands.forEach((brand) => {
-        const brandName = brand.name.toLowerCase();
-        if (!(editBrand.name === brand.name)) {
-          if (brandName === brandInputValue) {
-            inputName.setAttribute("placeholder", `The brand ${inputName.value} is already created!`);
-            inputName.classList.add("is-danger");
-            inputName.value = "";
-          }
-        }
-      });
-    }
-  </script>
-
-  <script>
     const currentDiscounts = {{ brand.discounts | dump | safe }};
     const discounts = {{ discounts | dump | safe }};
 

@@ -22,6 +22,10 @@ export default function Brands() {
   const { getAllBrands, brands, error, loading } = useContext(BrandContext);
 
   useEffect(() => {
+    document.title = `Smarket - View all brands`;
+  }, []);
+
+  useEffect(() => {
     getAllBrands();
   }, []);
   return (
