@@ -225,7 +225,9 @@ export default function Main() {
                 {error}
               </Alert>
             )}
-            <h1 className="title">See all the products here!</h1>
+            <h1 className="title">
+              {products.length ? 'See all the products here!' : 'No products found'}
+            </h1>
             <ListContainer className="container-fluid">
               {products.map((product) => (
                 <CardsList
@@ -236,11 +238,15 @@ export default function Main() {
                 />
               ))}
             </ListContainer>
-            <PaginationComponent
-              numberOfProducts={numberOfProducts}
-              page={page}
-              setCurrentPage={setCurrentPage}
-            />
+            {products.length ? (
+              <PaginationComponent
+                numberOfProducts={numberOfProducts}
+                page={page}
+                setCurrentPage={setCurrentPage}
+              />
+            ) : (
+              ''
+            )}
           </ContentContainer>
         )}
       </Container>
