@@ -29,7 +29,7 @@ export default function CardsList({ item, imageSrc, link }) {
   }, [item.discount]);
 
   return (
-    <Container>
+    <Container data-cy="product-card">
       <Card className="card" style={{ height: '400px', width: '320px' }}>
         <Card.Body>
           <Card.Title style={{ textAlign: 'center', height: '20px', overflow: 'hidden' }}>
