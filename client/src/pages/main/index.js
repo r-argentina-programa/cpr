@@ -125,7 +125,7 @@ export default function Main() {
               </AccordionItemHeading>
               <AccordionItemPanel style={{ textAlign: 'left' }}>
                 {brands.map((brand) => (
-                  <div className="item" key={brand.id}>
+                  <div className="item" key={brand.id} data-cy="brand-item">
                     <input
                       type="checkbox"
                       id={`brand-${brand.id}`}
@@ -156,7 +156,7 @@ export default function Main() {
               </AccordionItemHeading>
               <AccordionItemPanel style={{ textAlign: 'left' }}>
                 {categories.map((category) => (
-                  <div className="item" key={category.id}>
+                  <div className="item" key={category.id} data-cy="category-item">
                     <input
                       type="checkbox"
                       id={`category-${category.id}`}
