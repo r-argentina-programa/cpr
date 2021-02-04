@@ -17,6 +17,10 @@ export default function ProductDetail() {
   const { getCartFinalDiscounts, cartData, error } = useContext(ProductContext);
 
   useEffect(() => {
+    document.title = `Smarket - Cart Page`;
+  }, []);
+
+  useEffect(() => {
     const localCart = localStorage.getItem('cart');
     setProducts(JSON.parse(localCart));
   }, []);
