@@ -81,19 +81,12 @@ module.exports = class BrandController {
    * @param {import('express').Response} res
    */
   async create(req, res) {
-    try {
-      const discounts = await this.discountService.getAll();
-      const { brands } = req.session;
+    const discounts = await this.discountService.getAll();
 
-      res.render(`${this.BRAND_VIEW_DIR}/form.njk`, {
-        discounts,
-        brand: { discounts: [] },
-        brands,
-      });
-    } catch (e) {
-      req.session.errors = [e.message];
-      res.redirect(this.ROUTE_BASE);
-    }
+    res.render(`${this.BRAND_VIEW_DIR}/form.njk`, {
+      discounts,
+      brand: { discounts: [] },
+    });
   }
 
   /**

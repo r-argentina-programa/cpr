@@ -81,16 +81,17 @@ describe('BrandController methods', () => {
   });
 
   test('brand renders index.njk with a list of brands', async () => {
-    const brands = serviceMock.getAll();
     await mockController.index(reqMock, resMock);
     const limit = 10;
     const pageData = {
       selected: reqMock.params.page ? Number(reqMock.params.page) : 1,
       pages: Math.ceil(serviceMock.getAllCount() / limit),
     };
-
+    const offset = limit * (pageData.selected - 1);
+    const brands = serviceMock.getAll(offset, limit);
     const { errors, messages } = reqMock.session;
     expect(serviceMock.getAll).toHaveBeenCalledTimes(2);
+    expect(serviceMock.getAll).toHaveBeenCalledWith(offset, limit);
     expect(serviceMock.getAllCount).toHaveBeenCalledTimes(2);
     expect(resMock.render).toHaveBeenCalledTimes(1);
     expect(resMock.render).toHaveBeenCalledWith('brand/view/index.njk', {
@@ -99,6 +100,28 @@ describe('BrandController methods', () => {
       messages,
       pageData,
     });
+  });
+
+  test("brand don't renders index.njk without a list of brands", async () => {
+    const controllerReqMock = {
+      params: {
+        id: 1,
+        page: 2,
+      },
+      session: {
+        errors: [],
+        messages: [],
+        username: process.env.ADMIN_USERNAME,
+        admin: true,
+      },
+    };
+    serviceMock.getAll.mockReturnValueOnce([]);
+    await mockController.index(controllerReqMock, resMock);
+
+    expect(serviceMock.getAll).toHaveBeenCalledTimes(1);
+    expect(resMock.render).toHaveBeenCalledTimes(0);
+    expect(controllerReqMock.session.errors).not.toHaveLength(0);
+    expect(resMock.redirect).toHaveBeenCalledTimes(1);
   });
 
   test('edit renders a form to edit a brand', async () => {
