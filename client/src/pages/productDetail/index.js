@@ -34,7 +34,9 @@ export default function ProductDetail() {
   let localCart = localStorage.getItem('cart');
 
   useEffect(() => {
-    document.title = `Smarket - ${product.name} - Detail page`;
+    if (product.name) {
+      document.title = `Smarket - ${product.name} - Detail page`;
+    }
   }, [product]);
 
   useEffect(() => {

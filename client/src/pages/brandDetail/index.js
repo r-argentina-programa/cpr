@@ -31,7 +31,9 @@ export default function BrandDetail() {
   const { getBrandById, brand, loading: loadingBrand, error } = useContext(BrandContext);
 
   useEffect(() => {
-    document.title = `Smarket - ${brand.name} - Detail page`;
+    if (brand.name) {
+      document.title = `Smarket - ${brand.name} - Detail page`;
+    }
   }, [brand]);
 
   useEffect(() => {
