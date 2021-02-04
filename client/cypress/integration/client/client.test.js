@@ -1,43 +1,217 @@
 /// <reference types="cypress" />
 
+const productMockId = 4;
+describe('ProductDetails', () => {
+  before(() => {
+    cy.clearLocalStorage();
+  });
+
+  beforeEach(() => {
+    cy.fixture('allCategories').as('categories');
+    cy.fixture('allBrands').as('brands');
+    cy.fixture('allProducts').as('products');
+
+    cy.intercept('http://localhost:8000/api/categories/all', { fixture: 'allCategories' });
+    cy.intercept('http://localhost:8000/api/brands/all', { fixture: 'allBrands' });
+  });
+
+  it('Should display product details', () => {
+    cy.fixture('product').as('product');
+    cy.intercept('http://localhost:8000/api/products/numberOfProducts/?page=1', {
+      fixture: 'numberOfProducts',
+    }).as('numberOfProductsMock');
+
+    cy.intercept('/api/products/filter/?page=1', {
+      fixture: 'allProducts',
+    }).as('productsMock');
+
+    cy.intercept(`/api/product/${productMockId}`, {
+      fixture: 'product',
+    }).as('productMock');
+
+    cy.visit('/');
+    cy.wait(['@productsMock', '@numberOfProductsMock']).then(() => {
+      cy.get('@product').then((product) => {
+        cy.get(`a[href*="/product/${product.id}"]`).click();
+        cy.url().should('include', `/product/${product.id}`);
+        cy.wait(['@productMock']);
+        cy.get('[data-cy=product-description]')
+          .should('contain', product.name)
+          .and('contain', product.description)
+          .and('contain', product.brand.name);
+
+        cy.get('[data-cy=default-price]')
+          .should('contain', product.defaultPrice)
+          .and('have.css', 'text-decoration', 'line-through solid rgb(67, 71, 77)');
+        cy.get('[data-cy=discount-price]')
+          .should('contain', product.discount.finalPrice)
+          .and('have.css', 'text-decoration', 'none solid rgb(255, 0, 0)');
+      });
+    });
+  });
+
+  it('should add product to cart and then remove it', () => {
+    cy.fixture('product').as('product');
+    cy.intercept(`/api/brand/3/viewProducts`, {
+      body: [],
+    }).as('productsWithSameBrand');
+
+    cy.intercept(`/api/products/relatedProducts/?category=Food`, {
+      body: [],
+    }).as('relatedProducts');
+
+    cy.intercept(`/api/product/${productMockId}`, {
+      fixture: 'product',
+    }).as('productMock');
+
+    cy.visit(`/product/${productMockId}`);
+    cy.wait(['@productMock', '@relatedProducts', '@productsWithSameBrand']);
+    cy.get('[data-cy=cart-length]').should('contain', '0');
+    cy.get('@product').then((product) => {
+      cy.get('[data-cy=add-product-to-cart-button]')
+        .click()
+        .should(() => {
+          expect(localStorage.getItem('cart')).to.eq(JSON.stringify([product]));
+        });
+      cy.get('[data-cy=status-container]').should(
+        'contain',
+        `${product.name} has been successfully added to the cart.`
+      );
+
+      cy.get('[data-cy=cart-length]').should('contain', '1');
+
+      cy.get('[data-cy=add-product-to-cart-button]').click();
+      cy.get('[data-cy=status-container]').should(
+        'contain',
+        `${product.name} is already in your Cart!`
+      );
+    });
+  });
+
+  it('should display product discounts', () => {
+    cy.fixture('product').as('product');
+    cy.fixture('relatedProducts').as('relatedProducts');
+    cy.intercept(`/api/brand/3/viewProducts`, {
+      body: [],
+    }).as('productsWithSameBrandMock');
+
+    cy.intercept(`/api/products/relatedProducts/?category=Food`, {
+      body: [],
+    }).as('relatedProductsMock');
+
+    cy.intercept(`/api/product/${productMockId}`, {
+      fixture: 'product',
+    }).as('productMock');
+
+    cy.visit(`/product/${productMockId}`);
+    cy.wait(['@productMock', '@relatedProductsMock', '@productsWithSameBrandMock']);
+    cy.get('@product').then((product) => {
+      product.discounts.forEach((discount) => {
+        cy.get('[data-cy=product-discounts-container]')
+          .should('contain', discount.type)
+          .and('contain', discount.value)
+          .and('contain', discount.finalPrice);
+      });
+    });
+  });
+
+  it('should display related products', () => {
+    cy.fixture('product').as('product');
+    cy.fixture('relatedProducts').as('relatedProducts');
+    cy.intercept(`/api/brand/3/viewProducts`, {
+      body: [],
+    }).as('productsWithSameBrandMock');
+
+    cy.intercept(`/api/products/relatedProducts/?category=Food`, {
+      fixture: 'relatedProducts',
+    }).as('relatedProductsMock');
+
+    cy.intercept(`/api/product/${productMockId}`, {
+      fixture: 'product',
+    }).as('productMock');
+
+    cy.visit(`/product/${productMockId}`);
+    cy.wait(['@productMock', '@relatedProductsMock', '@productsWithSameBrandMock']);
+    cy.get('@relatedProducts').then((relatedProducts) => {
+      cy.get('[data-cy=related-products-container]')
+        .children()
+        .should('have.length', relatedProducts.length);
+    });
+  });
+
+  it('should display products with same brand', () => {
+    cy.fixture('product').as('product');
+    cy.fixture('productsWithSameBrand').as('productsWithSameBrand');
+    cy.intercept(`/api/brand/3/viewProducts`, {
+      fixture: 'productsWithSameBrand',
+    }).as('productsWithSameBrandMock');
+
+    cy.intercept(`/api/products/relatedProducts/?category=Food`, {
+      body: [],
+    }).as('relatedProductsMock');
+
+    cy.intercept(`/api/product/${productMockId}`, {
+      fixture: 'product',
+    }).as('productMock');
+
+    cy.visit(`/product/${productMockId}`);
+    cy.wait(['@productMock', '@relatedProductsMock', '@productsWithSameBrandMock']);
+    cy.get('@productsWithSameBrand').then((productsWithSameBrand) => {
+      cy.get('[data-cy=products-with-same-brand-container]')
+        .children()
+        .should('have.length', productsWithSameBrand.length);
+    });
+  });
+
+  it('should display products with same brand and related products', () => {
+    cy.fixture('product').as('product');
+    cy.fixture('relatedProducts').as('relatedProducts');
+    cy.fixture('productsWithSameBrand').as('productsWithSameBrand');
+    cy.intercept(`/api/brand/3/viewProducts`, {
+      fixture: 'productsWithSameBrand',
+    }).as('productsWithSameBrandMock');
+
+    cy.intercept(`/api/products/relatedProducts/?category=Food`, {
+      fixture: 'relatedProducts',
+    }).as('relatedProductsMock');
+
+    cy.intercept(`/api/product/${productMockId}`, {
+      fixture: 'product',
+    }).as('productMock');
+
+    cy.visit(`/product/${productMockId}`);
+    cy.wait(['@productMock', '@relatedProductsMock', '@productsWithSameBrandMock']);
+    cy.get('@relatedProducts').then((relatedProducts) => {
+      cy.get('[data-cy=related-products-container]')
+        .children()
+        .should('have.length', relatedProducts.length);
+    });
+
+    cy.get('@productsWithSameBrand').then((productsWithSameBrand) => {
+      cy.get('[data-cy=products-with-same-brand-container]')
+        .children()
+        .should('have.length', productsWithSameBrand.length);
+    });
+  });
+});
+
 describe('<Main/>', () => {
   beforeEach(() => {
-    cy.fixture('allCategories.json').as('categories');
-    cy.fixture('allBrands.json').as('brands');
-    cy.fixture('allProducts.json').as('products');
+    cy.fixture('allCategories').as('categories');
+    cy.fixture('allBrands').as('brands');
+    cy.fixture('allProducts').as('products');
 
-    cy.intercept('http://localhost:8000/api/categories/all', { fixture: 'allCategories.json' });
-    cy.intercept('http://localhost:8000/api/brands/all', { fixture: 'allBrands.json' });
+    cy.intercept('http://localhost:8000/api/categories/all', { fixture: 'allCategories' });
+    cy.intercept('http://localhost:8000/api/brands/all', { fixture: 'allBrands' });
 
     cy.intercept('http://localhost:8000/api/products/numberOfProducts/?page=1', {
       fixture: 'numberOfProducts',
     });
   });
 
-  it('Should display product details', () => {
-    cy.fixture('productWithoutDiscounts.json').as('product');
-    cy.intercept('/api/products/filter/?page=1', {
-      fixture: 'allProducts.json',
-    }).as('productsMock');
-
-    cy.intercept(`/api/product/4`, {
-      fixture: 'productWithoutDiscounts.json',
-    }).as('productMock');
-
-    cy.visit('/');
-    cy.wait('@productsMock').then((productsMock) => {
-      cy.get('@product').then((product) => {
-        cy.get(`a[href*="/product/${product.id}"]`).click();
-        cy.url().should('include', `/product/${product.id}`);
-        cy.wait(['@productMock']);
-        cy.get('[data-cy=product-container]').should('contain', product.name);
-      });
-    });
-  });
-
   it('Mocks data and displays it', () => {
     cy.intercept('http://localhost:8000/api/products/filter/?page=1', {
-      fixture: 'allProducts.json',
+      fixture: 'allProducts',
     }).as('productsMock');
     cy.visit('/');
     cy.wait('@productsMock').then((productsMock) => {
@@ -116,7 +290,7 @@ describe('<Main/>', () => {
 
   it('Should show discount price if product has discount or default price if not', () => {
     cy.intercept('http://localhost:8000/api/products/filter/?page=1', {
-      fixture: 'allProducts.json',
+      fixture: 'allProducts',
     });
     cy.visit('/');
     cy.get('@products').then((products) => {
