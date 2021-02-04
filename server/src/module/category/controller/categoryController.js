@@ -127,15 +127,12 @@ module.exports = class CategoryController {
     try {
       const { categories } = req.session;
       const discounts = await this.discountService.getAll();
-      if (discounts.length > 0) {
-        res.render(`${this.CATEGORY_VIEWS}/form.njk`, {
-          discounts,
-          category: { discounts: [] },
-          categories,
-        });
-      } else {
-        throw new Error('To create a category you must first create a discount');
-      }
+
+      res.render(`${this.CATEGORY_VIEWS}/form.njk`, {
+        discounts,
+        category: { discounts: [] },
+        categories,
+      });
     } catch (e) {
       req.session.errors = [e.message];
       res.redirect(this.ROUTE_BASE);
@@ -167,7 +164,11 @@ module.exports = class CategoryController {
         ];
       }
     } catch (e) {
-      req.session.errors = [e.message, e.stack];
+      if (e.message === 'llave duplicada viola restricción de unicidad «categories_name_key»') {
+        req.session.errors = ['That category is already registered'];
+      } else {
+        req.session.errors = [e.message, e.stack];
+      }
     }
     res.redirect(this.ROUTE_BASE);
   }
@@ -192,21 +193,16 @@ module.exports = class CategoryController {
   }
 
   async search(req, res) {
-    try {
-      const { term } = req.params;
-      const { errors, messages } = req.session;
-      const categoriesList = await this.categoryService.getAllCategoriesSearch(term);
-      res.render(`${this.CATEGORY_VIEWS}/search.njk`, {
-        categoriesList,
-        messages,
-        errors,
-        term,
-      });
-      req.session.errors = [];
-      req.session.messages = [];
-    } catch (e) {
-      req.session.errors = [e.message];
-      res.redirect(this.ROUTE_BASE);
-    }
+    const { term } = req.params;
+    const { errors, messages } = req.session;
+    const categoriesList = await this.categoryService.getAllCategoriesSearch(term);
+    res.render(`${this.CATEGORY_VIEWS}/search.njk`, {
+      categoriesList,
+      messages,
+      errors,
+      term,
+    });
+    req.session.errors = [];
+    req.session.messages = [];
   }
 };

@@ -18,6 +18,7 @@ module.exports = class CategoryModel extends Model {
         name: {
           type: DataTypes.STRING,
           allowNull: false,
+          unique: true,
         },
         updatedAt: {
           type: DataTypes.DATE,

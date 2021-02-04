@@ -1,3 +1,8 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable prefer-const */
+/* eslint-disable no-use-before-define */
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-plusplus */
 function calculateCartPrice(idsAndQuantity, products) {
   const idsQuantityMap = new Map();
   const finalDiscounts = [];
