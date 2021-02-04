@@ -22,7 +22,11 @@ import { BrandContext } from '../../store/brand/brandContext';
 import { CategoryContext } from '../../store/category/categoryContext';
 import { ListContainer, SidebarContainer, Container, ContentContainer } from './styles';
 
-export default function Main() {
+export default function Main({ title }) {
+  useEffect(() => {
+    document.title = 'Smarket - Main Page';
+  }, []);
+
   const { search } = useLocation();
   const searchParams = new URLSearchParams(search);
   const searchWord = searchParams.get('search');

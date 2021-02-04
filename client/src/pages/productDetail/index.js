@@ -34,6 +34,10 @@ export default function ProductDetail() {
   let localCart = localStorage.getItem('cart');
 
   useEffect(() => {
+    document.title = `Smarket - ${product.name} - Detail page`;
+  }, [product]);
+
+  useEffect(() => {
     localCart = JSON.parse(localCart);
     if (localCart) {
       setCart(localCart);
