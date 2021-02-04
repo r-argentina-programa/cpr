@@ -85,7 +85,10 @@ export default function Header({ setCurrentSearchTerm, currentTerm }) {
                 borderRadius: '80%',
               }}
             >
-              <span style={{ color: 'white', textAlign: 'center', display: 'block' }}>
+              <span
+                style={{ color: 'white', textAlign: 'center', display: 'block' }}
+                data-cy="cart-length"
+              >
                 {cart.length}
               </span>
             </span>
