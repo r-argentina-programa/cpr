@@ -21,9 +21,7 @@ const productServiceMock = {
   getByIds: jest.fn(() => Array.from([0, 1, 2], (id) => createTestProduct(id))),
   getAll: jest.fn(() => Array.from({ length: 3 }, (id) => createTestProduct(id + 1))),
   getAllProductsSearch: jest.fn(() => Array.from({ length: 3 }, (id) => createTestProduct(id + 1))),
-  getAllByCategoryAndBrand: jest.fn(() =>
-    Array.from({ length: 3 }, (id) => createTestProduct(id + 1))
-  ),
+  getFilteredProducts: jest.fn(() => Array.from({ length: 3 }, (id) => createTestProduct(id + 1))),
   getNumberOfProducts: jest.fn(() => 3),
   getRelatedProducts: jest.fn(),
 };
@@ -132,7 +130,7 @@ describe('ManagementController methods', () => {
     );
     expect(appMock.get).toHaveBeenNthCalledWith(
       12,
-      `${ROUTE}/products/all/:brands/:categories/:price/:page/:search`,
+      `${ROUTE}/products/filter`,
       expect.any(Function)
     );
     expect(appMock.get).toHaveBeenNthCalledWith(
@@ -359,15 +357,17 @@ describe('ManagementController methods', () => {
     expect(resMock._error).not.toBe(null);
   });
 
-  test('getAllByCategoryAndBrand fetches all products by category and brand', async () => {
-    await controller.getAllByCategoryAndBrand(reqMock, resMock);
+  test('getFilteredProducts fetches all products by category and brand', async () => {
+    await controller.getFilteredProducts(reqMock, resMock);
 
-    expect(productServiceMock.getAllByCategoryAndBrand).toHaveBeenCalledTimes(1);
+    expect(productServiceMock.getFilteredProducts).toHaveBeenCalledTimes(1);
   });
 
-  test('getAllByCategoryAndBrand sends error if service throws error ', async () => {
-    reqMock.params.brands = undefined;
-    await controller.getAllByCategoryAndBrand(reqMock, resMock);
+  test('getFilteredProducts sends error if service throws error ', async () => {
+    productServiceMock.getFilteredProducts.mockImplementationOnce(() => {
+      throw new Error();
+    });
+    await controller.getFilteredProducts(reqMock, resMock);
     expect(resMock._status).not.toBe(200);
     expect(resMock._error).not.toBe(null);
   });
