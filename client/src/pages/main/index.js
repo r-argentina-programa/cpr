@@ -88,6 +88,12 @@ export default function Main({ title }) {
   }, []);
 
   useEffect(() => {
+    if (firstUpdate.current === false) {
+      handleQueries();
+    }
+  }, [page]);
+
+  useEffect(() => {
     handleQueries();
     getNumberOfProducts(query);
     if (page !== 1 && firstUpdate.current === false) {
@@ -96,10 +102,6 @@ export default function Main({ title }) {
       firstUpdate.current = false;
     }
   }, [activeBrands, activeCategories, priceRange, searchTerm]);
-
-  useEffect(() => {
-    handleQueries();
-  }, [page]);
 
   function setCurrentPage(newPage) {
     setPage(newPage);
