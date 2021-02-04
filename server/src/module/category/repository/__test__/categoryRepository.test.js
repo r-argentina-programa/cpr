@@ -93,6 +93,16 @@ describe('categoryRepository methods', () => {
     expect(categories).toHaveLength(2);
   });
 
+  test('getAllCount returns a count of all categories stored in DB', async () => {
+    const category1 = createTestCategory();
+    const category2 = createTestCategory(undefined, undefined, 'house article');
+    await categoryRepository.save(category1);
+    await categoryRepository.save(category2);
+    const categoriesCount = await categoryRepository.getAllCount();
+
+    expect(categoriesCount).toEqual(2);
+  });
+
   test('getById returns a single category', async () => {
     const category = createTestCategory();
     await categoryRepository.save(category);
