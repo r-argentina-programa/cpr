@@ -42,7 +42,7 @@ export default function PaginationComponent({ numberOfProducts, page, setCurrent
   }, [numberOfProducts, page]);
 
   return (
-    <Pagination>
+    <Pagination data-cy="pagination-container">
       <Pagination.First onClick={() => setCurrentPage(1)} />
       <Pagination.Prev onClick={() => setCurrentPage(page - 1 > 1 ? page - 1 : 1)} />
       {paginationItems}
