@@ -13,19 +13,14 @@ export const Container = styled.div`
 `;
 
 export const ImageContainer = styled.div`
-  width: 50%;
+  width: 65%;
   position: relative;
-
   img {
-    max-width: 100%;
-    min-width: 300px;
+    width: 100%;
     left: 0;
     top: 0;
     transition: all 0.3s ease;
     max-height: 500px;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
   }
   @media (max-width: 940px) {
     width: 50%;
@@ -47,8 +42,7 @@ export const ImageContainer = styled.div`
 `;
 
 export const RightColumnContainer = styled.div`
-  width: 50%;
-  padding-left: 5%;
+  width: 35%;
   margin-top: 60px;
 
   @media (max-width: 940px) {
