@@ -21,6 +21,8 @@ export const ImageContainer = styled.div`
     top: 0;
     transition: all 0.3s ease;
     max-height: 500px;
+    display: block;
+    margin: auto;
   }
   @media (max-width: 940px) {
     width: 50%;
@@ -134,7 +136,7 @@ export const ListContainer = styled.div`
 
   .products-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     grid-gap: 0.2rem;
   }
 `;
