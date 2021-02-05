@@ -15,6 +15,7 @@ export const Container = styled.div`
 export const ImageContainer = styled.div`
   width: 65%;
   position: relative;
+  margin: auto;
   img {
     width: 100%;
     left: 0;
