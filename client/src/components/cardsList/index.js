@@ -32,7 +32,7 @@ export default function CardsList({ item, imageSrc, link }) {
     <Container data-cy="product-card">
       <Card className="card" style={{ height: '400px', width: '320px' }}>
         <Card.Body>
-          <Card.Title style={{ textAlign: 'center', height: '20px', overflow: 'hidden' }}>
+          <Card.Title style={{ textAlign: 'center', height: '26px', overflow: 'hidden' }}>
             {item.name}
           </Card.Title>
           <div className="img-container">
@@ -86,8 +86,11 @@ export default function CardsList({ item, imageSrc, link }) {
                 </span>
               </Card.Subtitle>
             )
-          ) : null}
+          ) : (
+            <Card.Subtitle style={{ height: '38px', margin: '0.3rem' }} />
+          )}
           <TimeStyle>
+            Posted:
             <TimeAgo date={`${item.createdAt}`} formatter={formatter} />
             <br />
           </TimeStyle>
@@ -97,7 +100,6 @@ export default function CardsList({ item, imageSrc, link }) {
                 width: '100%',
                 backgroundColor: '#0D6572',
                 borderColor: '#0D6572',
-                marginTop: `${!item.discount ? '2.6rem' : ' '}`,
               }}
               variant="info"
             >

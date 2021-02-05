@@ -15,11 +15,21 @@
 ### How to run this project
 
 **Install Dependencies**
+1.  `npm install` to install root dependencies 
+2.  `npm client-install` to install client dependencies 
+3.  `npm server-install` for server dependencies
 
-1.  `npm client-install` to install client dependencies and `npm server-install` for server dependencies
-2.  `cd server npm run dev` to run server in development mode
-3.  `cd client npm run start` to run client in development mode
+**Run the project**
+1. `npm run dev` to run client and server en developmennt mode 
+
 
 ## Screenshots
+### Client:
+![client-main-page](https://github.com/r-argentina-programa/cpr/blob/main/docs/client-main.png?raw=true)
+![client-product-detail](https://github.com/r-argentina-programa/cpr/blob/main/docs/client-productDetail2.png?raw=true)
+![client-cart](https://github.com/r-argentina-programa/cpr/blob/main/docs/client-cart.png)
 
-![product-management](https://i.imgur.com/NNv70ZC.png)
+### Admin:
+![admin-login](https://github.com/r-argentina-programa/cpr/blob/main/docs/admin-login.png?raw=true)
+![admin-products](https://github.com/r-argentina-programa/cpr/blob/main/docs/admin-products.png?raw=true)
+![admin-brands](https://github.com/r-argentina-programa/cpr/blob/main/docs/admin-brands.png?raw=true)

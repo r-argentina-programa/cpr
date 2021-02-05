@@ -2,25 +2,9 @@ import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import { useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import styled from 'styled-components/macro';
 import { ProductContext } from '../../store/products/productContext';
 import SearchContainer from '../search';
-
-const ContainerSearch = styled.div`
-  display: flex;
-  align-items: center;
-  position: relative;
-  padding: 8px 4px 8px 2px;
-  font: 400 13.333px Arial;
-  border-radius: 4px;
-  outline: 0px;
-  padding-left: 5px;
-
-  label {
-    display: flex;
-    color: #fff;
-  }
-`;
+import { ContainerSearch, CartQuantity, SearchProductsLabel } from './styles';
 
 export default function Header({ setCurrentSearchTerm, currentTerm }) {
   const [term, setTerm] = useState(currentTerm);
@@ -32,6 +16,7 @@ export default function Header({ setCurrentSearchTerm, currentTerm }) {
   useEffect(() => {
     let timerId;
     if (term && term.trim()) {
+      setIsSearching(true);
       const timer = () =>
         setTimeout(() => {
           getProductBySearch(term);
@@ -77,25 +62,18 @@ export default function Header({ setCurrentSearchTerm, currentTerm }) {
             >
               <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
             </svg>
-            <span
-              style={{
-                display: 'inline-block',
-                backgroundColor: '#5a7a99',
-                width: '21px',
-                borderRadius: '80%',
-              }}
-            >
+            <CartQuantity>
               <span
                 style={{ color: 'white', textAlign: 'center', display: 'block' }}
                 data-cy="cart-length"
               >
                 {cart.length}
               </span>
-            </span>
+            </CartQuantity>
           </Nav.Link>
         </Nav>
 
-        <ContainerSearch>
+        <ContainerSearch onMouseLeave={() => setIsSearching(false)}>
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -107,7 +85,7 @@ export default function Header({ setCurrentSearchTerm, currentTerm }) {
             }}
           >
             <label htmlFor="Search">
-              Search Products:
+              <SearchProductsLabel>Search Products</SearchProductsLabel>
               <input
                 type="text"
                 placeholder="Search"
@@ -117,7 +95,7 @@ export default function Header({ setCurrentSearchTerm, currentTerm }) {
                 id="Search"
                 onChange={(e) => setTerm(e.target.value)}
                 onFocus={() => setIsSearching(true)}
-                onBlur={() => setIsSearching(false)}
+                onClick={() => setIsSearching(true)}
                 autoComplete="off"
               />
             </label>
