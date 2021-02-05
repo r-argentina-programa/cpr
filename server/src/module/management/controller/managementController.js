@@ -36,10 +36,7 @@ module.exports = class ManagementController {
     app.get(`${ROUTE}/search/:term`, this.search.bind(this));
     app.get(`${ROUTE}/brand/:id/viewProducts`, this.viewProductsByBrand.bind(this));
     app.get(`${ROUTE}/category/:id/viewProducts`, this.viewProductsByCategory.bind(this));
-    app.get(
-      `${ROUTE}/products/all/:brands/:categories/:price/:page/:search`,
-      this.getAllByCategoryAndBrand.bind(this)
-    );
+    app.get(`${ROUTE}/products/filter`, this.getFilteredProducts.bind(this));
     app.get(`${ROUTE}/products/numberOfProducts`, this.getNumberOfProducts.bind(this));
     app.get(`${ROUTE}/products/relatedProducts`, this.getRelatedProducts.bind(this));
     app.get(`${ROUTE}/getCartPrice/:productsId/:productsAmount`, this.getCartPrice.bind(this));
@@ -233,18 +230,18 @@ module.exports = class ManagementController {
     }
   }
 
-  async getAllByCategoryAndBrand(req, res) {
+  async getFilteredProducts(req, res) {
     try {
-      let { brands, categories, price, page, search } = req.params;
-      price = price.split('-');
-      price[0] = price[0] == false ? 0 : price[0];
-      price[1] = price[1] == false ? Infinity : price[1];
-
-      brands = brands.split(',');
-      categories = categories.split(',');
-      const products = await this.ProductService.getAllByCategoryAndBrand(
-        categories,
-        brands,
+      const { brand, category, priceRange, search, page } = req.query;
+      let price;
+      if (priceRange) {
+        price = priceRange.split('-');
+        price[0] = price[0] == false ? 0 : price[0];
+        price[1] = price[1] == false ? Infinity : price[1];
+      }
+      const products = await this.ProductService.getFilteredProducts(
+        category,
+        brand,
         price,
         page,
         search

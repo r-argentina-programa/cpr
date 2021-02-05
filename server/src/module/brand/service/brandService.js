@@ -42,8 +42,7 @@ module.exports = class BrandService {
    * @param {string} term
    */
   async getAllBrandsSearch(term) {
-    const brands = (await this.brandRepository.getAllBrandsSearch(term)) || [];
-    return brands.filter((v, i, a) => a.findIndex((t) => t.id === v.id) === i);
+    return (await this.brandRepository.getAllBrandsSearch(term)) || [];
   }
 
   /**

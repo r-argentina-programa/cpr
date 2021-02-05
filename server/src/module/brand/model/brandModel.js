@@ -18,6 +18,7 @@ module.exports = class BrandModel extends Model {
         name: {
           type: DataTypes.STRING,
           allowNull: false,
+          unique: true,
         },
         logo: {
           type: DataTypes.BLOB,

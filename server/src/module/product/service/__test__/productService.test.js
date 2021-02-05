@@ -12,7 +12,7 @@ const repositoryMock = {
   getByIds: jest.fn(),
   delete: jest.fn(),
   getAllProductsSearch: jest.fn(),
-  getAllByCategoryAndBrand: jest.fn(),
+  getFilteredProducts: jest.fn(),
   getAllCount: jest.fn(),
   getNumberOfProducts: jest.fn(),
   getRelatedProducts: jest.fn(),
@@ -106,22 +106,22 @@ describe('ProductService methods', () => {
     await expect(mockService.validateCategoriesDiscounts(productMock, [1])).rejects.toThrowError();
   });
 
-  test("getAllByCategoryAndBrand calls repository's getAllByCategoryAndBrand method", async () => {
+  test("getFilteredProducts calls repository's getFilteredProducts method", async () => {
     const categoriesMock = ['category1', 'category2'];
     const brandsMock = ['brand1', 'brand2'];
     const priceMock = 100;
     const pageMock = undefined;
     const searchMock = undefined;
 
-    await mockService.getAllByCategoryAndBrand(
+    await mockService.getFilteredProducts(
       categoriesMock,
       brandsMock,
       priceMock,
       pageMock,
       searchMock
     );
-    expect(repositoryMock.getAllByCategoryAndBrand).toHaveBeenCalledTimes(1);
-    expect(repositoryMock.getAllByCategoryAndBrand).toHaveBeenCalledWith(
+    expect(repositoryMock.getFilteredProducts).toHaveBeenCalledTimes(1);
+    expect(repositoryMock.getFilteredProducts).toHaveBeenCalledWith(
       categoriesMock,
       brandsMock,
       priceMock,

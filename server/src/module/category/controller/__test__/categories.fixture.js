@@ -1,9 +1,9 @@
 const Category = require('../../entity/Category');
 
-module.exports = function createTestCategory(id, discounts = []) {
+module.exports = function createTestCategory(id, discounts = [], name = 'electronics') {
   return new Category({
     id,
-    name: 'electronics',
+    name,
     discounts,
   });
 };

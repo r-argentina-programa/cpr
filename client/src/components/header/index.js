@@ -22,15 +22,16 @@ const ContainerSearch = styled.div`
   }
 `;
 
-export default function Header({ setCurrentSearchTerm }) {
-  const [term, setTerm] = useState('');
+export default function Header({ setCurrentSearchTerm, currentTerm }) {
+  const [term, setTerm] = useState(currentTerm);
+  const [isSearching, setIsSearching] = useState(false);
   const { getProductBySearch, removeProductsBySearch } = useContext(ProductContext);
   const [cart, setCart] = useState([]);
   const history = useHistory();
 
   useEffect(() => {
     let timerId;
-    if (term.trim()) {
+    if (term && term.trim()) {
       const timer = () =>
         setTimeout(() => {
           getProductBySearch(term);
@@ -40,6 +41,7 @@ export default function Header({ setCurrentSearchTerm }) {
       removeProductsBySearch();
     }
     return () => {
+      removeProductsBySearch();
       clearTimeout(timerId);
     };
   }, [term]);
@@ -56,12 +58,14 @@ export default function Header({ setCurrentSearchTerm }) {
   return (
     <header>
       <Navbar bg="dark" variant="dark" sticky="top">
-        <Navbar.Brand href="/">Market</Navbar.Brand>
+        <Navbar.Brand href="/" data-cy="header-title">
+          Market
+        </Navbar.Brand>
         <Nav className="mr-auto">
-          <Nav.Link style={{ color: 'hsla(0,0%,100%,0.7)' }} href="/brands">
+          <Nav.Link style={{ color: 'hsla(0,0%,100%,0.7)' }} href="/brands" data-cy="header-brand">
             Brands
           </Nav.Link>
-          <Nav.Link href="/cart" aria-label="Cart">
+          <Nav.Link href="/cart" aria-label="Cart" data-cy="header-cart">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="20"
@@ -81,7 +85,10 @@ export default function Header({ setCurrentSearchTerm }) {
                 borderRadius: '80%',
               }}
             >
-              <span style={{ color: 'white', textAlign: 'center', display: 'block' }}>
+              <span
+                style={{ color: 'white', textAlign: 'center', display: 'block' }}
+                data-cy="cart-length"
+              >
                 {cart.length}
               </span>
             </span>
@@ -93,8 +100,7 @@ export default function Header({ setCurrentSearchTerm }) {
             onSubmit={(e) => {
               e.preventDefault();
               if (term.trim()) {
-                removeProductsBySearch();
-                setTerm('');
+                setIsSearching(false);
                 setCurrentSearchTerm(term);
                 history.push(`/?search=${term}`);
               }
@@ -107,13 +113,16 @@ export default function Header({ setCurrentSearchTerm }) {
                 placeholder="Search"
                 className="form-control"
                 value={term}
+                data-cy="header-search"
                 id="Search"
                 onChange={(e) => setTerm(e.target.value)}
+                onFocus={() => setIsSearching(true)}
+                onBlur={() => setIsSearching(false)}
                 autoComplete="off"
               />
             </label>
           </form>
-          <SearchContainer />
+          <SearchContainer isSearching={isSearching && term} />
         </ContainerSearch>
       </Navbar>
     </header>

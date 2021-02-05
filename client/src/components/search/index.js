@@ -1,4 +1,5 @@
 import styled from 'styled-components/macro';
+import Spinner from 'react-bootstrap/Spinner';
 import ab2str from 'arraybuffer-to-string';
 import { Link } from 'react-router-dom';
 import { useContext } from 'react';
@@ -65,27 +66,58 @@ const ContainerProduct = styled.div`
     height: 8rem;
   }
 `;
-export default function SearchContainer() {
-  const { search: products } = useContext(ProductContext);
+export default function SearchContainer({ isSearching }) {
+  const { search: products, searchError } = useContext(ProductContext);
   return (
-    <Container style={{ display: `${products.length ? 'block' : 'none'}` }}>
-      <ContainerResults>
-        {products.length > 0 ? (
-          products.map((product) => (
-            <ContainerProduct key={product.id}>
-              <Link to={`/product/${product.id}`}>
-                <span>{product.name}</span>{' '}
-                <img
-                  src={`data:image/png;base64, ${ab2str(new Uint8Array(product.imageSrc.data))}`}
-                  alt="img"
-                />
-              </Link>
-            </ContainerProduct>
-          ))
-        ) : (
-          <p>No products found</p>
-        )}
-      </ContainerResults>
+    <Container style={{ display: `${isSearching ? 'block' : 'none'}` }}>
+      {searchError === false && products.length === 0 ? (
+        <div
+          style={{
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <Spinner animation="border" role="status">
+            <span className="sr-only">Loading...</span>
+          </Spinner>
+        </div>
+      ) : (
+        <ContainerResults>
+          {products.length > 0 ? (
+            products.map((product) => (
+              <ContainerProduct key={product.id}>
+                <Link to={`/product/${product.id}`}>
+                  <span>{product.name}</span>{' '}
+                  <img
+                    src={`data:image/png;base64, ${ab2str(new Uint8Array(product.imageSrc.data))}`}
+                    alt="img"
+                  />
+                </Link>
+              </ContainerProduct>
+            ))
+          ) : (
+            <div
+              style={{
+                width: '100%',
+                height: '100%',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <p
+                style={{ fontSize: '24px', fontWeight: '500', color: '#721c24' }}
+                data-cy="search-container-error-message"
+              >
+                No products found
+              </p>
+            </div>
+          )}
+        </ContainerResults>
+      )}
     </Container>
   );
 }

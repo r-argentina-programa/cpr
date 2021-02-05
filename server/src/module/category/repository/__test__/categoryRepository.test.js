@@ -51,7 +51,7 @@ describe('categoryRepository methods', () => {
 
   test('saves two categories in DB, second should have id+1', async () => {
     const category1 = createTestCategory();
-    const category2 = createTestCategory();
+    const category2 = createTestCategory(undefined, undefined, 'house articles');
 
     const savedcategory = await categoryRepository.save(category1);
     const savedcategory2 = await categoryRepository.save(category2);
@@ -84,12 +84,23 @@ describe('categoryRepository methods', () => {
   });
 
   test('getAll returns all categories stored in DB', async () => {
-    const category = createTestCategory();
-    await categoryRepository.save(category);
-    await categoryRepository.save(category);
+    const category1 = createTestCategory();
+    const category2 = createTestCategory(undefined, undefined, 'house article');
+    await categoryRepository.save(category1);
+    await categoryRepository.save(category2);
     const categories = await categoryRepository.getAll();
 
     expect(categories).toHaveLength(2);
+  });
+
+  test('getAllCount returns a count of all categories stored in DB', async () => {
+    const category1 = createTestCategory();
+    const category2 = createTestCategory(undefined, undefined, 'house article');
+    await categoryRepository.save(category1);
+    await categoryRepository.save(category2);
+    const categoriesCount = await categoryRepository.getAllCount();
+
+    expect(categoriesCount).toEqual(2);
   });
 
   test('getById returns a single category', async () => {
@@ -111,8 +122,8 @@ describe('categoryRepository methods', () => {
 
   test('getByIds fetches categories by ids', async () => {
     const category1 = createTestCategory();
-    const category2 = createTestCategory();
-    const category3 = createTestCategory();
+    const category2 = createTestCategory(undefined, undefined, 'house article');
+    const category3 = createTestCategory(undefined, undefined, 'skin care');
     await categoryRepository.save(category1);
     await categoryRepository.save(category2);
     await categoryRepository.save(category3);
@@ -130,10 +141,12 @@ describe('categoryRepository methods', () => {
   });
 
   test('deletes an existing category in DB and returns true', async () => {
-    const category = createTestCategory();
-    await categoryRepository.save(category);
-    await categoryRepository.save(category);
-    await categoryRepository.save(category);
+    const category1 = createTestCategory();
+    const category2 = createTestCategory(undefined, undefined, 'house article');
+    const category3 = createTestCategory(undefined, undefined, 'skin care');
+    await categoryRepository.save(category1);
+    await categoryRepository.save(category2);
+    await categoryRepository.save(category3);
 
     const fetchedCategory = await categoryRepository.getById(2);
     const deletedCategory = await categoryRepository.delete(fetchedCategory);

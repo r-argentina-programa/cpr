@@ -34,6 +34,12 @@ export default function ProductDetail() {
   let localCart = localStorage.getItem('cart');
 
   useEffect(() => {
+    if (product.name) {
+      document.title = `Smarket - ${product.name} - Detail page`;
+    }
+  }, [product]);
+
+  useEffect(() => {
     localCart = JSON.parse(localCart);
     if (localCart) {
       setCart(localCart);
@@ -85,7 +91,7 @@ export default function ProductDetail() {
         </Alert>
       ) : null}
       {status && (
-        <Alert variant="info" style={{ textAlign: 'center' }}>
+        <Alert variant="info" style={{ textAlign: 'center' }} data-cy="status-container">
           {status}
         </Alert>
       )}
@@ -97,13 +103,13 @@ export default function ProductDetail() {
       ) : (
         product.name && (
           <>
-            <Container>
+            <Container data-cy="product-container">
               <ImageContainer>
-                <img src={`data:image/png;base64, ${image}`} alt="Product" />
+                <img src={`data:image/png;base64, ${image}`} alt="product" />
               </ImageContainer>
 
               <RightColumnContainer>
-                <ProductDescription>
+                <ProductDescription data-cy="product-description">
                   {product.categories &&
                     product.categories.map((category) => (
                       <span key={category.id}>{category.name}</span>
@@ -120,10 +126,10 @@ export default function ProductDetail() {
                   </div>
                 </ProductDescription>
 
-                <ProductPrice>
+                <ProductPrice data-cy="product-price-container">
                   {product.discount ? (
                     <>
-                      <span style={{ textDecoration: 'line-through' }}>
+                      <span style={{ textDecoration: 'line-through' }} data-cy="default-price">
                         ${product.defaultPrice}
                       </span>
                       <span
@@ -132,15 +138,17 @@ export default function ProductDetail() {
                           border: '1px solid red',
                           padding: '.4rem',
                         }}
+                        data-cy="discount-price"
                       >
                         ${product.discount.finalPrice}
                       </span>
                     </>
                   ) : (
-                    <span>${product.defaultPrice}</span>
+                    <span data-cy="default-price">${product.defaultPrice}</span>
                   )}
                   <br />
                   <button
+                    data-cy="add-product-to-cart-button"
                     type="button"
                     className="add-cart"
                     onClick={() => addProductToCart(product)}
@@ -166,7 +174,7 @@ export default function ProductDetail() {
                       </thead>
                       <tbody>
                         {product.discounts.map((discount) => (
-                          <tr key={discount.id}>
+                          <tr key={discount.id} data-cy="product-discounts-container">
                             <td>{discount.type}</td>
                             <td>{discount.value}</td>
                             <td>${discount.finalPrice}</td>
@@ -183,7 +191,7 @@ export default function ProductDetail() {
             {productsByBrand.length > 1 && (
               <ListContainer>
                 <h2 style={{ marginTop: '3rem' }}>Other Products From {product.brand.name}</h2>
-                <div className="products-list">
+                <div className="products-list" data-cy="products-with-same-brand-container">
                   {productsByBrand.map((productByBrand) => (
                     <CardsList
                       key={productByBrand.id}
@@ -199,7 +207,7 @@ export default function ProductDetail() {
             {productsByCategory.length > 1 && (
               <ListContainer>
                 <h2 style={{ marginTop: '3rem' }}>Related Products</h2>
-                <div className="products-list">
+                <div className="products-list" data-cy="related-products-container">
                   {productsByCategory.map((productByCategory) => (
                     <CardsList
                       key={productByCategory.id}

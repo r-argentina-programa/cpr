@@ -196,30 +196,24 @@ module.exports = class ProductRepository {
     return matchingNameProducts;
   }
 
-  async getAllByCategoryAndBrand(
-    categories = [],
-    brands = [],
-    price = [0, 999999],
-    page = 0,
-    search
-  ) {
-    const limit = 12;
+  async getFilteredProducts(categories = [], brands = [], price = [0, 999999], page = 0, search) {
+    const limit = 9;
     let conditions;
     let categoriesConditions;
     let brandsConditions;
-    if (search !== '0') {
+    if (search) {
       conditions = {
         name: { [Op.iLike]: `%${search}%` },
       };
     }
-    if (brands[0] !== '0') {
+    if (brands.length) {
       brandsConditions = {
         name: {
           [Op.like]: { [Op.any]: brands },
         },
       };
     }
-    if (categories[0] !== '0') {
+    if (categories.length) {
       categoriesConditions = {
         name: {
           [Op.like]: { [Op.any]: categories },
@@ -249,8 +243,6 @@ module.exports = class ProductRepository {
           },
         },
       ],
-      limit,
-      offset: (page - 1) * limit,
     });
 
     const productsEntities = products.map((product) => {
@@ -266,16 +258,21 @@ module.exports = class ProductRepository {
       return fromModelToEntity(product);
     });
 
-    return productsEntities.filter((product) => {
+    const filteredProducts = productsEntities.filter((product) => {
       const { discount } = product;
-      if (price[1] === 'Infinity') {
-        price[1] = 99999999999;
-      }
+      const minPrice = Number(price[0]);
+      const maxPrice = Number(price[1]);
       if (discount) {
-        return discount.finalPrice >= price[0] && discount.finalPrice <= Number(price[1]);
+        const priceWithDiscount = Number(discount.finalPrice);
+        return priceWithDiscount >= minPrice && priceWithDiscount <= maxPrice;
       }
-      return product.defaultPrice >= price[0] && product.defaultPrice <= Number(price[1]);
+      const defaultPrice = Number(product.defaultPrice);
+      return defaultPrice >= minPrice && defaultPrice <= maxPrice;
     });
+
+    const start = limit * (page - 1);
+    const end = limit * (page - 1) + limit;
+    return filteredProducts.slice(start, end);
   }
 
   async getRelatedProducts(categories) {

@@ -7,6 +7,8 @@ const { calculatePrice } = require('../../management/utils/calculatePrice');
 module.exports = class ProductService {
   /**
    * @param  {import("../repository/productRepository")} ProductRepository
+   * @param  {import("../../category/service/categoryService")} CategoryService
+   * @param  {import("../../discount/service/discountService")} DiscountService
    */
   constructor(ProductRepository, CategoryService, DiscountService) {
     this.ProductRepository = ProductRepository;
@@ -16,6 +18,8 @@ module.exports = class ProductService {
 
   /**
    * @param {Product} product
+   * @param {Array} categoriesIds
+   * @param {Array} discountsIds
    */
   async save(product, categoriesIds, discountsIds) {
     if (!(product instanceof Product)) {
@@ -28,6 +32,10 @@ module.exports = class ProductService {
     return this.ProductRepository.save(product, categoriesIds, discountsIds);
   }
 
+  /**
+   * @param {Product} product
+   * @param {Array} categoriesIds
+   */
   async validateCategoriesDiscounts(product, categoriesIds) {
     const categories = await this.CategoryService.getByIds(categoriesIds);
     categories.forEach((category) => {
@@ -42,6 +50,10 @@ module.exports = class ProductService {
     });
   }
 
+  /**
+   * @param {Product} product
+   * @param {Array} discountsIds
+   */
   async validateProductsDiscounts(product, discountsIds) {
     const discounts = await this.DiscountService.getByIds(discountsIds);
     discounts.forEach((discount) => {
@@ -84,6 +96,10 @@ module.exports = class ProductService {
     return this.ProductRepository.delete(product);
   }
 
+  /**
+   * @param {number} offset
+   * @param {number} limit
+   */
   async getAll(offset, limit) {
     return this.ProductRepository.getAll(offset, limit);
   }
@@ -100,8 +116,23 @@ module.exports = class ProductService {
     return products.filter((v, i, a) => a.findIndex((t) => t.id === v.id) === i);
   }
 
-  async getAllByCategoryAndBrand(categories, brands, price, page, search) {
-    const data = await this.ProductRepository.getAllByCategoryAndBrand(
+  /**
+   * @param {(string|string[])} category
+   * @param {(string|string[])} brand
+   * @param {Array} price
+   * @param {number} page
+   * @param {string} search
+   */
+  async getFilteredProducts(category, brand, price, page, search) {
+    let categories = category;
+    let brands = brand;
+    if (typeof categories === 'string') {
+      categories = [categories];
+    }
+    if (typeof brands === 'string') {
+      brands = [brands];
+    }
+    const data = await this.ProductRepository.getFilteredProducts(
       categories,
       brands,
       price,
@@ -111,6 +142,13 @@ module.exports = class ProductService {
     return data;
   }
 
+  /**
+   * @param {(string|string[])} category
+   * @param {(string|string[])} brand
+   * @param {Array} price
+   * @param {number} page
+   * @param {string} search
+   */
   async getNumberOfProducts(category, brand, price, search) {
     let categories = category;
     let brands = brand;
@@ -129,6 +167,9 @@ module.exports = class ProductService {
     return data;
   }
 
+  /**
+   * @param {(string|string[])} category
+   */
   async getRelatedProducts(category) {
     let categories = category;
     if (typeof categories === 'string') {

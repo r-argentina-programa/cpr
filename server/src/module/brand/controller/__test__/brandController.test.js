@@ -10,6 +10,12 @@ const serviceMock = {
   delete: jest.fn(),
   getAllCount: jest.fn(() => 1),
   viewProducts: jest.fn(),
+  getAllBrandsSearch: jest.fn((term) => {
+    if (term === 'coca-cola') {
+      return [createTestBrand()];
+    }
+    return [];
+  }),
 };
 
 const discountServiceMock = {
@@ -75,16 +81,17 @@ describe('BrandController methods', () => {
   });
 
   test('brand renders index.njk with a list of brands', async () => {
-    const brands = serviceMock.getAll();
     await mockController.index(reqMock, resMock);
     const limit = 10;
     const pageData = {
       selected: reqMock.params.page ? Number(reqMock.params.page) : 1,
       pages: Math.ceil(serviceMock.getAllCount() / limit),
     };
-
+    const offset = limit * (pageData.selected - 1);
+    const brands = serviceMock.getAll(offset, limit);
     const { errors, messages } = reqMock.session;
     expect(serviceMock.getAll).toHaveBeenCalledTimes(2);
+    expect(serviceMock.getAll).toHaveBeenCalledWith(offset, limit);
     expect(serviceMock.getAllCount).toHaveBeenCalledTimes(2);
     expect(resMock.render).toHaveBeenCalledTimes(1);
     expect(resMock.render).toHaveBeenCalledWith('brand/view/index.njk', {
@@ -93,6 +100,28 @@ describe('BrandController methods', () => {
       messages,
       pageData,
     });
+  });
+
+  test("brand don't renders index.njk without a list of brands", async () => {
+    const controllerReqMock = {
+      params: {
+        id: 1,
+        page: 2,
+      },
+      session: {
+        errors: [],
+        messages: [],
+        username: process.env.ADMIN_USERNAME,
+        admin: true,
+      },
+    };
+    serviceMock.getAll.mockReturnValueOnce([]);
+    await mockController.index(controllerReqMock, resMock);
+
+    expect(serviceMock.getAll).toHaveBeenCalledTimes(1);
+    expect(resMock.render).toHaveBeenCalledTimes(0);
+    expect(controllerReqMock.session.errors).not.toHaveLength(0);
+    expect(resMock.redirect).toHaveBeenCalledTimes(1);
   });
 
   test('edit renders a form to edit a brand', async () => {
@@ -173,6 +202,37 @@ describe('BrandController methods', () => {
     expect(resMock.redirect).toHaveBeenCalledTimes(1);
     expect(reqSaveMock.session.messages).not.toHaveLength(0);
     expect(reqSaveMock.session.errors).toHaveLength(0);
+  });
+
+  test('save set errors if service save throw error when save a duplicate brand', async () => {
+    const reqSaveMock = {
+      body: {
+        id: 0,
+        name: 'coca-cola',
+        logo: '/public/uploads/test.jpg',
+        discounts: '',
+      },
+      file: { buffer: '/public/uploads/test.jpg' },
+      session: {
+        errors: [],
+        messages: [],
+      },
+    };
+
+    const discounts = [];
+    const brandMock = createTestBrand(0);
+    brandMock.discounts = undefined;
+
+    serviceMock.save.mockImplementationOnce(() => {
+      throw new Error('llave duplicada viola restricción de unicidad «brands_name_key»');
+    });
+    await mockController.save(reqSaveMock, resMock);
+    expect(serviceMock.save).toHaveBeenCalledTimes(1);
+    expect(serviceMock.save).toHaveBeenCalledWith(brandMock, discounts);
+    expect(resMock.redirect).toHaveBeenCalledTimes(1);
+    expect(reqSaveMock.session.messages).toHaveLength(0);
+    expect(reqSaveMock.session.errors).not.toHaveLength(0);
+    expect(reqSaveMock.session.errors[0]).toEqual('That brand is already registered');
   });
 
   test('save updates a brand with an image', async () => {
@@ -288,5 +348,52 @@ describe('BrandController methods', () => {
     expect(serviceMock.getById).toHaveBeenCalledTimes(1);
     expect(resMock.redirect).toHaveBeenCalledTimes(1);
     expect(reqMock.session.errors).not.toHaveLength(0);
+  });
+
+  test('search brand by existing name', async () => {
+    const searchTerm = 'coca-cola';
+    const brandMock = createTestBrand();
+    const reqSearchMock = {
+      params: { term: 'coca-cola' },
+      session: {
+        errors: [],
+        messages: [],
+      },
+    };
+
+    await serviceMock.save(brandMock);
+    await mockController.search(reqSearchMock, resMock);
+    expect(serviceMock.getAllBrandsSearch).toHaveBeenCalledTimes(1);
+    expect(serviceMock.getAllBrandsSearch).toHaveBeenCalledWith(searchTerm);
+    expect(resMock.render).toHaveBeenCalledTimes(1);
+    expect(resMock.render).toHaveBeenCalledWith('brand/view/search.njk', {
+      brands: [brandMock],
+      messages: [],
+      errors: [],
+      term: searchTerm,
+    });
+  });
+
+  test('search product by non-existent name', async () => {
+    const searchTerm = 'pepsico';
+    const productMock = createTestBrand();
+    const reqSearchMock = {
+      params: { term: searchTerm },
+      session: {
+        errors: [],
+        messages: [],
+      },
+    };
+    await serviceMock.save(productMock);
+    await mockController.search(reqSearchMock, resMock);
+    expect(serviceMock.getAllBrandsSearch).toHaveBeenCalledTimes(1);
+    expect(serviceMock.getAllBrandsSearch).toHaveBeenCalledWith(searchTerm);
+    expect(resMock.render).toHaveBeenCalledTimes(1);
+    expect(resMock.render).toHaveBeenCalledWith('brand/view/search.njk', {
+      brands: [],
+      messages: [],
+      errors: [],
+      term: searchTerm,
+    });
   });
 });

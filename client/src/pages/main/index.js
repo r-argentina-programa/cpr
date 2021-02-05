@@ -1,6 +1,6 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-unused-vars */
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState, useRef } from 'react';
 import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/esm/Button';
 import {
@@ -22,7 +22,11 @@ import { BrandContext } from '../../store/brand/brandContext';
 import { CategoryContext } from '../../store/category/categoryContext';
 import { ListContainer, SidebarContainer, Container, ContentContainer } from './styles';
 
-export default function Main() {
+export default function Main({ title }) {
+  useEffect(() => {
+    document.title = 'Smarket - Main Page';
+  }, []);
+
   const { search } = useLocation();
   const searchParams = new URLSearchParams(search);
   const searchWord = searchParams.get('search');
@@ -35,7 +39,6 @@ export default function Main() {
   const priceRangeQuery = searchParams.get('priceRange');
   const splittedPriceRange = priceRangeQuery ? priceRangeQuery.split('-') : [];
   const pageQuery = searchParams.get('page');
-
   const {
     products,
     getFilteredProducts,
@@ -55,7 +58,8 @@ export default function Main() {
   const [priceRange, setPriceRange] = useState(priceRangeQuery || '');
   const [searchTerm, setSearchTerm] = useState(searchWord || '');
   const [page, setPage] = useState(Number(pageQuery) || 1);
-  let query;
+  const firstUpdate = useRef(true);
+  let query = searchParams.toString();
 
   function handleQueries() {
     const newSearchParams = new URLSearchParams();
@@ -74,6 +78,7 @@ export default function Main() {
       window.location.pathname
     }${newSearchParams.toString() ? `?${newSearchParams.toString()}` : ''}`;
     query = newSearchParams.toString();
+    getFilteredProducts(query);
     window.history.pushState({ path: refresh }, '', refresh);
   }
 
@@ -83,18 +88,20 @@ export default function Main() {
   }, []);
 
   useEffect(() => {
-    handleQueries();
-    getNumberOfProducts(query);
-    getFilteredProducts(activeBrands, activeCategories, priceRange, page, searchTerm);
-    if (page !== 1) {
-      setPage(1);
+    if (firstUpdate.current === false) {
+      handleQueries();
     }
-  }, [activeBrands, activeCategories, priceRange, searchTerm]);
+  }, [page]);
 
   useEffect(() => {
     handleQueries();
-    getFilteredProducts(activeBrands, activeCategories, priceRange, page, searchTerm);
-  }, [page]);
+    getNumberOfProducts(query);
+    if (page !== 1 && firstUpdate.current === false) {
+      setPage(1);
+    } else {
+      firstUpdate.current = false;
+    }
+  }, [activeBrands, activeCategories, priceRange, searchTerm]);
 
   function setCurrentPage(newPage) {
     setPage(newPage);
@@ -109,19 +116,22 @@ export default function Main() {
   }
   return (
     <>
-      <Header setCurrentSearchTerm={setCurrentSearchTerm} />
+      <Header setCurrentSearchTerm={setCurrentSearchTerm} currentTerm={searchTerm} />
       <Container clasName="container">
         <SidebarContainer>
           <Accordion allowMultipleExpanded allowZeroExpanded>
             <AccordionItem>
               <AccordionItemHeading>
-                <AccordionItemButton style={{ background: 'inherit', color: 'white' }}>
+                <AccordionItemButton
+                  style={{ background: 'inherit', color: 'white' }}
+                  data-cy="filter-brands"
+                >
                   Brands
                 </AccordionItemButton>
               </AccordionItemHeading>
               <AccordionItemPanel style={{ textAlign: 'left' }}>
                 {brands.map((brand) => (
-                  <div className="item" key={brand.id}>
+                  <div className="item" key={brand.id} data-cy="brand-item">
                     <input
                       type="checkbox"
                       id={`brand-${brand.id}`}
@@ -143,13 +153,16 @@ export default function Main() {
 
             <AccordionItem>
               <AccordionItemHeading>
-                <AccordionItemButton style={{ background: 'inherit', color: 'white' }}>
+                <AccordionItemButton
+                  style={{ background: 'inherit', color: 'white' }}
+                  data-cy="filter-categories"
+                >
                   Categories
                 </AccordionItemButton>
               </AccordionItemHeading>
               <AccordionItemPanel style={{ textAlign: 'left' }}>
                 {categories.map((category) => (
-                  <div className="item" key={category.id}>
+                  <div className="item" key={category.id} data-cy="category-item">
                     <input
                       type="checkbox"
                       id={`category-${category.id}`}
@@ -172,7 +185,7 @@ export default function Main() {
             </AccordionItem>
           </Accordion>
           <div className="price-filter">
-            <p>Price</p>
+            <p data-cy="filter-price">Price</p>
             <div>
               <label htmlFor="min-price">
                 <span>Min Price</span>
@@ -213,8 +226,14 @@ export default function Main() {
           </Spinner>
         ) : (
           <ContentContainer>
-            {error && <Alert variant="danger">{error}</Alert>}
-            <h1 className="title">See all the products here!</h1>
+            {error && (
+              <Alert variant="danger" data-cy="error-message">
+                {error}
+              </Alert>
+            )}
+            <h1 className="title">
+              {products.length ? 'See all the products here!' : 'No products found'}
+            </h1>
             <ListContainer className="container-fluid">
               {products.map((product) => (
                 <CardsList
@@ -225,11 +244,15 @@ export default function Main() {
                 />
               ))}
             </ListContainer>
-            <PaginationComponent
-              numberOfProducts={numberOfProducts}
-              page={page}
-              setCurrentPage={setCurrentPage}
-            />
+            {products.length ? (
+              <PaginationComponent
+                numberOfProducts={numberOfProducts}
+                page={page}
+                setCurrentPage={setCurrentPage}
+              />
+            ) : (
+              ''
+            )}
           </ContentContainer>
         )}
       </Container>

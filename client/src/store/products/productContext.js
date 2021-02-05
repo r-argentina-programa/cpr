@@ -32,6 +32,7 @@ const ProductContextProvider = ({ children }) => {
     numberOfProducts: 0,
     error: false,
     loading: true,
+    searchError: false,
   };
 
   const [state, dispatch] = useReducer(productReducer, initialState);
@@ -106,28 +107,10 @@ const ProductContextProvider = ({ children }) => {
     dispatch({ type: GET_PRODUCT_SEARCH, payload: [] });
   };
 
-  const getFilteredProducts = async (brands, categories, price, page, search) => {
+  const getFilteredProducts = async (query) => {
     try {
       dispatch({ type: PRODUCTS_LOAD });
-      if (brands.length === 0) {
-        brands = '0';
-      }
-      if (categories.length === 0) {
-        categories = '0';
-      }
-      if (!search) {
-        search = '0';
-      }
-      if (!page) {
-        page = 1;
-      }
-      if (!price) {
-        price = '0-0';
-      }
-
-      const res = await api.get(
-        `/api/products/all/${brands}/${categories}/${price}/${page}/${search}`
-      );
+      const res = await api.get(`/api/products/filter/?${query}`);
       dispatch({ type: GET_PRODUCTS_FILTERED, payload: res.data });
     } catch (error) {
       dispatch({ type: GET_PRODUCTS_ERROR, payload: error.response.data.error });
@@ -164,6 +147,7 @@ const ProductContextProvider = ({ children }) => {
         error: state.error,
         loading: state.loading,
         numberOfProducts: state.numberOfProducts,
+        searchError: state.searchError,
         getAllProducts,
         getProductDetails,
         getProductsByBrand,

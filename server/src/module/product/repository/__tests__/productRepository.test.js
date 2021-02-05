@@ -123,7 +123,7 @@ describe('productRepository methods', () => {
     expect(fetchedProducts.length).toEqual(2);
   });
 
-  test('getAllByCategoryAndBrand fetches products by categories and brands', async () => {});
+  test('getFilteredProducts fetches products by categories and brands', async () => {});
 
   test('getByIds fetches products by a list of ids', async () => {
     const brandMock = createTestBrand(3);

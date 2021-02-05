@@ -7,6 +7,8 @@ const createTestCategory = require('../../controller/__test__/categories.fixture
 const repositoryMock = {
   save: jest.fn(),
   getAll: jest.fn(),
+  getAllCount: jest.fn(),
+  getAllCategoriesSearch: jest.fn(),
   getById: jest.fn(),
   getByIds: jest.fn(),
   delete: jest.fn(),
@@ -33,6 +35,20 @@ describe('CategoryService methods', () => {
     await mockService.getAll();
 
     expect(repositoryMock.getAll).toHaveBeenCalledTimes(1);
+  });
+
+  test("getAllCount calls repository's getAllCount method", async () => {
+    await mockService.getAllCount();
+
+    expect(repositoryMock.getAllCount).toHaveBeenCalledTimes(1);
+  });
+
+  test("getAllCategoriesSearch calls repository's getAllCategoriesSearch method", async () => {
+    const term = 'electronics';
+    await mockService.getAllCategoriesSearch(term);
+
+    expect(repositoryMock.getAllCategoriesSearch).toHaveBeenCalledTimes(1);
+    expect(repositoryMock.getAllCategoriesSearch).toHaveBeenCalledWith(term);
   });
 
   test("getById calls repository's getById method", async () => {

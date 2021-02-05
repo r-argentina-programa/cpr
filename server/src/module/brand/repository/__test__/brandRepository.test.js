@@ -44,8 +44,8 @@ describe('BrandRepository methods', () => {
   });
 
   test('saves two brands in DB, second should have id+1', async () => {
-    const brand1 = createTestBrand();
-    const brand2 = createTestBrand();
+    const brand1 = createTestBrand(undefined, 'Coca-cola');
+    const brand2 = createTestBrand(undefined, 'Sprite');
 
     const savedBrand = await brandRepository.save(brand1);
     const savedBrand2 = await brandRepository.save(brand2);
@@ -78,14 +78,25 @@ describe('BrandRepository methods', () => {
   });
 
   test('getAll returns all brands stored in DB', async () => {
-    const brand = createTestBrand();
-    await brandRepository.save(brand);
-    await brandRepository.save(brand);
+    const brand1 = createTestBrand(undefined, 'Coca-cola');
+    const brand2 = createTestBrand(undefined, 'Sprite');
+    await brandRepository.save(brand1);
+    await brandRepository.save(brand2);
     const brands = await brandRepository.getAll();
 
     expect(brands).toHaveLength(2);
     expect(brands[0].id).toEqual(1);
     expect(brands[1].id).toEqual(2);
+  });
+
+  test('getAllCount returns a count of all brands stored in DB', async () => {
+    const brand1 = createTestBrand();
+    const brand2 = createTestBrand(undefined, 'pepsi');
+    await brandRepository.save(brand1);
+    await brandRepository.save(brand2);
+    const brandsCount = await brandRepository.getAllCount();
+
+    expect(brandsCount).toEqual(2);
   });
 
   test('getById returns single brand', async () => {
@@ -106,10 +117,12 @@ describe('BrandRepository methods', () => {
   });
 
   test('deletes an existing brand in DB and returns true', async () => {
-    const brand = createTestBrand();
-    await brandRepository.save(brand);
-    await brandRepository.save(brand);
-    await brandRepository.save(brand);
+    const brand1 = createTestBrand(undefined, 'Coca-cola');
+    const brand2 = createTestBrand(undefined, 'Sprite');
+    const brand3 = createTestBrand(undefined, 'Fanta');
+    await brandRepository.save(brand1);
+    await brandRepository.save(brand2);
+    await brandRepository.save(brand3);
 
     const fetchedBrand = await brandRepository.getById(2);
     const deletedBrand = await brandRepository.delete(fetchedBrand);
