@@ -50,7 +50,7 @@ export default function ProductDetail() {
                 <th>Categories</th>
                 <th>Default Price</th>
                 {cartData.bestPrice ? <th>Discounts Applied</th> : <th>Discounts</th>}
-                <th>Price with Discount Applied</th>
+                <th>Total Price Using Discounts</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -84,7 +84,7 @@ export default function ProductDetail() {
           {cartData.bestPrice ? (
             <div className="cart-result">
               <h2 className="title" style={{ color: 'steelBlue', fontWeight: '600' }}>
-                The final Price is: <span className="final-price">${cartData.bestPrice}</span>
+                Final Price : <span className="final-price">${cartData.bestPrice}</span>
               </h2>
             </div>
           ) : null}
