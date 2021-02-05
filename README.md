@@ -2,6 +2,9 @@
  
 [![Codeship Status for r-argentina-programa/cpr](https://app.codeship.com/projects/19163aaa-fce1-4cbc-9995-7af926aa4a45/status?branch=main)](https://app.codeship.com/projects/423715)
 
+![client-gif-main](https://github.com/r-argentina-programa/cpr/blob/main/docs/ezgif-2-dc5a7da3a2e8.gif?raw=true)
+
+
 ### Tech Stack
 
 - 💹 **Node Js** —  A web framework for Node Js
