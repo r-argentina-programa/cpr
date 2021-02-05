@@ -15,10 +15,13 @@
 ### How to run this project
 
 **Install Dependencies**
+1.  `npm install` to install root dependencies 
+2.  `npm client-install` to install client dependencies 
+3.  `npm server-install` for server dependencies
 
-1.  `npm client-install` to install client dependencies and `npm server-install` for server dependencies
-2.  `cd server npm run dev` to run server in development mode
-3.  `cd client npm run start` to run client in development mode
+**Run the project**
+1. `npm run dev` to run client and server en developmennt mode 
+
 
 ## Screenshots
 
