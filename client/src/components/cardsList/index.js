@@ -86,8 +86,10 @@ export default function CardsList({ item, imageSrc, link }) {
                 </span>
               </Card.Subtitle>
             )
-          ) : null}
-          <TimeStyle style={{ marginTop: `${!item.discount ? '2.6rem' : ' '}` }}>
+          ) : (
+            <Card.Subtitle style={{ height: '38px', margin: '0.3rem' }} />
+          )}
+          <TimeStyle>
             Posted:
             <TimeAgo date={`${item.createdAt}`} formatter={formatter} />
             <br />
