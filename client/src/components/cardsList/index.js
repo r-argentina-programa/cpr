@@ -32,7 +32,7 @@ export default function CardsList({ item, imageSrc, link }) {
     <Container data-cy="product-card">
       <Card className="card" style={{ height: '400px', width: '320px' }}>
         <Card.Body>
-          <Card.Title style={{ textAlign: 'center', height: '20px', overflow: 'hidden' }}>
+          <Card.Title style={{ textAlign: 'center', height: '26px', overflow: 'hidden' }}>
             {item.name}
           </Card.Title>
           <div className="img-container">
