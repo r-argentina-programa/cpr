@@ -11,7 +11,8 @@
     "client-install": "cd client && npm install",
     "server-install": "cd server && npm install",
     "build-client": "cd client && npm run build && mv build ../server/build",
-    "test-back": "cd server && npm run test"
+    "test-back": "cd server && npm run test",
+    "db:migrate": "cd server && npm run migrations"
   },
   "repository": {
     "type": "git",

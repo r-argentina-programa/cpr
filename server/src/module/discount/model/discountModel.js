@@ -23,21 +23,14 @@ module.exports = class DiscountModel extends Model {
           type: DataTypes.STRING,
           allowNull: false,
         },
-        updatedAt: {
-          type: DataTypes.DATE,
-          defaultValue: Sequelize.NOW,
-        },
-        createdAt: {
-          type: DataTypes.DATE,
-          defaultValue: Sequelize.NOW,
-        },
       },
       {
         sequelize: sequelizeInstance,
         modelName: 'Discount',
         underscored: true,
         paranoid: true,
-        timestamps: false,
+        timestamps: true,
+        tableName: 'discounts',
       }
     );
 
@@ -45,8 +38,19 @@ module.exports = class DiscountModel extends Model {
   }
 
   static setupAssociation(ProductModel, CategoryModel, BrandModel) {
-    DiscountModel.belongsToMany(ProductModel, { through: 'discount_products' });
-    DiscountModel.belongsToMany(CategoryModel, { through: 'discount_category' });
-    DiscountModel.belongsToMany(BrandModel, { through: 'discount_brand' });
+    DiscountModel.belongsToMany(ProductModel, {
+      through: 'discount_products',
+      as: 'products',
+    });
+    DiscountModel.belongsToMany(CategoryModel, {
+      through: 'discount_category',
+      as: 'categories',
+    });
+    DiscountModel.belongsToMany(BrandModel, {
+      through: 'discount_brand',
+      as: 'brands',
+    });
+
+    return DiscountModel;
   }
 };
