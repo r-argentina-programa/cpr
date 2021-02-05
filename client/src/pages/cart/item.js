@@ -34,7 +34,7 @@ export default function Item({ product, cart, setProducts, discounts, priceWithD
   product.amount = amount;
 
   return (
-    <tr>
+    <tr data-cy="product">
       <td>
         <img
           src={`data:image/png;base64, ${configureImage(product.imageSrc.data)}`}
@@ -106,6 +106,7 @@ export default function Item({ product, cart, setProducts, discounts, priceWithD
           variant="danger"
           type="button"
           className="button"
+          data-cy="delete-product-from-cart"
           onClick={(e) => deleteProduct(product.id)}
         >
           Delete

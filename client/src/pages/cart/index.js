@@ -77,14 +77,17 @@ export default function ProductDetail() {
               ))}
             </tbody>
           </Table>
-          <Button className="submit" onClick={(e) => handleCartData(e)}>
+          <Button data-cy="submit-products" className="submit" onClick={(e) => handleCartData(e)}>
             Submit data
           </Button>
 
           {cartData.bestPrice ? (
             <div className="cart-result">
               <h2 className="title" style={{ color: 'steelBlue', fontWeight: '600' }}>
-                The final Price is: <span className="final-price">${cartData.bestPrice}</span>
+                The final Price is:{' '}
+                <span className="final-price" data-cy="best-price">
+                  ${cartData.bestPrice}
+                </span>
               </h2>
             </div>
           ) : null}
