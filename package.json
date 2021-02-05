@@ -5,6 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "node server/src/app.js",
+    "dev": "concurrently \"npm run dev-server\" \"npm run dev-client\"",
+    "dev-server": "cd server && npm run dev",
+    "dev-client": "cd client && npm start",
     "client-install": "cd client && npm install",
     "server-install": "cd server && npm install",
     "build-client": "cd client && npm run build && mv build ../server/build",
@@ -20,5 +23,8 @@
     "url": "https://github.com/r-argentina-programa/cpr/issues"
   },
   "homepage": "https://github.com/r-argentina-programa/cpr#readme",
-  "dependencies": {}
+  "dependencies": {},
+  "devDependencies": {
+    "concurrently": "^5.3.0"
+  }
 }

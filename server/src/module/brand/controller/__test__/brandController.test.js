@@ -204,6 +204,37 @@ describe('BrandController methods', () => {
     expect(reqSaveMock.session.errors).toHaveLength(0);
   });
 
+  test('save set errors if service save throw error when save a duplicate brand', async () => {
+    const reqSaveMock = {
+      body: {
+        id: 0,
+        name: 'coca-cola',
+        logo: '/public/uploads/test.jpg',
+        discounts: '',
+      },
+      file: { buffer: '/public/uploads/test.jpg' },
+      session: {
+        errors: [],
+        messages: [],
+      },
+    };
+
+    const discounts = [];
+    const brandMock = createTestBrand(0);
+    brandMock.discounts = undefined;
+
+    serviceMock.save.mockImplementationOnce(() => {
+      throw new Error('llave duplicada viola restricción de unicidad «brands_name_key»');
+    });
+    await mockController.save(reqSaveMock, resMock);
+    expect(serviceMock.save).toHaveBeenCalledTimes(1);
+    expect(serviceMock.save).toHaveBeenCalledWith(brandMock, discounts);
+    expect(resMock.redirect).toHaveBeenCalledTimes(1);
+    expect(reqSaveMock.session.messages).toHaveLength(0);
+    expect(reqSaveMock.session.errors).not.toHaveLength(0);
+    expect(reqSaveMock.session.errors[0]).toEqual('That brand is already registered');
+  });
+
   test('save updates a brand with an image', async () => {
     const reqSaveMock = {
       body: {

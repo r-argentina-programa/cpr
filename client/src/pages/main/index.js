@@ -122,13 +122,16 @@ export default function Main({ title }) {
           <Accordion allowMultipleExpanded allowZeroExpanded>
             <AccordionItem>
               <AccordionItemHeading>
-                <AccordionItemButton style={{ background: 'inherit', color: 'white' }}>
+                <AccordionItemButton
+                  style={{ background: 'inherit', color: 'white' }}
+                  data-cy="filter-brands"
+                >
                   Brands
                 </AccordionItemButton>
               </AccordionItemHeading>
               <AccordionItemPanel style={{ textAlign: 'left' }}>
                 {brands.map((brand) => (
-                  <div className="item" key={brand.id}>
+                  <div className="item" key={brand.id} data-cy="brand-item">
                     <input
                       type="checkbox"
                       id={`brand-${brand.id}`}
@@ -150,13 +153,16 @@ export default function Main({ title }) {
 
             <AccordionItem>
               <AccordionItemHeading>
-                <AccordionItemButton style={{ background: 'inherit', color: 'white' }}>
+                <AccordionItemButton
+                  style={{ background: 'inherit', color: 'white' }}
+                  data-cy="filter-categories"
+                >
                   Categories
                 </AccordionItemButton>
               </AccordionItemHeading>
               <AccordionItemPanel style={{ textAlign: 'left' }}>
                 {categories.map((category) => (
-                  <div className="item" key={category.id}>
+                  <div className="item" key={category.id} data-cy="category-item">
                     <input
                       type="checkbox"
                       id={`category-${category.id}`}
@@ -179,7 +185,7 @@ export default function Main({ title }) {
             </AccordionItem>
           </Accordion>
           <div className="price-filter">
-            <p>Price</p>
+            <p data-cy="filter-price">Price</p>
             <div>
               <label htmlFor="min-price">
                 <span>Min Price</span>
@@ -220,8 +226,14 @@ export default function Main({ title }) {
           </Spinner>
         ) : (
           <ContentContainer>
-            {error && <Alert variant="danger">{error}</Alert>}
-            <h1 className="title">See all the products here!</h1>
+            {error && (
+              <Alert variant="danger" data-cy="error-message">
+                {error}
+              </Alert>
+            )}
+            <h1 className="title">
+              {products.length ? 'See all the products here!' : 'No products found'}
+            </h1>
             <ListContainer className="container-fluid">
               {products.map((product) => (
                 <CardsList
@@ -232,11 +244,15 @@ export default function Main({ title }) {
                 />
               ))}
             </ListContainer>
-            <PaginationComponent
-              numberOfProducts={numberOfProducts}
-              page={page}
-              setCurrentPage={setCurrentPage}
-            />
+            {products.length ? (
+              <PaginationComponent
+                numberOfProducts={numberOfProducts}
+                page={page}
+                setCurrentPage={setCurrentPage}
+              />
+            ) : (
+              ''
+            )}
           </ContentContainer>
         )}
       </Container>

@@ -58,12 +58,14 @@ export default function Header({ setCurrentSearchTerm, currentTerm }) {
   return (
     <header>
       <Navbar bg="dark" variant="dark" sticky="top">
-        <Navbar.Brand href="/">Market</Navbar.Brand>
+        <Navbar.Brand href="/" data-cy="header-title">
+          Market
+        </Navbar.Brand>
         <Nav className="mr-auto">
-          <Nav.Link style={{ color: 'hsla(0,0%,100%,0.7)' }} href="/brands">
+          <Nav.Link style={{ color: 'hsla(0,0%,100%,0.7)' }} href="/brands" data-cy="header-brand">
             Brands
           </Nav.Link>
-          <Nav.Link href="/cart" aria-label="Cart">
+          <Nav.Link href="/cart" aria-label="Cart" data-cy="header-cart">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="20"
@@ -83,7 +85,10 @@ export default function Header({ setCurrentSearchTerm, currentTerm }) {
                 borderRadius: '80%',
               }}
             >
-              <span style={{ color: 'white', textAlign: 'center', display: 'block' }}>
+              <span
+                style={{ color: 'white', textAlign: 'center', display: 'block' }}
+                data-cy="cart-length"
+              >
                 {cart.length}
               </span>
             </span>
@@ -108,6 +113,7 @@ export default function Header({ setCurrentSearchTerm, currentTerm }) {
                 placeholder="Search"
                 className="form-control"
                 value={term}
+                data-cy="header-search"
                 id="Search"
                 onChange={(e) => setTerm(e.target.value)}
                 onFocus={() => setIsSearching(true)}
