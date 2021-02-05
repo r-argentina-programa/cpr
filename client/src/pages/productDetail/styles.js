@@ -6,7 +6,7 @@ export const Container = styled.div`
   padding: 15px;
   display: flex;
 
-  @media (max-width: 940px) {
+  @media (max-width: 425px) {
     flex-direction: column;
     margin-top: 60px;
   }
@@ -15,22 +15,30 @@ export const Container = styled.div`
 export const ImageContainer = styled.div`
   width: 65%;
   position: relative;
-
   img {
     width: 100%;
-    position: absolute;
     left: 0;
     top: 0;
     transition: all 0.3s ease;
     max-height: 500px;
+    display: block;
+    margin: auto;
   }
   @media (max-width: 940px) {
-    width: 100%;
+    width: 50%;
     img {
       width: 300px;
       right: 0;
       top: -65px;
       left: initial;
+    }
+  }
+
+  @media (max-width: 425px) {
+    width: 100%;
+    img {
+      min-width: 280px;
+      top: 0px;
     }
   }
 `;
@@ -40,6 +48,9 @@ export const RightColumnContainer = styled.div`
   margin-top: 60px;
 
   @media (max-width: 940px) {
+    width: 50%;
+  }
+  @media (max-width: 425px) {
     width: 100%;
   }
 `;
@@ -125,7 +136,7 @@ export const ListContainer = styled.div`
 
   .products-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     grid-gap: 0.2rem;
   }
 `;

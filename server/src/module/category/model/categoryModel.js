@@ -20,21 +20,14 @@ module.exports = class CategoryModel extends Model {
           allowNull: false,
           unique: true,
         },
-        updatedAt: {
-          type: DataTypes.DATE,
-          defaultValue: Sequelize.NOW,
-        },
-        createdAt: {
-          type: DataTypes.DATE,
-          defaultValue: Sequelize.NOW,
-        },
       },
       {
         sequelize: sequelizeInstance,
         modelName: 'Category',
         underscored: true,
         paranoid: true,
-        timestamps: false,
+        timestamps: true,
+        tableName: 'categories',
       }
     );
 
@@ -52,5 +45,7 @@ module.exports = class CategoryModel extends Model {
       foreignKey: 'category_id',
       as: 'discounts',
     });
+
+    return CategoryModel;
   }
 };

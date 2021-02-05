@@ -58,12 +58,19 @@ const ContainerProduct = styled.div`
   cursor: pointer;
   text-decoration: none;
 
-  span {
+  a {
+    width: 100%;
+  }
+  p {
     color: #2c2c2c;
     letter-spacing: 0.4px;
   }
   img {
     height: 8rem;
+    max-width: 100%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
   }
 `;
 export default function SearchContainer({ isSearching }) {
@@ -90,7 +97,7 @@ export default function SearchContainer({ isSearching }) {
             products.map((product) => (
               <ContainerProduct key={product.id}>
                 <Link to={`/product/${product.id}`}>
-                  <span>{product.name}</span>{' '}
+                  <p>{product.name}</p>
                   <img
                     src={`data:image/png;base64, ${ab2str(new Uint8Array(product.imageSrc.data))}`}
                     alt="img"

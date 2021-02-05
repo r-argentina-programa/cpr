@@ -35,9 +35,6 @@ initCategoryModule(app, container);
 initManagementModule(app, container);
 initDiscountModule(app, container);
 
-const mainDb = container.get('Sequelize');
-mainDb.sync();
-
 app.get('/*', (req, res) => {
   res.sendFile(path.join(__dirname, '../build', 'index.html'));
 });

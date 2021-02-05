@@ -48,14 +48,7 @@ export default function ProductDetail() {
 
   useEffect(() => {
     getProductDetails(id);
-    if (product.brand) {
-      getProductsByBrand(product.brand.id);
-    }
-    if (product.categories) {
-      const query = product.categories.map((e) => `category=${e.name}`).join('&');
-      getProductsByCategories(query);
-    }
-  }, [id, product.id]);
+  }, [id]);
 
   useEffect(() => {
     let uint8;
@@ -63,6 +56,13 @@ export default function ProductDetail() {
       uint8 = new Uint8Array(product.imageSrc.data);
     }
     setImage(ab2str(uint8));
+    if (product.brand) {
+      getProductsByBrand(product.brand.id);
+    }
+    if (product.categories) {
+      const query = product.categories.map((e) => `category=${e.name}`).join('&');
+      getProductsByCategories(query);
+    }
   }, [product]);
 
   function addProductToCart(productToSave) {
