@@ -10,6 +10,8 @@
         <th>Default Price</th>
         <th>Image</th>
         <th>Description</th>
+        <th></th>
+        <th></th>
       </tr>
     </thead>
 
@@ -26,12 +28,12 @@
         </td>
         <td>{{ product.description }}</td>
         <td>
-          <a class="button is-link is-fullwidth" href="/admin/product/edit/{{ product.id }}">
+          <a class="button is-link is-light is-fullwidth" href="/admin/product/edit/{{ product.id }}">
             <span>Edit</span>
           </a>
         </td>
         <td>
-          <a class="button is-danger is-fullwidth" href="/admin/product/delete/{{ product.id }}">
+          <a class="button is-danger is-light is-fullwidth" href="/admin/product/delete/{{ product.id }}">
             <span>Delete</span>
           </a>
         </td>

@@ -121,7 +121,9 @@ module.exports = class ProductRepository {
           include: {
             model: this.discountModel,
             as: 'discounts',
+            paranoid: false,
           },
+          paranoid: false,
         },
         {
           model: this.categoryModel,
@@ -129,11 +131,14 @@ module.exports = class ProductRepository {
           include: {
             model: this.discountModel,
             as: 'discounts',
+            paranoid: false,
           },
+          paranoid: false,
         },
         {
           model: this.discountModel,
           as: 'discounts',
+          paranoid: false,
         },
       ],
       offset,
