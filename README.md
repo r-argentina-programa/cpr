@@ -4,7 +4,7 @@
 
 ### Tech Stack
 
-- 💹 **Node Js** — A web framework for Node Js
+- 💹 **Node Js** —  A web framework for Node Js
 - 📄 **Sequelize** — A promise-based Node.js ORM
 - 🔗 **Multer** — A Middleware for handling multipart/form-data, primarily used for uploading files.
 - ⚛️ **React Js** — A JavaScript library for building user interfaces

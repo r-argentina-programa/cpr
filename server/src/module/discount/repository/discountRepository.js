@@ -61,11 +61,7 @@ module.exports = class DiscountRepository {
         id: discountsIds,
       },
     });
-    if (!discountsInstance) {
-      throw new DiscountsIdsNotFoundError(
-        `There is no existing discounts with IDs ${discountsIds}`
-      );
-    }
+
     return discountsInstance.map(fromModelToEntity);
   }
 
