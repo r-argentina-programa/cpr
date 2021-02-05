@@ -1,7 +1,105 @@
 /// <reference types="cypress" />
 
 const productMockId = 4;
+const brandMockId = 1;
 
+describe('Brands', () => {
+  beforeEach(() => {
+    cy.fixture('allBrands').as('brands');
+    cy.intercept('/api/brands/all', { fixture: 'allBrands' });
+    cy.intercept(/\/api\/brand\/1$/, { fixture: 'brand' });
+  });
+
+  /*   it('should display all brands after clicking Brands button in header', () => {
+    cy.intercept('/api/categories/all', { fixture: 'allCategories' });
+    cy.intercept('/api/products/numberOfProducts/?page=1', {
+      body: 10,
+    }).as('numberOfProductsMock');
+    cy.intercept('/api/products/filter/?page=1', {
+      body: [],
+    }).as('productsMock');
+
+    cy.visit('/');
+    cy.wait(['@productsMock']).then(() => {
+      cy.get('[data-cy=header-brand]').should('be.visible');
+      cy.get('[data-cy=header-brand]').click();
+      cy.get('@brands').then((brands) => {
+        cy.get('[data-cy=product-card]').should('have.length', brands.length);
+        brands.forEach((brand) => {
+          cy.get('[data-cy=product-card]').should('contain', brand.name);
+        });
+        cy.get('[data-cy=product-card]').find('img').should('not.have.attr', 'src', '');
+      });
+    });
+  }); */
+
+  it('should display all brands and redirect to brand page after clicking button', () => {
+    cy.fixture('brand').as('brand');
+    cy.fixture('productsWithSameBrand').as('productsWithSameBrand');
+    cy.intercept('/api/brand/1/viewProducts', {
+      fixture: 'productsWithSameBrand',
+    }).as('productsWithSameBrandMock');
+
+    cy.visit('/brands');
+    cy.get('@brand').then((brand) => {
+      cy.get(`a[href*="/brand/${brand.id}"]`).click();
+      cy.url().should('include', `/brand/${brand.id}`);
+      cy.wait('@productsWithSameBrandMock');
+      cy.get('[data-cy=brand-description]').should('contain', brand.name);
+    });
+    cy.get('[data-cy=brand-image]').should('not.have.attr', 'src', '');
+    cy.get('@productsWithSameBrand').then((productsWithSameBrand) => {
+      cy.get('[data-cy=product-card]').should('have.length', productsWithSameBrand.length);
+      productsWithSameBrand.forEach((product) => {
+        cy.get('[data-cy=product-card]')
+          .should('contain', product.name)
+          .and('contain', product.defaultPrice);
+      });
+      cy.get('[data-cy=product-card]').should('not.have.attr', 'src', '');
+    });
+  });
+
+  it('should display a single brand with products', () => {
+    cy.fixture('brand').as('brand');
+    cy.fixture('productsWithSameBrand').as('productsWithSameBrand');
+    cy.intercept('/api/brand/1/viewProducts', {
+      fixture: 'productsWithSameBrand',
+    }).as('productsWithSameBrandMock');
+
+    cy.visit(`/brand/${brandMockId}`);
+    cy.wait('@productsWithSameBrandMock');
+    cy.get('@brand').then((brand) => {
+      cy.get('[data-cy=brand-description]').should('contain', brand.name);
+    });
+    cy.get('[data-cy=brand-image]').should('not.have.attr', 'src', '');
+    cy.get('@productsWithSameBrand').then((productsWithSameBrand) => {
+      cy.get('[data-cy=product-card]').should('have.length', productsWithSameBrand.length);
+      productsWithSameBrand.forEach((product) => {
+        cy.get('[data-cy=product-card]')
+          .should('contain', product.name)
+          .and('contain', product.defaultPrice);
+      });
+      cy.get('[data-cy=product-card]').should('not.have.attr', 'src', '');
+    });
+  });
+
+  it('should display a single brand without products', () => {
+    cy.fixture('brand').as('brand');
+    cy.fixture('productsWithSameBrand').as('productsWithSameBrand');
+    cy.intercept('/api/brand/1/viewProducts', {
+      body: [],
+    }).as('productsWithSameBrandMock');
+
+    cy.visit(`/brand/${brandMockId}`);
+    cy.wait('@productsWithSameBrandMock');
+    cy.get('@brand').then((brand) => {
+      cy.get('[data-cy=brand-description]').should('contain', brand.name);
+    });
+    cy.get('[data-cy=brand-image]').should('not.have.attr', 'src', '');
+    cy.get('[data-cy=product-card]').should('have.length', 0);
+  });
+});
+/*
 describe('ProductDetails', () => {
   before(() => {
     cy.clearLocalStorage();
@@ -12,13 +110,13 @@ describe('ProductDetails', () => {
     cy.fixture('allBrands').as('brands');
     cy.fixture('allProducts').as('products');
 
-    cy.intercept('http://localhost:8000/api/categories/all', { fixture: 'allCategories' });
-    cy.intercept('http://localhost:8000/api/brands/all', { fixture: 'allBrands' });
+    cy.intercept('/api/categories/all', { fixture: 'allCategories' });
+    cy.intercept('/api/brands/all', { fixture: 'allBrands' });
   });
 
   it('Should display product details', () => {
     cy.fixture('product').as('product');
-    cy.intercept('http://localhost:8000/api/products/numberOfProducts/?page=1', {
+    cy.intercept('/api/products/numberOfProducts/?page=1', {
       fixture: 'numberOfProducts',
     }).as('numberOfProductsMock');
 
@@ -31,7 +129,7 @@ describe('ProductDetails', () => {
     }).as('productMock');
 
     cy.visit('/');
-    cy.wait(['@productsMock', '@numberOfProductsMock']).then(() => {
+    cy.wait(['@productsMock']).then(() => {
       cy.get('@product').then((product) => {
         cy.get(`a[href*="/product/${product.id}"]`).click();
         cy.url().should('include', `/product/${product.id}`);
@@ -202,16 +300,16 @@ describe('<Main/>', () => {
     cy.fixture('allBrands').as('brands');
     cy.fixture('allProducts').as('products');
 
-    cy.intercept('http://localhost:8000/api/categories/all', { fixture: 'allCategories' });
-    cy.intercept('http://localhost:8000/api/brands/all', { fixture: 'allBrands' });
+    cy.intercept('/api/categories/all', { fixture: 'allCategories' });
+    cy.intercept('/api/brands/all', { fixture: 'allBrands' });
 
-    cy.intercept('http://localhost:8000/api/products/numberOfProducts/?page=1', {
+    cy.intercept('/api/products/numberOfProducts/?page=1', {
       fixture: 'numberOfProducts',
     });
   });
 
   it('Mocks data and displays it', () => {
-    cy.intercept('http://localhost:8000/api/products/filter/?page=1', {
+    cy.intercept('/api/products/filter/?page=1', {
       fixture: 'allProducts',
     }).as('productsMock');
     cy.visit('/');
@@ -237,14 +335,14 @@ describe('<Main/>', () => {
 
       cy.get('#min-price').should('have.value', 0);
       cy.get('#max-price').should('have.value', 0);
-
+      
       cy.get('@products').then((products) => {
         cy.get('[data-cy=product-card]').should('have.length', products.length);
         products.forEach((product) => {
           cy.get('[data-cy=product-card]').contains(product.name);
           cy.get('[data-cy=product-card]').contains(product.defaultPrice);
-          cy.get('[data-cy=product-card]').find('img').should('not.have.attr', 'src', '');
         });
+        cy.get('[data-cy=product-card]').find('img').should('not.have.attr', 'src', '');
       });
 
       cy.get('h1.title').should('be.visible');
@@ -255,7 +353,7 @@ describe('<Main/>', () => {
   });
 
   it('Renders main elements ', () => {
-    cy.intercept('http://localhost:8000/api/products/filter/?page=1', {
+    cy.intercept('/api/products/filter/?page=1', {
       body: [],
     });
     cy.visit('/');
@@ -269,10 +367,10 @@ describe('<Main/>', () => {
 
   it('Shows error if term do not match ', () => {
     const errorTerm = 'asdsadsadsajdsadsakdk';
-    cy.intercept('http://localhost:8000/api/products/filter/?page=1', {
+    cy.intercept('/api/products/filter/?page=1', {
       body: [],
     });
-    cy.intercept(`http://localhost:8000/api/search/${errorTerm}`, { body: [] });
+    cy.intercept(`/api/search/${errorTerm}`, { body: [] });
 
     cy.visit('/');
 
@@ -290,7 +388,7 @@ describe('<Main/>', () => {
   });
 
   it('Should show discount price if product has discount or default price if not', () => {
-    cy.intercept('http://localhost:8000/api/products/filter/?page=1', {
+    cy.intercept('/api/products/filter/?page=1', {
       fixture: 'allProducts',
     });
     cy.visit('/');
@@ -370,10 +468,13 @@ describe('Cart', () => {
 
   it('should display the final price after using discounts', () => {
     cy.intercept('/api/getCartPrice/4/1', { fixture: 'getCartPrice' });
+    cy.visit('/cart');
     cy.get('@getCartPrice').then((getCartPrice) => {
-      cy.visit('/cart');
+      cy.get('[data-cy=best-price]').should('not.exist');
       cy.get(`[data-cy=submit-products]`).click();
       cy.get('[data-cy=best-price]').should('contain', getCartPrice.bestPrice);
     });
   });
 });
+
+*/
