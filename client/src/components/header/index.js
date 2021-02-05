@@ -16,6 +16,7 @@ export default function Header({ setCurrentSearchTerm, currentTerm }) {
   useEffect(() => {
     let timerId;
     if (term && term.trim()) {
+      setIsSearching(true);
       const timer = () =>
         setTimeout(() => {
           getProductBySearch(term);
@@ -72,7 +73,7 @@ export default function Header({ setCurrentSearchTerm, currentTerm }) {
           </Nav.Link>
         </Nav>
 
-        <ContainerSearch>
+        <ContainerSearch onMouseLeave={() => setIsSearching(false)}>
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -94,7 +95,7 @@ export default function Header({ setCurrentSearchTerm, currentTerm }) {
                 id="Search"
                 onChange={(e) => setTerm(e.target.value)}
                 onFocus={() => setIsSearching(true)}
-                onBlur={() => setIsSearching(false)}
+                onClick={() => setIsSearching(true)}
                 autoComplete="off"
               />
             </label>
