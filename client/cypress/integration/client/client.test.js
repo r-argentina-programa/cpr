@@ -1,6 +1,7 @@
 /// <reference types="cypress" />
 
 const productMockId = 4;
+
 describe('ProductDetails', () => {
   before(() => {
     cy.clearLocalStorage();
@@ -309,6 +310,70 @@ describe('<Main/>', () => {
         }
         cy.get('[data-cy=product-card]').find('img').should('not.have.attr', 'src', '');
       });
+    });
+  });
+});
+
+describe('Cart', () => {
+  beforeEach(() => {
+    cy.clearLocalStorage();
+    cy.fixture('product').as('product');
+    cy.fixture('getCartPrice').as('getCartPrice');
+
+    cy.intercept(`/api/product/${productMockId}`, {
+      fixture: 'product',
+    }).as('productMock');
+
+    cy.intercept(`/api/brand/3/viewProducts`, {
+      body: [],
+    }).as('productsWithSameBrand');
+
+    cy.intercept(`/api/products/relatedProducts/?category=Food`, {
+      body: [],
+    }).as('relatedProducts');
+
+    cy.get('@product').then((product) => {
+      cy.visit(`/product/${productMockId}`);
+      cy.wait(['@productMock', '@relatedProducts', '@productsWithSameBrand']);
+      cy.get('[data-cy=cart-length]').should('contain', '0');
+      cy.get('@product').then((product) => {
+        cy.get('[data-cy=add-product-to-cart-button]')
+          .click()
+          .should(() => {
+            expect(localStorage.getItem('cart')).to.eq(JSON.stringify([product]));
+          });
+      });
+    });
+  });
+
+  it('should display one product in cart', () => {
+    cy.get('@product').then((product) => {
+      cy.visit('/cart');
+      cy.get(`[data-cy=product]`).should('have.length', 1);
+      cy.get(`[data-cy=product]`)
+        .should('contain', product.name)
+        .and('contain', product.defaultPrice);
+    });
+  });
+
+  it('should remove product from cart after clicking delete button', () => {
+    cy.get('@product').then((product) => {
+      cy.visit('/cart');
+      cy.get(`[data-cy=delete-product-from-cart]`)
+        .click()
+        .should(() => {
+          expect(localStorage.getItem('cart')).to.eq(JSON.stringify([]));
+        });
+      cy.get(`[data-cy=product]`).should('have.length', 0);
+    });
+  });
+
+  it('should display the final price after using discounts', () => {
+    cy.intercept('/api/getCartPrice/4/1', { fixture: 'getCartPrice' });
+    cy.get('@getCartPrice').then((getCartPrice) => {
+      cy.visit('/cart');
+      cy.get(`[data-cy=submit-products]`).click();
+      cy.get('[data-cy=best-price]').should('contain', getCartPrice.bestPrice);
     });
   });
 });
