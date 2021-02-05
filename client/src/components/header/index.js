@@ -22,6 +22,22 @@ const ContainerSearch = styled.div`
   }
 `;
 
+const CartQuantity = styled.span`
+  display: inline-block;
+  background-color: #5a7a99;
+  width: 21px;
+  border-radius: 80%;
+  @media (max-width: 425px) {
+    display: none;
+  }
+`;
+
+const SearchProductsLabel = styled.span`
+  @media (max-width: 425px) {
+    display: none;
+  }
+`;
+
 export default function Header({ setCurrentSearchTerm, currentTerm }) {
   const [term, setTerm] = useState(currentTerm);
   const [isSearching, setIsSearching] = useState(false);
@@ -77,21 +93,14 @@ export default function Header({ setCurrentSearchTerm, currentTerm }) {
             >
               <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
             </svg>
-            <span
-              style={{
-                display: 'inline-block',
-                backgroundColor: '#5a7a99',
-                width: '21px',
-                borderRadius: '80%',
-              }}
-            >
+            <CartQuantity>
               <span
                 style={{ color: 'white', textAlign: 'center', display: 'block' }}
                 data-cy="cart-length"
               >
                 {cart.length}
               </span>
-            </span>
+            </CartQuantity>
           </Nav.Link>
         </Nav>
 
@@ -107,7 +116,7 @@ export default function Header({ setCurrentSearchTerm, currentTerm }) {
             }}
           >
             <label htmlFor="Search">
-              Search Products:
+              <SearchProductsLabel>Search Products</SearchProductsLabel>
               <input
                 type="text"
                 placeholder="Search"
