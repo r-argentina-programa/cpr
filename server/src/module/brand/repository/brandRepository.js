@@ -66,6 +66,7 @@ module.exports = class BrandRepository {
       include: {
         model: this.discountModel,
         as: 'discounts',
+        paranoid: false,
       },
       offset,
       limit,

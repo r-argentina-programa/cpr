@@ -54,6 +54,7 @@ module.exports = class CategoryRepository {
       include: {
         model: this.discountModel,
         as: 'discounts',
+        paranoid: false,
       },
       offset,
       limit,
