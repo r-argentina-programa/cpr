@@ -1,0 +1,42 @@
+{
+  "bestPrice": 20,
+  "discountsPerProduct": {
+    "4": {
+      "discounts": [
+        {
+          "id": 1,
+          "type": "Fixed",
+          "value": "20",
+          "updatedAt": "2021-02-04T20:42:54.358Z",
+          "createdAt": "2021-02-04T20:42:54.358Z",
+          "discount_products": {
+            "createdAt": "2021-02-04T20:49:53.422Z",
+            "updatedAt": "2021-02-04T20:49:53.422Z",
+            "product_id": 4,
+            "DiscountId": 1
+          },
+          "finalPrice": 20,
+          "profit": 1.3
+        }
+      ],
+      "finalPrice": 20
+    }
+  },
+  "finalDiscounts": [
+    {
+      "id": 1,
+      "type": "Fixed",
+      "value": "20",
+      "updatedAt": "2021-02-04T20:42:54.358Z",
+      "createdAt": "2021-02-04T20:42:54.358Z",
+      "discount_products": {
+        "createdAt": "2021-02-04T20:49:53.422Z",
+        "updatedAt": "2021-02-04T20:49:53.422Z",
+        "product_id": 4,
+        "DiscountId": 1
+      },
+      "finalPrice": 20,
+      "profit": 1.3
+    }
+  ]
+}
