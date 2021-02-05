@@ -23,7 +23,8 @@
 3.  `npm server-install` for server dependencies
 
 **Run the project**
-1. `npm run dev`  to run client and server en developmennt mode 
+1. `npm run dev` to run client and server en developmennt mode 
+2. `npm run db:migrate` to run Sequelize migrations 
 
 
 ## Screenshots
