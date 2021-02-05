@@ -2,41 +2,9 @@ import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import { useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import styled from 'styled-components/macro';
 import { ProductContext } from '../../store/products/productContext';
 import SearchContainer from '../search';
-
-const ContainerSearch = styled.div`
-  display: flex;
-  align-items: center;
-  position: relative;
-  padding: 8px 4px 8px 2px;
-  font: 400 13.333px Arial;
-  border-radius: 4px;
-  outline: 0px;
-  padding-left: 5px;
-
-  label {
-    display: flex;
-    color: #fff;
-  }
-`;
-
-const CartQuantity = styled.span`
-  display: inline-block;
-  background-color: #5a7a99;
-  width: 21px;
-  border-radius: 80%;
-  @media (max-width: 425px) {
-    display: none;
-  }
-`;
-
-const SearchProductsLabel = styled.span`
-  @media (max-width: 425px) {
-    display: none;
-  }
-`;
+import { ContainerSearch, CartQuantity, SearchProductsLabel } from './styles';
 
 export default function Header({ setCurrentSearchTerm, currentTerm }) {
   const [term, setTerm] = useState(currentTerm);
