@@ -55,14 +55,18 @@ export default function Item({ product, cart, setProducts, discounts, priceWithD
 
       <td className="price">${product.defaultPrice}</td>
       {discounts ? (
-        <td className="price price-discount">
-          {discounts.map((discount) => (
-            <ul>
-              <li> Type: {discount.type}</li>
-              <li>Value: {discount.value}</li>
-            </ul>
-          ))}
-        </td>
+        discounts.length ? (
+          <td className="price price-discount">
+            {discounts.map((discount) => (
+              <ul>
+                <li> Type: {discount.type}</li>
+                <li>Value: {discount.value}</li>
+              </ul>
+            ))}
+          </td>
+        ) : (
+          <td>None</td>
+        )
       ) : product.discount ? (
         product.discount.type === 'Fixed' ? (
           <td className="price price-discount">
@@ -94,10 +98,10 @@ export default function Item({ product, cart, setProducts, discounts, priceWithD
           </td>
         )
       ) : (
-        <td>This product has no discount.</td>
+        <td>This product has no discounts.</td>
       )}
       {discounts ? (
-        product.discount && <td className="price price-discount">${priceWithDiscounts}</td>
+        <td className="price price-discount">${priceWithDiscounts}</td>
       ) : (
         <td className="price price-discount">No discount Applied</td>
       )}
