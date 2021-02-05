@@ -61,11 +61,11 @@ export default function BrandDetail() {
           <>
             <Container>
               <ImageContainer>
-                <img src={`data:image/png;base64, ${image}`} alt="Product" />
+                <img src={`data:image/png;base64, ${image}`} alt="brand" data-cy="brand-image" />
               </ImageContainer>
 
               <RightColumnContainer>
-                <BrandDescription>
+                <BrandDescription data-cy="brand-description">
                   <h1>{brand.name}</h1>
                   <TimeStyle>
                     <p>
