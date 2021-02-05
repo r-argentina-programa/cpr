@@ -78,7 +78,6 @@ export default function productReducer(state, action) {
       return {
         ...state,
         loading: true,
-        products: [],
       };
     default:
       return state;
