@@ -17,11 +17,15 @@ export const ImageContainer = styled.div`
   position: relative;
 
   img {
-    width: 100%;
+    max-width: 100%;
+    min-width: 300px;
     left: 0;
     top: 0;
     transition: all 0.3s ease;
     max-height: 500px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
   }
   @media (max-width: 940px) {
     width: 50%;
@@ -37,9 +41,6 @@ export const ImageContainer = styled.div`
     width: 100%;
     img {
       top: 0px;
-      display: block;
-      margin-left: auto;
-      margin-right: auto;
     }
   }
 `;
