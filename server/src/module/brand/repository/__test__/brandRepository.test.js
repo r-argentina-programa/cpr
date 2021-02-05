@@ -11,25 +11,24 @@ const BrandIdNotDefinedError = require('../../error/BrandIdNotDefinedError');
 const BrandNotFoundError = require('../../error/BrandNotFoundError');
 
 describe('BrandRepository methods', () => {
-  let sequelize, BrandModel, ProductModel, CategoryModel, DiscountModel, brandRepository;
+  let sequelize;
+  let BrandModel;
+  let ProductModel;
+  let CategoryModel;
+  let DiscountModel;
+  let brandRepository;
   beforeEach(async (done) => {
     sequelize = new Sequelize('sqlite::memory', { logging: false });
     BrandModel = brandModel.setup(sequelize);
     ProductModel = productModel.setup(sequelize);
     CategoryModel = categoryModel.setup(sequelize);
     DiscountModel = discountModel.setup(sequelize);
-    BrandModel.hasMany(ProductModel, {
-      foreignKey: 'brandFk',
-      as: 'getBrand',
-    });
-    BrandModel.belongsToMany(DiscountModel, {
-      through: 'discount_brand',
-      foreignKey: 'brand_id',
-      as: 'discounts',
-    });
-    ProductModel.belongsTo(BrandModel, { foreignKey: 'brandFk' });
-    DiscountModel.belongsToMany(ProductModel, { through: 'discount_products' });
-    DiscountModel.belongsToMany(BrandModel, { through: 'discount_brand' });
+
+    ProductModel.setupAssociation(CategoryModel, BrandModel, DiscountModel);
+    CategoryModel.setupAssociation(ProductModel, DiscountModel);
+    BrandModel.setupAssociation(ProductModel, DiscountModel);
+    DiscountModel.setupAssociation(ProductModel, CategoryModel, BrandModel);
+
     brandRepository = new BrandRepository(BrandModel, ProductModel, CategoryModel, DiscountModel);
     await sequelize.sync({ force: true });
     done();
@@ -135,5 +134,20 @@ describe('BrandRepository methods', () => {
 
   test('delete throws error because brandId is not defined', async () => {
     await expect(brandRepository.delete({})).rejects.toThrowError(BrandIdNotDefinedError);
+  });
+
+  test('viewProducts returns an array of products', async () => {
+    const brandId = 3;
+    const brandMock = createTestBrand(brandId);
+    const brand = BrandModel.build(brandMock);
+    await brand.save();
+
+    const productId = 1;
+    const productMock = createTestProduct(productId);
+    const product = ProductModel.build(productMock);
+    await product.save();
+
+    const products = await brandRepository.viewProducts(brandId);
+    expect(products.length).toEqual(1);
   });
 });
