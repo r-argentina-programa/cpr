@@ -1,5 +1,5 @@
 # Cart Price Rule
-
+ 
 [![Codeship Status for r-argentina-programa/cpr](https://app.codeship.com/projects/19163aaa-fce1-4cbc-9995-7af926aa4a45/status?branch=main)](https://app.codeship.com/projects/423715)
 
 ### Tech Stack
@@ -20,7 +20,7 @@
 3.  `npm server-install` for server dependencies
 
 **Run the project**
-1. `npm run dev` to run client and server en developmennt mode 
+1. `npm run dev`  to run client and server en developmennt mode 
 
 
 ## Screenshots
