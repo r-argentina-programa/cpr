@@ -12,6 +12,7 @@
     "server-install": "cd server && npm install",
     "build-client": "cd client && npm run build && mv build ../server/build",
     "test-back": "cd server && npm run test",
+    "test-client": "cd client && npm run cy:run",
     "db:migrate": "cd server && npm run migrations"
   },
   "repository": {
