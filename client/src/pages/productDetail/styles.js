@@ -6,26 +6,25 @@ export const Container = styled.div`
   padding: 15px;
   display: flex;
 
-  @media (max-width: 940px) {
+  @media (max-width: 425px) {
     flex-direction: column;
     margin-top: 60px;
   }
 `;
 
 export const ImageContainer = styled.div`
-  width: 65%;
+  width: 50%;
   position: relative;
 
   img {
     width: 100%;
-    position: absolute;
     left: 0;
     top: 0;
     transition: all 0.3s ease;
     max-height: 500px;
   }
   @media (max-width: 940px) {
-    width: 100%;
+    width: 50%;
     img {
       width: 300px;
       right: 0;
@@ -33,13 +32,27 @@ export const ImageContainer = styled.div`
       left: initial;
     }
   }
+
+  @media (max-width: 425px) {
+    width: 100%;
+    img {
+      top: 0px;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
 `;
 
 export const RightColumnContainer = styled.div`
-  width: 35%;
+  width: 50%;
+  padding-left: 5%;
   margin-top: 60px;
 
   @media (max-width: 940px) {
+    width: 50%;
+  }
+  @media (max-width: 425px) {
     width: 100%;
   }
 `;
