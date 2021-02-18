@@ -17,6 +17,8 @@
 
 ### How to run this project
 
+:warning: `Node version >= 14 is required`
+
 **Install Dependencies**
 1.  `npm install` to install root dependencies 
 2.  `npm run client-install` to install client dependencies 
