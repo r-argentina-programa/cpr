@@ -19,8 +19,8 @@
 
 **Install Dependencies**
 1.  `npm install` to install root dependencies 
-2.  `npm client-install` to install client dependencies 
-3.  `npm server-install` for server dependencies
+2.  `npm run client-install` to install client dependencies 
+3.  `npm run server-install` for server dependencies
 
 **Run the project**
 1. `npm run dev`  to run client and server en development mode 
